@@ -11,76 +11,97 @@
 </head>
 <body>
 
-    <header>
-        <div class="header-contenido">
-            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-            <h1>PANEL ADMINISTRATIVO</h1>
-            
-            <a href="maestros.html" class="cerrar-sesion-btn">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-            </a>
+    <header class="admin-header-top">
+        <div class="header-left">
+            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-top">
+            <h1>Sistema de Administración de Academia AVIVA</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">Director Miguel Mefou Mizza</span>
+            <i class="fas fa-user-circle fa-2x user-icon"></i>
+            <a href="maestros.html" class="logout-btn" title="Cerrar Sesión"><i class="fas fa-power-off"></i></a>
         </div>
     </header>
 
-    <main class="panel-admin">
+    <div class="panel-body">
         
-        <aside class="sidebar">
-            <div class="perfil-info">
-                <i class="fas fa-user-circle fa-3x" style="color: #DAA520;"></i>
-                <h3>Director/a</h3>
-                <p>Academia AVIVA</p>
-            </div>
-            
-            <nav class="menu-admin">
-                <ul>
-                    <li><a href="#" class="menu-activo"><i class="fas fa-users"></i> Usuarios y Estudiantes</a></li>
-                    <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> Profesores</a></li>
-                    
-                    <li><a href="#"><i class="fas fa-book"></i> Cursos y Clases</a></li>
-                    <li><a href="#"><i class="fas fa-music"></i> Instrumentos</a></li>
-                    
-                    <li><a href="#"><i class="fas fa-dollar-sign"></i> Pagos y Facturación</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
-                </ul>
+        <aside class="sidebar-colapsada">
+            <nav class="menu-colapsado">
+                <a href="#" class="menu-item menu-active" title="Tablero"><i class="fas fa-chart-line fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
             </nav>
         </aside>
 
-        <section class="contenido-principal">
-            <h2 class="titulo-panel">Dashboard Administrativo</h2>
+        <main class="contenido-panel">
             
-            <div class="metricas-grid">
-                
-                <div class="tarjeta-metrica">
-                    <i class="fas fa-user-graduate fa-2x"></i>
-                    <h4>Estudiantes Activos</h4>
-                    <p class="valor-metrica">128</p>
-                </div>
-
-                <div class="tarjeta-metrica">
-                    <i class="fas fa-users fa-2x"></i>
-                    <h4>Profesores</h4>
-                    <p class="valor-metrica">12</p>
-                </div>
-                
-                <div class="tarjeta-metrica">
-                    <i class="fas fa-music fa-2x"></i>
-                    <h4>Clases en Curso</h4>
-                    <p class="valor-metrica">25</p>
+            <div class="toolbar-control">
+                <span class="toolbar-title">Tablero/Control</span>
+                <div class="date-controls">
+                    <input type="date" value="2025-12-01">
+                    <input type="date" value="2025-12-31">
+                    <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
                 </div>
             </div>
-            
-            <div class="lista-pendientes">
-                <h3>Pendientes Recientes</h3>
-                <ul>
-                    <li><i class="far fa-circle"></i> Aprobar 3 nuevas solicitudes de registro.</li>
-                    <li><i class="far fa-circle"></i> Enviar reporte de pagos de la semana.</li>
-                    <li><i class="far fa-circle"></i> Asignar profesor para la clase de Violín II.</li>
-                </ul>
+
+            <div class="grid-dashboard">
+                
+                <div class="tarjeta-dashboard">
+                    <div class="tarjeta-header">
+                        <h4>Distribución de Estudiantes</h4>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="tarjeta-body">
+                        <p style="text-align: center; color: #DAA520;">[GRÁFICO DE DISTRIBUCIÓN DE ESTUDIANTES]</p>
+                    </div>
+                </div>
+
+                <div class="tarjeta-dashboard">
+                    <div class="tarjeta-header">
+                        <h4>Asistencia a Clases de Canto</h4>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="tarjeta-body">
+                        <p style="text-align: center; color: #DAA520;">[GRÁFICO DE LÍNEA DE ASISTENCIA]</p>
+                    </div>
+                </div>
+
+                <div class="tarjeta-dashboard">
+                    <div class="tarjeta-header">
+                        <h4>Asistencia a Ensayos</h4>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="tarjeta-body">
+                        <p style="text-align: center; color: #DAA520;">[GRÁFICO DE BARRAS DE ENSAYOS]</p>
+                    </div>
+                </div>
+                
+                <div class="tarjeta-dashboard">
+                    <div class="tarjeta-header">
+                        <h4>Inscripciones Nuevas</h4>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="tarjeta-body">
+                        <p style="text-align: center; color: #DAA520;">[GRÁFICO INFERIOR 1]</p>
+                    </div>
+                </div>
+                
+                <div class="tarjeta-dashboard">
+                    <div class="tarjeta-header">
+                        <h4>Progreso de Nivelación</h4>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="tarjeta-body">
+                        <p style="text-align: center; color: #DAA520;">[GRÁFICO INFERIOR 2]</p>
+                    </div>
+                </div>
+
             </div>
-            
-        </section>
 
-    </main>
+        </main>
+    </div>
 
-    </body>
+</body>
 </html>
