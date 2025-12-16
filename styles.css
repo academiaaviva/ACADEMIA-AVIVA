@@ -3,7 +3,6 @@
 /* Azul Ultra Oscuro (Fondo/Base): #051937 */
 /* Azul Intermedio (Contenedores/Header/Footer): #082348 */
 /* Dorado (Acento/Activo): #DAA520 */
-/* Blanco (Texto): #FFFFFF */
 /* ================================================================= */
 
 /* ------------------------------------------------------------- */
@@ -14,13 +13,13 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
-    background-color: #051937; /* Fondo principal en azul ultra oscuro */
-    color: #E0E0E0; /* Texto principal en gris claro */
+    background-color: #051937;
+    color: #E0E0E0;
 }
 
 a {
     text-decoration: none;
-    color: #DAA520; /* Enlaces en dorado */
+    color: #DAA520;
 }
 
 a:hover {
@@ -36,13 +35,13 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 120px); /* 100vh menos header y footer */
+    min-height: calc(100vh - 120px);
     padding: 20px;
 }
 
-/* Header del Login/Menú Principal */
+/* Header de todas las páginas */
 header {
-    background-color: #082348; /* Azul intermedio para el header */
+    background-color: #082348;
     color: #FFFFFF;
     padding: 10px 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
@@ -66,24 +65,21 @@ header h1 {
     font-weight: 600;
 }
 
-/* Footer del Login/Menú Principal */
+/* Footer */
 footer {
     text-align: center;
     padding: 15px;
-    background-color: #082348; /* Azul intermedio para el footer */
+    background-color: #082348;
     color: #CCCCCC;
     font-size: 0.9em;
     position: fixed;
     bottom: 0;
     width: 100%;
 }
-.enlace-footer {
-    color: #DAA520;
-}
 
 /* Estilos de la caja de Login/Menú */
 .contenedor-inicio {
-    background-color: #082348; /* Azul intermedio para el formulario */
+    background-color: #082348;
     padding: 30px 40px;
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
@@ -93,14 +89,14 @@ footer {
 }
 
 .contenedor-inicio h2 {
-    color: #DAA520; /* Título en dorado */
+    color: #DAA520;
     margin-top: 0;
     border-bottom: 2px solid rgba(218, 165, 32, 0.5);
     padding-bottom: 10px;
     margin-bottom: 25px;
 }
 
-/* Formularios y Campos */
+/* Formularios */
 .formulario-login {
     display: flex;
     flex-direction: column;
@@ -123,9 +119,9 @@ footer {
 .campo input[type="password"] {
     width: 100%;
     padding: 12px;
-    border: 1px solid #DAA520; /* Borde dorado */
+    border: 1px solid #DAA520;
     border-radius: 4px;
-    background-color: #051937; /* Fondo de input en azul ultra oscuro */
+    background-color: #051937;
     color: #FFFFFF;
     font-size: 1em;
     box-sizing: border-box;
@@ -137,8 +133,8 @@ footer {
     width: 100%;
     padding: 12px 20px;
     margin-top: 15px;
-    background-color: #DAA520; /* Botón en dorado */
-    color: #051937; /* Texto del botón en azul ultra oscuro */
+    background-color: #DAA520;
+    color: #051937;
     border: none;
     border-radius: 4px;
     font-size: 1em;
@@ -159,12 +155,67 @@ footer {
 }
 
 /* ------------------------------------------------------------- */
-/* III. ESTILOS DE DASHBOARD (Estructura, sin diseño) */
-/* Agregamos las clases de Dashboard vacías para que el HTML no se rompa, 
-   pero sin estilos que interfieran. */
+/* III. ESTILOS DE GESTIÓN (Para tablas en páginas admin) */
 /* ------------------------------------------------------------- */
-.admin-header-top, .panel-body-wrapper, .sidebar-aviva, 
-.contenido-panel-aviva, .grid-dashboard-aviva, .tarjeta-dashboard-aviva, 
-.toolbar-control-aviva, .tabla-gestion-aviva, .admin-page-body {
-    /* Clases de Dashboard que no deben tener estilos aquí para no interferir con el login */
+
+/* Contenedor principal para contenido admin */
+.contenido-admin {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.tarjeta-gestion {
+    background-color: #082348;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+.tarjeta-gestion h4 {
+    color: #DAA520;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+/* Tablas */
+.tabla-gestion-aviva {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9em;
+    text-align: left;
+}
+
+.tabla-gestion-aviva thead {
+    background-color: #051937;
+}
+
+.tabla-gestion-aviva th {
+    padding: 12px 15px;
+    color: #DAA520;
+    font-weight: 600;
+}
+
+.tabla-gestion-aviva td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #E0E0E0;
+}
+
+.tabla-gestion-aviva tbody tr:hover {
+    background-color: rgba(218, 165, 32, 0.05);
+}
+
+/* Estilos de Estado */
+.estado-activo {
+    color: #66BB6A; /* Verde para activo */
+    font-weight: 600;
+}
+
+.estado-inactivo {
+    color: #FF7043; /* Naranja para en pausa */
+    font-weight: 600;
 }
