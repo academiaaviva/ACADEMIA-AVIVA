@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - AVIVA</title>
+    <title>Gestión de Clases - AVIVA</title>
     
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
+
     <header class="admin-header-top">
         <div class="header-left">
             <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-top">
-            <h1>Sistema de Administración de Academia AVIVA</h1>
+            <h1>Gestión de Clases | Academia AVIVA</h1>
         </div>
         <div class="header-right">
             <span class="user-name">Director/a</span>
@@ -26,31 +27,70 @@
         
         <aside class="sidebar-aviva">
             <nav class="menu-colapsado">
-                <a href="#" class="menu-item menu-active" title="Tablero"><i class="fas fa-chart-line fa-lg"></i></a>
-                <a href="#" class="menu-item" title="Estudiantes"><i class="admonestudiantes.html"></i></a>
-                <a href="#" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
-                <a href="#" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
-                <a href="#" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
+                <a href="administracion.html" class="menu-item" title="Dashboard"><i class="fas fa-chart-line fa-lg"></i></a>
+                <a href="admonestudiantes.html" class="menu-item" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
+                <a href="admonclases.html" class="menu-item menu-active" title="Clases"><i class="fas fa-book fa-lg"></i></a>
+                <a href="pagos.html" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
+                <a href="admonconfi.html" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
             </nav>
         </aside>
 
         <main class="contenido-panel-aviva">
             
             <div class="toolbar-control-aviva">
-                <span class="toolbar-title">Tablero Principal</span>
+                <span class="toolbar-title">Cursos y Horarios</span>
                 <div class="date-controls">
-                    <input type="date" value="2025-12-01">
-                    <input type="date" value="2025-12-31">
-                    <button class="refresh-btn-aviva"><i class="fas fa-sync-alt"></i></button>
+                    <button class="refresh-btn-aviva" style="margin-right: 10px;"><i class="fas fa-plus"></i> Nuevo Curso</button>
+                    <button class="refresh-btn-aviva"><i class="fas fa-calendar-alt"></i> Ver Calendario</button>
                 </div>
             </div>
 
-            <div class="grid-dashboard-aviva">
-                <div class="tarjeta-dashboard-aviva">... Tarjeta 1 ...</div>
-                <div class="tarjeta-dashboard-aviva">... Tarjeta 2 ...</div>
-                <div class="tarjeta-dashboard-aviva">... Tarjeta 3 ...</div>
-                <div class="tarjeta-dashboard-aviva">... Tarjeta 4 ...</div>
-                <div class="tarjeta-dashboard-aviva">... Tarjeta 5 ...</div>
+            <div class="tarjeta-dashboard-aviva" style="grid-column: 1 / -1; min-height: 500px;">
+                <div class="tarjeta-header-aviva">
+                    <h4>Listado de Cursos Activos</h4>
+                    <i class="fas fa-chalkboard"></i>
+                </div>
+                <div class="tarjeta-body-aviva" style="padding: 0;">
+                    
+                    <table class="tabla-gestion-aviva">
+                        <thead>
+                            <tr>
+                                <th>ID Curso</th>
+                                <th>Nombre del Curso</th>
+                                <th>Instructor</th>
+                                <th>Días/Horario</th>
+                                <th>Estudiantes</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C-GT1</td>
+                                <td>Guitarra Eléctrica I</td>
+                                <td>Maestro Andrés</td>
+                                <td>Lunes, 18:00</td>
+                                <td>12/15</td>
+                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>C-VC2</td>
+                                <td>Voz y Canto Avanzado</td>
+                                <td>Maestra Sara</td>
+                                <td>Martes/Jueves, 19:30</td>
+                                <td>8/10</td>
+                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>C-BTIN</td>
+                                <td>Batería Inicial</td>
+                                <td>Maestro Juan</td>
+                                <td>Miércoles, 17:00</td>
+                                <td>15/15</td>
+                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
