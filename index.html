@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -62,7 +61,8 @@
             color: #E0E0E0;
         }
 
-        .grupo-input input {
+        .grupo-input input, 
+        .grupo-input select { /* Estilo para el nuevo campo de rol */
             width: 100%;
             padding: 12px 15px;
             border: 1px solid #DAA520;
@@ -111,9 +111,19 @@
             <h2>Inicio de Sesión</h2>
             
             <form id="login-form">
+                
+                <div class="grupo-input">
+                    <label for="rol_seleccionado">Soy...</label>
+                    <select id="rol_seleccionado" required>
+                        <option value="">-- Seleccionar Rol --</option>
+                        <option value="maestro.html">Profesor</option>
+                        <option value="estudiante.html">Estudiante</option>
+                    </select>
+                </div>
+                
                 <div class="grupo-input">
                     <label for="username">Usuario (Login)</label>
-                    <input type="text" id="username" required placeholder="DirectorAVIVA, jperalta o ID de estudiante">
+                    <input type="text" id="username" required placeholder="Usuario, Ej: DirectorAVIVA o E-001">
                 </div>
                 <div class="grupo-input">
                     <label for="password">Contraseña</label>
@@ -153,17 +163,18 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth(); // Objeto de autenticación
+        const auth = firebase.auth();
         const usuariosAccesoCollection = db.collection('usuariosAcceso'); 
 
         // Elementos del DOM
         const loginForm = document.getElementById('login-form');
+        const rolSelect = document.getElementById('rol_seleccionado'); // 🚨 NUEVO
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const loginBtn = document.getElementById('login-btn');
         const errorMessage = document.getElementById('error-message');
 
-        // Credenciales Estáticas del Director (Solo para login manual)
+        // Credenciales Estáticas del Director
         const DIRECTOR_USER = "DirectorAVIVA";
         const DIRECTOR_PASS_HASH = md5("admin123"); 
 
@@ -171,7 +182,6 @@
             loginForm.addEventListener('submit', handleLogin);
         }
 
-        // Ya no necesitamos guardar en localStorage, Firebase Auth mantiene la sesión
         function redirectTo(url) {
             window.location.href = url;
         }
@@ -190,65 +200,83 @@
 
             const user = usernameInput.value.trim();
             const passPlana = passwordInput.value;
-            const passHash = md5(passPlana); 
+            const rolSeleccionado = rolSelect.value; // 🚨 OBTENEMOS EL ROL SELECCIONADO
 
-            // 1. Verificar si es el Director (Excepción sin Firebase Auth)
-            if (user === DIRECTOR_USER && passHash === DIRECTOR_PASS_HASH) {
-                // Usamos sessionStorage para esta sesión específica del Director
-                sessionStorage.setItem('isAdmin', 'true');
-                redirectTo('administracion.html'); 
-                return;
+            if (rolSeleccionado === 'director') {
+                 const passHash = md5(passPlana); 
+
+                // 1. Verificar si es el Director (Cuenta estática)
+                if (user === DIRECTOR_USER && passHash === DIRECTOR_PASS_HASH) {
+                    sessionStorage.setItem('isAdmin', 'true');
+                    redirectTo('administracion.html'); 
+                    return;
+                } else {
+                    showError("Usuario, contraseña o rol de Director incorrectos.");
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                    return;
+                }
             }
             
             // 2. Intentar login con Firebase Authentication para Profesores/Alumnos
-            // Usamos el formato de email que registramos en admonconfi.html
-            const email = `${user.toLowerCase()}@aviva.edu`; 
+            if (rolSeleccionado === 'profesor' || rolSeleccionado === 'alumno') {
+                
+                // Usamos el formato de email que registramos en admonconfi.html
+                const email = `${user.toLowerCase()}@aviva.edu`; 
 
-            auth.signInWithEmailAndPassword(email, passPlana)
-                .then((userCredential) => {
-                    const authUid = userCredential.user.uid;
-                    
-                    // 3. Login exitoso. Buscar el ROL en Firestore.
-                    return usuariosAccesoCollection.where('authUid', '==', authUid).limit(1).get();
-                })
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        showError("Error: Usuario autenticado sin rol asignado.");
-                        auth.signOut();
-                        return;
-                    }
-
-                    const userData = snapshot.docs[0].data();
-                    // Guardamos el rol en sessionStorage para la redirección y verificación
-                    sessionStorage.setItem('userRole', userData.rol); 
-
-                    // Redirigir según el rol
-                    switch (userData.rol) {
-                        case 'profesor':
-                            redirectTo('maestros.html'); 
-                            break;
-                        case 'alumno':
-                            redirectTo('estudiantes.html'); 
-                            break;
-                        default:
-                            showError("Rol de usuario no definido.");
+                auth.signInWithEmailAndPassword(email, passPlana)
+                    .then((userCredential) => {
+                        const authUid = userCredential.user.uid;
+                        
+                        // 3. Login exitoso. Buscar el ROL en Firestore.
+                        return usuariosAccesoCollection
+                            .where('authUid', '==', authUid)
+                            .where('rol', '==', rolSeleccionado) // 🚨 VERIFICAR QUE EL ROL COINCIDA
+                            .limit(1).get();
+                    })
+                    .then(snapshot => {
+                        if (snapshot.empty) {
+                            showError("Usuario o contraseña incorrectos, o el rol seleccionado no coincide con su cuenta.");
                             auth.signOut();
-                            break;
-                    }
-                })
-                .catch(error => {
-                    // Manejo de errores de Firebase Auth
-                    let msg = "Usuario o contraseña incorrectos.";
-                    if (error.code !== 'auth/wrong-password' && error.code !== 'auth/user-not-found' && error.code !== 'auth/invalid-email') {
-                         console.error("Error durante el login (Auth):", error);
-                         msg = "Error de conexión. Intente nuevamente.";
-                    }
-                    showError(msg);
-                })
-                .finally(() => {
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
-                });
+                            return;
+                        }
+
+                        const userData = snapshot.docs[0].data();
+                        sessionStorage.setItem('userRole', userData.rol); 
+
+                        // Redirigir según el rol
+                        switch (userData.rol) {
+                            case 'profesor':
+                                redirectTo('maestros.html'); 
+                                break;
+                            case 'alumno':
+                                redirectTo('estudiantes.html'); 
+                                break;
+                            default:
+                                // Este caso no debería ocurrir si el filtro fue correcto
+                                showError("Error de rol. Contacte al administrador.");
+                                auth.signOut();
+                                break;
+                        }
+                    })
+                    .catch(error => {
+                        // Manejo de errores de Firebase Auth
+                        let msg = "Usuario o contraseña incorrectos.";
+                        if (error.code !== 'auth/wrong-password' && error.code !== 'auth/user-not-found' && error.code !== 'auth/invalid-email') {
+                            console.error("Error durante el login (Auth):", error);
+                            msg = "Error de conexión. Intente nuevamente.";
+                        }
+                        showError(msg);
+                    })
+                    .finally(() => {
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                    });
+            } else {
+                 showError("Por favor, seleccione su rol.");
+                 loginBtn.disabled = false;
+                 loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+            }
         }
     </script>
 
