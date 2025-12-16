@@ -139,3 +139,59 @@ main {
         transform: none;
     }
 }
+
+/* ======================================= */
+/* 7. ESTILOS DE FORMULARIO (LOGIN) */
+/* (Para la página estudiantes.html) */
+/* ======================================= */
+
+.formulario-login {
+    text-align: left; /* Alineamos los campos a la izquierda */
+    padding: 10px 0;
+}
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #FFD700; /* Etiquetas en Dorado */
+    font-size: 1.1em;
+}
+
+.campo input[type="text"],
+.campo input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box; /* Incluye padding en el ancho */
+    border: 1px solid #0056b3; /* Borde sutil de un azul intermedio */
+    border-radius: 4px;
+    background-color: #00142b; /* Fondo del input un azul muy oscuro */
+    color: #FFFFFF; /* Texto escrito en blanco */
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.campo input:focus {
+    border-color: #FFD700; /* Borde Dorado al enfocarse */
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); /* Resplandor dorado */
+}
+
+.ayuda-link {
+    margin-top: 15px;
+}
+
+.ayuda-link a {
+    color: #FFD700; /* Enlaces secundarios en Dorado */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.ayuda-link a:hover {
+    color: #e0b400; /* Cambio de color al pasar el ratón */
+    text-decoration: underline;
+}
