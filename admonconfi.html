@@ -25,7 +25,7 @@
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 30px;
-            align-items: flex-start; /* Alinea el contenido al inicio */
+            align-items: flex-start;
         }
         
         /* --- ESTILOS DE FORMULARIO --- */
@@ -60,7 +60,7 @@
             background-color: #051937; 
         }
         .tabla-gestion-aviva tbody tr:nth-child(even) {
-            background-color: #061e3d; /* Ligeramente más claro para filas pares */
+            background-color: #061e3d;
         }
         
         /* Estilos específicos de la tabla de accesos */
@@ -71,9 +71,8 @@
             font-size: 0.9em;
             display: inline-block;
         }
-        /* Colores de tags ajustados para la URL de acceso */
-        .tag-alumno { background-color: #DAA520; color: #051937; } /* Cambio a amarillo para alumnos que entran a estudiantes.html */
-        .tag-profesor { background-color: #8BC34A; color: #051937; } /* Cambio a verde para profesores que entran a maestros.html */
+        .tag-alumno { background-color: #DAA520; color: #051937; } 
+        .tag-profesor { background-color: #8BC34A; color: #051937; } 
         .tag-director { background-color: #FF7043; color: #051937; } 
 
     </style>
@@ -336,7 +335,7 @@
             });
         }
         
-        // Manejar el formulario de creación de acceso (CORREGIDO)
+        // Manejar el formulario de creación de acceso (CORREGIDO PARA EVITAR QUE SE QUEDE PEGADO)
         formCrearAcceso.addEventListener('submit', function(event) {
             event.preventDefault();
             statusMessage.textContent = '';
@@ -354,24 +353,24 @@
             if (tipo === 'estudiante') {
                 const idEstudiante = selectEstudianteAcceso.value;
                 if (!idEstudiante) {
-                    statusMessage.innerHTML = '<span style="color: #FF7043;">Por favor, seleccione un estudiante.</span>';
-                    boton.disabled = false; // RESTABLECER
-                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                    statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Por favor, seleccione un estudiante.</span>';
+                    boton.disabled = false;
+                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
                     return; 
                 }
                 usuario = idEstudiante; 
             } else if (tipo === 'profesor') {
                 usuario = inputNombreUsuario.value.trim();
                 if (!usuario) {
-                    statusMessage.innerHTML = '<span style="color: #FF7043;">Por favor, ingrese un nombre de usuario.</span>';
-                    boton.disabled = false; // RESTABLECER
-                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                    statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Por favor, ingrese un nombre de usuario.</span>';
+                    boton.disabled = false;
+                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
                     return; 
                 }
             } else {
-                statusMessage.innerHTML = '<span style="color: #FF7043;">Seleccione un tipo de registro (Estudiante o Profesor).</span>';
-                boton.disabled = false; // RESTABLECER
-                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Seleccione un tipo de registro (Estudiante o Profesor).</span>';
+                boton.disabled = false;
+                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
                 return; 
             }
 
@@ -379,9 +378,9 @@
             const rolAcceso = document.getElementById('rol_acceso').value;
             
             if (passwordPlana.length < 6) {
-                statusMessage.innerHTML = '<span style="color: #FF7043;">La contraseña debe tener al menos 6 caracteres.</span>';
-                boton.disabled = false; // RESTABLECER
-                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                statusMessage.innerHTML = '<span style="color: #FF7043;">Error: La contraseña debe tener al menos 6 caracteres.</span>';
+                boton.disabled = false;
+                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
                 return;
             }
             
@@ -391,13 +390,13 @@
             const nuevoUsuario = {
                 usuario: usuario,
                 password: passwordHasheada, 
-                rol: rolAcceso, // Rol es la URL de redirección
+                rol: rolAcceso, // Rol es la URL de redirección (alumno o profesor)
                 tipo_entidad: tipo, 
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
             
-            // Cambiar texto después de validación exitosa, antes de la llamada a Firebase
-            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+            // Texto de estado mientras se comunica con la base de datos
+            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando en DB...';
 
 
             // 2. Iniciar la cadena de Promesas de Firebase
@@ -405,8 +404,8 @@
                 .then(snapshot => {
                     if (!snapshot.empty) {
                          statusMessage.innerHTML = `<span style="color: #FF7043;">Error: El usuario **${usuario}** ya existe.</span>`;
-                         // Usar Promise.reject para forzar la entrada al catch y evitar el registro
-                         return Promise.reject('Usuario duplicado'); 
+                         // Usar Promise.reject para forzar el paso al .catch() y evitar el registro.
+                         return Promise.reject(new Error('Usuario duplicado')); 
                     }
                     // Si no existe, agregar el nuevo usuario
                     return usuariosAccesoCollection.add(nuevoUsuario);
@@ -418,12 +417,10 @@
                     toggleCamposRegistro(); // Reinicia la interfaz
                 })
                 .catch((error) => {
-                    // Manejo de errores (incluyendo el error de "Usuario duplicado")
-                    if (error === 'Usuario duplicado') {
-                        // El mensaje ya se mostró arriba
-                    } else {
+                    // Manejo de errores
+                    if (error.message !== 'Usuario duplicado') {
                          console.error("Error al registrar el acceso:", error);
-                         statusMessage.innerHTML = '<span style="color: #FF7043;">Error al registrar: ' + (error.message || 'Error de Firebase.') + '. Revise la consola del navegador.</span>';
+                         statusMessage.innerHTML = '<span style="color: #FF7043;">Error al registrar: ' + (error.message || 'Error desconocido de Firebase.') + '. Revise la consola (F12).</span>';
                     }
                 })
                 .finally(() => {
