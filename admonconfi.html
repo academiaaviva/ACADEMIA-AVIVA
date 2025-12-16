@@ -3,453 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración de Acceso - AVIVA</title>
-    
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <title>Acceso de Administración - Plataforma Aviva</title>
     <style>
-        /* --- ESTILOS GENERALES Y LAYOUT --- */
-        .contenido-admin { max-width: 1200px; margin: 20px auto; padding: 0 20px 80px; }
-        .tarjeta-gestion { 
-            background-color: #082348; 
-            padding: 25px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-            margin-bottom: 25px; 
+        /* Paleta de Colores
+        -- Azul Ultra Oscuro: #00004d
+        -- Dorado: #ffc107
+        -- Blanco: #ffffff
+        */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
-        
-        /* --- LAYOUT DE DOS COLUMNAS --- */
-        .config-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-            align-items: flex-start;
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
         }
-        
-        /* --- ESTILOS DE FORMULARIO --- */
-        #form-crear-acceso label { 
-            color: #E0E0E0; 
-            display: block; 
-            margin-bottom: 5px; 
-            font-weight: 500;
+
+        h2 {
+            color: #00004d;
+            margin-bottom: 25px;
+            font-size: 28px;
         }
-        #form-crear-acceso input[type="text"], 
-        #form-crear-acceso input[type="password"], 
-        #form-crear-acceso select { 
-            width: 100%; 
-            padding: 10px; 
-            margin-bottom: 15px; 
-            border: 1px solid #DAA520; 
-            border-radius: 4px; 
-            background-color: #051937; 
-            color: #FFFFFF; 
-            box-sizing: border-box; 
-        }
-        
-        /* --- ESTILOS DE TABLA --- */
-        .tabla-gestion-aviva { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .tabla-gestion-aviva th, .tabla-gestion-aviva td { 
-            padding: 12px 15px; 
+
+        .form-group {
+            margin-bottom: 20px;
             text-align: left;
         }
-        .tabla-gestion-aviva thead th { 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            background-color: #051937; 
-        }
-        .tabla-gestion-aviva tbody tr:nth-child(even) {
-            background-color: #061e3d;
-        }
-        
-        /* Estilos específicos de la tabla de accesos */
-        .tag-rol {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.9em;
-            display: inline-block;
-        }
-        .tag-alumno { background-color: #DAA520; color: #051937; } 
-        .tag-profesor { background-color: #8BC34A; color: #051937; } 
-        .tag-director { background-color: #FF7043; color: #051937; } 
 
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #00004d; /* Azul Ultra Oscuro */
+            color: white;
+            padding: 14px 20px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffc107; /* Dorado */
+            color: #00004d;
+        }
+
+        .message {
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Estilo para el campo de Rol que estará oculto */
+        #role-display {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-contenido">
-            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-            <h1>Módulo de Configuración de Acceso</h1>
-            <a href="administracion.html" style="margin-left: auto; margin-right: 20px; color: #DAA520; font-size: 1.1em;" title="Volver al Panel">
-                 <i class="fas fa-arrow-left"></i> Panel
-            </a>
-            <a href="index.html" style="color: #DAA520; font-size: 1.1em;" title="Cerrar Sesión">
-                 <i class="fas fa-power-off"></i> Salir
-            </a>
-        </div>
-    </header>
+<div class="login-box">
+    <h2>Acceso Profesor</h2>
 
-    <main class="contenido-admin">
+    <div id="role-display">
+        Rol Asignado: **Profesor** (Acceso Total)
+    </div>
+
+    <form id="adminLoginForm">
         
-        <div class="config-grid">
-            
-            <div class="tarjeta-gestion">
-                <h4><i class="fas fa-user-plus"></i> Crear Nuevo Acceso Limitado</h4>
-                <form id="form-crear-acceso">
-                    
-                    <label for="tipo_registro">¿A quién desea darle acceso?</label>
-                    <select id="tipo_registro" onchange="toggleCamposRegistro()" required>
-                        <option value="">-- Seleccione Tipo --</option>
-                        <option value="estudiante">Estudiante</option>
-                        <option value="profesor">Profesor</option>
-                    </select>
-
-                    <div id="campos-estudiante" style="display:none;">
-                        <label for="id_estudiante_acceso">Seleccionar Estudiante</label>
-                        <select id="id_estudiante_acceso" required disabled>
-                            <option value="">Cargando estudiantes...</option>
-                        </select>
-                        <p style="font-size: 0.85em; color: #A0A0A0; margin: -10px 0 15px;">*El usuario será el ID del estudiante (Ej: E-001).</p>
-                    </div>
-
-                    <div id="campos-profesor" style="display:none;">
-                        <label for="nombre_usuario">Nombre de Usuario (Login)</label>
-                        <input type="text" id="nombre_usuario" placeholder="Ej: jperalta" required disabled>
-                    </div>
-
-                    <label for="password">Contraseña Temporal</label>
-                    <input type="password" id="password" required placeholder="Contraseña de al menos 6 caracteres">
-                    
-                    <label for="rol_acceso">Redirección al Iniciar Sesión</label>
-                    <select id="rol_acceso" required>
-                        <option value="">-- Seleccione Página de Acceso --</option>
-                        <option value="alumno">Acceso Estudiante (estudiantes.html)</option>
-                        <option value="profesor">Acceso Profesor (maestros.html)</option>
-                    </select>
-
-                    <button type="submit" class="boton-rol" style="width: 100%;">
-                        <i class="fas fa-save"></i> Registrar Credencial
-                    </button>
-                    
-                    <div id="status-message" style="margin-top: 15px; font-size: 0.9em;"></div>
-
-                </form>
-            </div>
-
-            <div class="tarjeta-gestion">
-                <h4><i class="fas fa-lock"></i> Usuarios con Acceso Limitado</h4>
-                
-                <div style="overflow-x: auto;">
-                    <table class="tabla-gestion-aviva">
-                        <thead>
-                            <tr>
-                                <th>Usuario (Login)</th>
-                                <th>Email (Auth)</th>
-                                <th>Rol/Redirección</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-body-accesos">
-                            <tr>
-                                <td>DirectorAVIVA</td>
-                                <td>N/A</td>
-                                <td><span class="tag-rol tag-director">DIRECTOR</span></td>
-                                <td><i class="fas fa-ban" title="No se puede eliminar el acceso principal"></i></td>
-                            </tr>
-                            <tr><td colspan="4" style="text-align: center;">Cargando usuarios...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+        <div class="form-group">
+            <label for="username">Usuario (Correo):</label>
+            <input type="text" placeholder="administracion" name="username" id="username" required>
         </div>
 
-    </main>
-    
-    <footer>
-        <p><a href="#" class="enlace-footer">Acerca de</a> | &copy; 2025 Academia AVIVA.</p>
-    </footer>
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" placeholder="avivaelfuego" name="password" id="password" required>
+        </div>
 
+        <input type="hidden" id="role" value="profesor">
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-md5/0.7.3/md5.min.js"></script> 
+        <button type="submit">Iniciar Sesión</button>
+    </form>
 
-    <script>
-        // *** 1. TUS CLAVES DE CONFIGURACIÓN DE FIREBASE ***
-        const firebaseConfig = {
-          apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
-          authDomain: "academia-aviva.firebaseapp.com",
-          projectId: "academia-aviva",
-          storageBucket: "academia-aviva.firebasestorage.app",
-          messagingSenderId: "1083662705160",
-          appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
-          measurementId: "G-GNBRN8CF2T"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth(); // Objeto de autenticación
+    <p class="message" id="loginMessage"></p>
+</div>
 
-        const usuariosAccesoCollection = db.collection('usuariosAcceso'); 
-        const estudiantesCollection = db.collection('estudiantes'); 
-        
-        const tablaBodyAccesos = document.getElementById('tabla-body-accesos');
-        const formCrearAcceso = document.getElementById('form-crear-acceso');
-        
-        // Elementos condicionales
-        const tipoRegistroSelect = document.getElementById('tipo_registro');
-        const camposEstudianteDiv = document.getElementById('campos-estudiante');
-        const selectEstudianteAcceso = document.getElementById('id_estudiante_acceso');
-        const camposProfesorDiv = document.getElementById('campos-profesor');
-        const inputNombreUsuario = document.getElementById('nombre_usuario');
-        const inputPassword = document.getElementById('password');
-        const statusMessage = document.getElementById('status-message');
-        
-        let estudiantesCache = {}; 
-        
-        // ==================================================
-        // 2. INICIALIZACIÓN Y LÓGICA DE INTERFAZ
-        // ==================================================
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarEstudiantesParaSelect();
-            iniciarListenerUsuarios();
-        });
+<script>
+    document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
 
-        function cargarEstudiantesParaSelect() {
-            // ... (función de carga de estudiantes, sin cambios)
-            estudiantesCollection.orderBy('apellido', 'asc').get()
-                .then(snapshot => {
-                    selectEstudianteAcceso.innerHTML = '<option value="">-- Seleccionar Estudiante --</option>';
-                    estudiantesCache = {};
-                    
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        const nombreCompleto = `${data.apellido || ''}, ${data.nombre || ''} (${data.id_estudiante || 'ID N/A'})`;
-                        
-                        estudiantesCache[data.id_estudiante] = { 
-                            nombre: nombreCompleto, 
-                            id_estudiante: data.id_estudiante 
-                        };
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const role = document.getElementById('role').value; // 'profesor'
+        const messageElement = document.getElementById('loginMessage');
 
-                        let option = document.createElement('option');
-                        option.value = data.id_estudiante; 
-                        option.textContent = nombreCompleto;
-                        selectEstudianteAcceso.appendChild(option);
-                    });
-                    selectEstudianteAcceso.disabled = false;
+        // 1. Verificación de Credenciales Fijas (Profesor)
+        const ADMIN_USER = 'administracion';
+        const ADMIN_PASS = 'avivaelfuego';
 
-                })
-                .catch(error => {
-                    console.error("Error al cargar estudiantes:", error);
-                    selectEstudianteAcceso.innerHTML = '<option value="">Error al cargar (recargar la página)</option>';
-                });
+        if (user === ADMIN_USER && pass === ADMIN_PASS) {
+            messageElement.style.color = 'green';
+            messageElement.textContent = '✅ Acceso Consedido. Guardando sesión...';
+
+            // 2. Guardar datos de sesión en localStorage para que 'estudiantes.html' los reconozca.
+            // Guardamos el rol y el estado de autenticación.
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('username', user); // Opcional: guardar el nombre de usuario
+            
+            // 3. Redirigir a estudiantes.html después de un breve retraso
+            setTimeout(() => {
+                // Aquí se produce la redirección donde el usuario logueado como 'profesor'
+                // podrá ser reconocido en la siguiente página.
+                window.location.href = 'estudiantes.html'; 
+            }, 1000); 
+
+        } else {
+            messageElement.style.color = 'red';
+            messageElement.textContent = '❌ Usuario o Contraseña incorrectos.';
+            localStorage.removeItem('isLoggedIn'); // Asegurarse de que no quede sesión
+            localStorage.removeItem('userRole');
         }
-        
-        function toggleCamposRegistro() {
-            // ... (función para alternar campos de estudiante/profesor, sin cambios)
-            const tipo = tipoRegistroSelect.value;
-            
-            camposEstudianteDiv.style.display = 'none';
-            selectEstudianteAcceso.required = false;
-            selectEstudianteAcceso.disabled = true;
-            selectEstudianteAcceso.value = '';
-
-            camposProfesorDiv.style.display = 'none';
-            inputNombreUsuario.required = false;
-            inputNombreUsuario.disabled = true;
-            inputNombreUsuario.value = '';
-
-            if (tipo === 'estudiante') {
-                camposEstudianteDiv.style.display = 'block';
-                selectEstudianteAcceso.required = true;
-                selectEstudianteAcceso.disabled = false;
-                inputPassword.focus();
-
-            } else if (tipo === 'profesor') {
-                camposProfesorDiv.style.display = 'block';
-                inputNombreUsuario.required = true;
-                inputNombreUsuario.disabled = false;
-                inputNombreUsuario.focus();
-            }
-        }
-
-        // ==================================================
-        // 3. GESTIÓN DE USUARIOS (CREAR/ELIMINAR)
-        // ==================================================
-
-        function iniciarListenerUsuarios() {
-            // ... (función para escuchar cambios en Firestore, sin cambios)
-            usuariosAccesoCollection.orderBy('rol', 'asc').onSnapshot(snapshot => {
-                renderizarTablaUsuarios(snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() })));
-            }, error => {
-                console.error("Error al escuchar usuarios de acceso:", error);
-                tablaBodyAccesos.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos.</td></tr>`;
-            });
-        }
-        
-        function renderizarTablaUsuarios(usuarios) {
-            // ... (función para dibujar la tabla, sin cambios mayores, adaptada para email)
-            const directorRow = tablaBodyAccesos.querySelector('tr');
-            tablaBodyAccesos.innerHTML = '';
-            tablaBodyAccesos.appendChild(directorRow);
-            
-            if (usuarios.length === 0) {
-                const fila = tablaBodyAccesos.insertRow();
-                fila.innerHTML = `<td colspan="4" style="text-align: center;">No hay usuarios limitados registrados.</td>`;
-                return;
-            }
-
-            usuarios.forEach(usuario => {
-                const fila = tablaBodyAccesos.insertRow();
-                
-                let rolTagClass = '';
-                let accesoURL = '';
-                let rolDisplay = '';
-
-                if (usuario.rol === 'alumno') {
-                    rolTagClass = 'tag-alumno';
-                    accesoURL = 'estudiantes.html';
-                    rolDisplay = 'ALUMNO';
-                } else if (usuario.rol === 'profesor') {
-                    rolTagClass = 'tag-profesor';
-                    accesoURL = 'maestros.html';
-                    rolDisplay = 'PROFESOR';
-                } else {
-                    rolTagClass = '';
-                    accesoURL = 'N/A';
-                    rolDisplay = 'Desconocido';
-                }
-                
-                fila.insertCell(0).textContent = usuario.usuario;
-                fila.insertCell(1).textContent = usuario.email || 'N/A'; // Nuevo campo de email
-                fila.insertCell(2).innerHTML = `<span class="tag-rol ${rolTagClass}">${rolDisplay}</span>`;
-                
-                const accionesCell = fila.insertCell(3);
-                // Añadimos data-email para la posible eliminación
-                accionesCell.innerHTML = `
-                    <button class="action-btn delete-btn" data-id="${usuario.firebaseId}" data-email="${usuario.email}" onclick="eliminarAcceso(this)" title="Eliminar Acceso">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                `;
-            });
-        }
-        
-        // MANEJO DEL FORMULARIO DE CREACIÓN DE ACCESO - ¡FUNCIÓN MODIFICADA PARA AUTH!
-        formCrearAcceso.addEventListener('submit', function(event) {
-            event.preventDefault();
-            statusMessage.textContent = '';
-            
-            const boton = this.querySelector('.boton-rol');
-            boton.disabled = true;
-            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
-
-            const tipo = tipoRegistroSelect.value;
-            let usuario = '';
-            
-            // Asignación de usuario
-            if (tipo === 'estudiante') {
-                usuario = selectEstudianteAcceso.value;
-            } else if (tipo === 'profesor') {
-                usuario = inputNombreUsuario.value.trim();
-            } else {
-                statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Seleccione un tipo de registro.</span>';
-                boton.disabled = false;
-                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
-                return;
-            }
-
-            const passwordPlana = inputPassword.value;
-            if (passwordPlana.length < 6) {
-                statusMessage.innerHTML = '<span style="color: #FF7043;">Error: La contraseña debe tener al menos 6 caracteres.</span>';
-                boton.disabled = false;
-                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
-                return;
-            }
-            
-            const rolAcceso = document.getElementById('rol_acceso').value;
-            // ⚠️ Creación del email estandarizado para Firebase Auth
-            const email = `${usuario.toLowerCase()}@aviva.edu`; 
-            
-            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta Auth...';
-
-            // 1. Crear el usuario en Firebase Authentication (para acceso multidispositivo)
-            auth.createUserWithEmailAndPassword(email, passwordPlana)
-                .then((userCredential) => {
-                    // La cuenta Auth se creó con éxito
-                    const userAuthId = userCredential.user.uid;
-                    const passwordHasheada = md5(passwordPlana); // Hash para registro en Firestore
-
-                    const nuevoUsuario = {
-                        usuario: usuario,
-                        password: passwordHasheada, // Mantenemos hash para referencia/auditoría
-                        rol: rolAcceso, 
-                        tipo_entidad: tipo, 
-                        email: email, // El email usado para iniciar sesión
-                        authUid: userAuthId, // ID único de Auth
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-
-                    boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando roles en Firestore...';
-                    
-                    // 2. Guardar el rol y datos en Firestore
-                    return usuariosAccesoCollection.add(nuevoUsuario);
-                })
-                .then(() => {
-                    statusMessage.innerHTML = `<span style="color: #8BC34A;">Acceso para **${usuario}** (Rol: ${rolAcceso}) creado exitosamente.</span>`;
-                    formCrearAcceso.reset();
-                    toggleCamposRegistro(); 
-                })
-                .catch((error) => {
-                    console.error("Error al registrar:", error);
-                    let msg = "Error al registrar. ";
-                    // Errores comunes de Firebase Auth
-                    if (error.code === 'auth/email-already-in-use') {
-                        msg = `Error: El usuario (${usuario}) ya tiene una cuenta.`;
-                    } else if (error.code === 'auth/weak-password') {
-                        msg = `Error: Contraseña muy débil (mínimo 6 caracteres).`;
-                    } else {
-                        msg += error.message;
-                    }
-                    statusMessage.innerHTML = `<span style="color: #FF7043;">${msg}</span>`;
-                })
-                .finally(() => {
-                    boton.disabled = false;
-                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
-                });
-        });
-
-        // Función para eliminar acceso (SOLO ELIMINAMOS DE FIRESTORE Y ALERTAMOS AL DIRECTOR)
-        function eliminarAcceso(boton) {
-            const docId = boton.getAttribute('data-id');
-            const userEmail = boton.getAttribute('data-email');
-            
-            if (!confirm(`¿Estás seguro de que deseas ELIMINAR PERMANENTEMENTE este acceso? Esto solo eliminará el registro de la base de datos (Firestore). DEBES ELIMINAR MANUALMENTE la cuenta en Firebase Authentication: ${userEmail}`)) {
-                return;
-            }
-
-            boton.disabled = true;
-            
-            // Eliminar el registro de Firestore
-            usuariosAccesoCollection.doc(docId).delete()
-                .then(() => {
-                    // La tabla se actualizará automáticamente con onSnapshot
-                    alert(`Registro de Firestore eliminado. Por favor, NO OLVIDE eliminar la cuenta de Firebase Authentication para el email: ${userEmail}`);
-                })
-                .catch((error) => {
-                    console.error("Error al eliminar el acceso:", error);
-                    alert("Error al eliminar de Firestore: " + error.message);
-                })
-                .finally(() => {
-                     boton.disabled = false;
-                });
-        }
-    </script>
+    });
+</script>
 
 </body>
 </html>
