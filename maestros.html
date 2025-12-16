@@ -3,51 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Profesores - AVIVA</title>
-    
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Acceso de Maestros - Plataforma Aviva</title>
+    <style>
+        /* Paleta de Colores: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 70px; 
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar y Header (Mantenido del diseño Aviva) --- */
+        .navbar {
+            background-color: #00004d;
+            color: white;
+            padding: 5px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-contenido {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-header {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        .header-contenido h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+
+        /* --- Contenedor Principal (Login Box) --- */
+        .login-box {
+            margin-top: 50px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #00004d;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #00004d; /* Azul Ultra Oscuro */
+            color: white;
+            padding: 14px 20px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffc107; /* Dorado */
+            color: #00004d;
+        }
+
+        .message {
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body class="login-page-body">
-    
-    <header>
-        <div class="header-contenido">
-            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-            <h1>PORTAL DE PROFESORES</h1>
+<body>
+
+<nav class="navbar">
+    <div class="header-contenido">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+        <h1>Acceso de Profesores</h1>
+    </div>
+</nav>
+
+<div class="login-box">
+    <h2>Inicio de Sesión</h2>
+
+    <form id="loginForm">
+        
+        <div class="form-group">
+            <label for="username">Usuario:</label>
+            <input type="text" placeholder="Ej: CANTOPROF" name="username" id="username" required>
         </div>
-    </header>
 
-    <main>
-        <section class="contenedor-inicio">
-            <h2>Iniciar Sesión</h2>
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" placeholder="••••••••" name="password" id="password" required>
+        </div>
+
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <p class="message" id="loginMessage"></p>
+</div>
+
+<script>
+    // 1. LISTA DE PROFESORES Y CREDENCIALES FIJAS
+    const PROFESSORS = [
+        { user: 'CANTOPROF', pass: 'AVMASSIEL' },
+        { user: 'CANTOPROF', pass: 'AVAURORA' },
+        { user: 'GUITARRAPROF', pass: 'AVELIAS' },
+        { user: 'PIANOPROF', pass: 'AVEDWING' },
+        { user: 'IMUSICAL', pass: 'AVREBEKA' },
+        { user: 'PIANOPROF', pass: 'AVHILDE' },
+        { user: 'SOLFEOPROF', pass: 'AVELENA' },
+        { user: 'BAJOPROF', pass: 'AVPETER' },
+        { user: 'BATEROKID', pass: 'AVBATERIA' }
+    ];
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const user = document.getElementById('username').value.trim().toUpperCase(); // Normalizamos a mayúsculas
+        const pass = document.getElementById('password').value.trim().toUpperCase();
+        const messageElement = document.getElementById('loginMessage');
+
+        messageElement.textContent = ''; // Limpiar mensajes anteriores
+
+        // 2. VERIFICACIÓN DE CREDENCIALES
+        const isAuthenticated = PROFESSORS.some(prof => {
+            // Se verifica si el usuario y la contraseña coinciden con alguna de las entradas en la lista
+            return prof.user === user && prof.pass === pass;
+        });
+
+        if (isAuthenticated) {
+            messageElement.style.color = 'green';
+            messageElement.textContent = '✅ Acceso Consedido. Redirigiendo...';
             
-            <form action="administracion.html" method="GET" class="formulario-login">
-                
-                <div class="campo">
-                    <label for="usuario">ID de Profesor o Email</label>
-                    <input type="text" id="usuario" name="usuario" required>
-                </div>
-                
-                <div class="campo">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
-                <button type="submit" class="boton-rol">
-                    <i class="fas fa-sign-in-alt"></i> Ingresar al Panel
-                </button>
-            </form>
+            // 3. SIMULACIÓN DE SESIÓN (Opcional, útil para el dashboard)
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userRole', 'Profesor');
+            localStorage.setItem('username', user); 
             
-            <p class="ayuda-link">
-                <a href="#">¿Olvidaste tu contraseña?</a>
-            </p>
-        </section>
-    </main>
+            // 4. REDIRECCIÓN SOLICITADA
+            setTimeout(() => {
+                window.location.href = 'maestrosindex.html'; 
+            }, 1000); 
 
-    <footer>
-        <p><a href="#" class="enlace-footer">Acerca de</a> | &copy; 2025 Academia AVIVA.</p>
-    </footer>
+        } else {
+            messageElement.style.color = 'red';
+            messageElement.textContent = '❌ Usuario o Contraseña incorrectos. Verifique sus credenciales.';
+            // Limpiar la sesión en caso de intento fallido
+            localStorage.removeItem('isLoggedIn'); 
+        }
+    });
+</script>
 
 </body>
 </html>
