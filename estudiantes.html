@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma Aviva - Acceso</title>
     <style>
-        /* Paleta de Colores: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -17,99 +17,32 @@
             min-height: 100vh;
         }
 
-        /* --- Navbar (Idéntico a admonconfi.html) --- */
-        .navbar { /* ... (Estilos del Navbar) ... */ }
-        .header-contenido { /* ... (Estilos del Header) ... */ }
-        .logo-header { /* ... (Estilos del Logo) ... */ }
-        .header-contenido h1 { /* ... (Estilos del H1) ... */ }
-        
+        /* --- Navbar --- */
         .navbar {
-            background-color: #00004d;
-            color: white;
-            padding: 5px 20px;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background-color: #00004d; color: white; padding: 5px 20px; width: 100%; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); display: flex; justify-content: space-between; align-items: center;
         }
+        .header-contenido { display: flex; align-items: center; }
+        .logo-header { height: 50px; margin-right: 15px; }
+        .header-contenido h1 { font-size: 24px; font-weight: bold; color: white; margin: 0; }
 
-        .header-contenido {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-header {
-            height: 50px;
-            margin-right: 15px;
-        }
-
-        .header-contenido h1 {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            margin: 0;
-        }
-
-        /* --- Contenido Principal --- */
+        /* --- Contenido Principal / Formulario --- */
         .main-content {
-            margin-top: 50px;
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
+            margin-top: 50px; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); width: 90%; max-width: 400px; text-align: center;
         }
 
-        h2 {
-            color: #00004d;
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
+        h2 { color: #00004d; margin-top: 0; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        
         input[type="email"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px;
         }
         
         .action-button {
-            background-color: #00004d;
-            color: white;
-            padding: 12px 20px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 18px;
-            font-weight: bold;
-            transition: background-color 0.3s;
+            background-color: #00004d; color: white; padding: 12px 20px; margin-top: 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; transition: background-color 0.3s;
         }
         
-        .action-button:hover {
-            background-color: #ffc107;
-            color: #00004d;
-        }
-        
-        .message {
-            margin-top: 20px;
-            color: red;
-        }
+        .action-button:hover { background-color: #ffc107; color: #00004d; }
+        .message { margin-top: 20px; color: red; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -143,8 +76,7 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const dynamicContent = document.getElementById('dynamicContent');
-
-    // --- Funciones de Renderizado ---
+    const DASHBOARD_URL = 'inicioestudiantil.html'; // <-- NUEVA PÁGINA DE DESTINO
 
     function renderLoginForm() {
         dynamicContent.innerHTML = `
@@ -158,25 +90,26 @@
                     <label for="loginPassword">Contraseña:</label>
                     <input type="password" id="loginPassword" required placeholder="••••••••">
                 </div>
-                <button type="submit" class="action-button">Acceder a la Plataforma</button>
+                <button type="submit" class="action-button">Ingresar</button>
             </form>
             <p class="message" id="loginMessage"></p>
         `;
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
     }
 
-    function renderDashboard(userEmail) {
+    function renderLoggedInState(userEmail) {
         dynamicContent.innerHTML = `
-            <h2>¡Bienvenido, Estudiante!</h2>
-            <p>Has iniciado sesión con: <strong>${userEmail}</strong></p>
-            <p>Aquí puedes ver tus cursos, calificaciones y tareas.</p>
-            <button onclick="handleLogout()" class="action-button" style="background-color: #ffc107; color: #00004d;">
+            <h2>Sesión Activa</h2>
+            <p>Ya has iniciado sesión como: <strong>${userEmail}</strong></p>
+            <p>Pulsa el botón para continuar a tu panel de control.</p>
+            <button onclick="window.location.href='${DASHBOARD_URL}'" class="action-button">
+                Ir al Dashboard
+            </button>
+            <button onclick="handleLogout()" class="action-button" style="background-color: #ffc107; color: #00004d; margin-top: 10px;">
                 Cerrar Sesión
             </button>
         `;
     }
-
-    // --- Manejadores de Eventos ---
 
     function handleLogin(event) {
         event.preventDefault();
@@ -186,14 +119,15 @@
         messageElement.textContent = 'Iniciando sesión...';
 
         auth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Éxito: onAuthStateChanged se encargará de renderizar el dashboard
-                console.log("Sesión iniciada con éxito:", userCredential.user.email);
+            .then(() => {
+                // Éxito: onAuthStateChanged se activa y redirige.
+                // Redirección inmediata para asegurar la navegación.
+                window.location.href = DASHBOARD_URL;
             })
             .catch((error) => {
                 let userFriendlyError = 'Credenciales inválidas. Por favor, verifica tu correo y contraseña.';
-                if (error.code === 'auth/user-not-found') {
-                    userFriendlyError = 'No existe una cuenta con este correo.';
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                     userFriendlyError = 'Usuario o Contraseña incorrectos.';
                 }
                 messageElement.textContent = `❌ Error de Acceso: ${userFriendlyError}`;
             });
@@ -201,18 +135,20 @@
 
     function handleLogout() {
         auth.signOut().then(() => {
-            // Éxito: onAuthStateChanged se encargará de renderizar el formulario de login
+            // Éxito: onAuthStateChanged se activa y renderiza el formulario de login
         }).catch((error) => {
             console.error("Error al cerrar sesión:", error);
             alert("Error al cerrar sesión.");
         });
     }
 
-    // --- Verificador de Estado de Autenticación de Firebase ---
+    // Listener de estado de autenticación de Firebase
     auth.onAuthStateChanged(user => {
         if (user) {
             // USUARIO LOGUEADO
-            renderDashboard(user.email);
+            renderLoggedInState(user.email);
+            // Si el usuario ya está aquí y está logueado, podríamos redirigirlo automáticamente
+            // window.location.href = DASHBOARD_URL; 
         } else {
             // USUARIO NO LOGUEADO
             renderLoginForm();
