@@ -28,7 +28,7 @@
         .toolbar-pagos {
             display: flex;
             align-items: center;
-            flex-wrap: wrap; /* Permite que los elementos salten de línea en pantallas pequeñas */
+            flex-wrap: wrap; 
             gap: 15px;
             padding: 15px 0 20px 0;
             border-bottom: 1px solid #1a3c63;
@@ -40,6 +40,21 @@
             white-space: nowrap;
             font-size: 1.2em;
         }
+        
+        /* Contenedor principal de la tarjeta de pagos para colocar el botón a la derecha */
+        .gestion-principal {
+            position: relative;
+        }
+        
+        /* Botón de registro reubicado */
+        .btn-registro-flotante {
+            position: absolute;
+            top: 25px; 
+            right: 25px; 
+            z-index: 5;
+            padding: 10px 15px;
+            font-size: 1em;
+        }
 
         #search-box { 
             padding: 10px; 
@@ -48,16 +63,17 @@
             background-color: #082348; 
             color: #FFFFFF; 
             flex-grow: 1; 
-            max-width: 400px; /* Ancho para la barra de búsqueda */
+            max-width: 400px; 
         }
         
         .report-selectors {
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
-        .report-selectors select, .report-selectors button {
+        .report-selectors select, .report-selectors button, .report-selectors input {
             padding: 10px; 
             border: 1px solid #DAA520; 
             border-radius: 4px; 
@@ -144,39 +160,39 @@
     <main class="contenido-admin">
         
         <div class="tarjeta-gestion">
-            <h4><i class="fas fa-chart-line"></i> Resumen de Pagos del Mes</h4>
+            <h4><i class="fas fa-chart-line"></i> Resumen de Pagos del Mes Actual</h4>
             <div class="resumen-grid">
                 
                 <div class="resumen-card">
-                    <div class="label">Monto Recaudado</div>
+                    <div class="label">Monto Recaudado (Este Mes)</div>
                     <div class="valor green" id="total-recaudado">Cargando...</div>
                 </div>
 
                 <div class="resumen-card">
-                    <div class="label">Total Transacciones</div>
+                    <div class="label">Total Transacciones (Este Mes)</div>
                     <div class="valor" id="total-transacciones">0</div>
                 </div>
                 
                 <div class="resumen-card">
-                    <div class="label">Promedio de Pago</div>
+                    <div class="label">Promedio de Pago (Mensual)</div>
                     <div class="valor" id="promedio-pago">Cargando...</div>
                 </div>
                 
                 <div class="resumen-card">
                     <div class="label">Pagos Pendientes Estimados</div>
-                    <div class="valor red" id="pendientes-estimados">0</div>
+                    <div class="valor red" id="pendientes-estimados">N/A</div>
                 </div>
                 
             </div>
         </div>
 
-        <button class="boton-rol" style="width: auto; margin-bottom: 25px;" onclick="openModal()">
-            <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
-        </button>
 
-
-        <div class="tarjeta-gestion">
+        <div class="tarjeta-gestion gestion-principal">
             
+            <button class="boton-rol btn-registro-flotante" onclick="openModal()">
+                <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
+            </button>
+
             <div class="toolbar-pagos">
                 <h4><i class="fas fa-list-alt"></i> Historial de Transacciones (Filtrado)</h4>
                 
@@ -369,12 +385,13 @@
         
         let estudiantesCache = {}; 
         let allPagosData = []; 
-        let filteredPagosData = []; // Datos después de aplicar el filtro de búsqueda
+        let filteredPagosData = []; 
         let currentPage = 1;
         const rowsPerPage = 20;
         
-        const hoy = new Date().toISOString().split('T')[0];
-        const anioActual = new Date().getFullYear();
+        const hoy = new Date();
+        const mesActual = (hoy.getMonth() + 1).toString().padStart(2, '0');
+        const anioActual = hoy.getFullYear().toString();
         const LOGO_URL = "https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png"; 
 
         // Referencias a campos dinámicos
@@ -390,12 +407,11 @@
         // 2. INICIALIZACIÓN Y LÓGICA DINÁMICA
         // ==================================================
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('pago_fecha').value = hoy; 
-            inputReporteAnio.value = anioActual; // Establecer el año actual por defecto
+            document.getElementById('pago_fecha').value = hoy.toISOString().split('T')[0];
+            inputReporteAnio.value = anioActual; 
             
             cargarEstudiantesParaSelect(); 
             
-            // Listener para el botón de imprimir alumno
             selectReporteAlumno.addEventListener('change', () => {
                 btnImprimirAlumno.disabled = !selectReporteAlumno.value;
             });
@@ -408,7 +424,7 @@
                 allPagosData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
                 
                 actualizarResumen(allPagosData);
-                filtrarPagos(); // Llama a filtrarPagos (que a su vez llama a renderizarTabla)
+                filtrarPagos(); 
             }, error => {
                 console.error("Error al escuchar cambios en Firestore (Pagos):", error);
                 tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos.</td></tr>`;
@@ -416,6 +432,7 @@
         }
         
         function cargarEstudiantesParaSelect() {
+            // ... (Función de carga de estudiantes, sin cambios) ...
             selectEstudiantesPago.innerHTML = '<option value="">Cargando estudiantes...</option>';
             selectReporteAlumno.innerHTML = '<option value="">Cargando alumnos...</option>';
             
@@ -441,7 +458,6 @@
                         selectReporteAlumno.appendChild(option);
                     });
                     
-                    // Iniciamos el listener de pagos solo después de cargar el caché
                     iniciarPagosListener(); 
 
                 })
@@ -468,7 +484,33 @@
         // 3. PAGINACIÓN Y FILTRADO (Controlando la Vista)
         // ==================================================
         
-        // Función de filtrado/búsqueda (Aplica a allPagosData y actualiza filteredPagosData)
+        // ** MODIFICADO: Ahora filtra el resumen por el mes actual **
+        function actualizarResumen(pagos) {
+            
+            const pagosEsteMes = pagos.filter(pago => {
+                if (pago.fecha) {
+                    const [pagoAnio, pagoMes] = pago.fecha.split('-');
+                    return pagoAnio === anioActual && pagoMes === mesActual;
+                }
+                return false;
+            });
+
+            let totalRecaudado = 0;
+            let totalTransacciones = pagosEsteMes.length;
+
+            pagosEsteMes.forEach(pago => {
+                totalRecaudado += Number(pago.monto);
+            });
+
+            const promedioPago = totalTransacciones > 0 ? (totalRecaudado / totalTransacciones) : 0;
+            const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
+
+            document.getElementById('total-recaudado').textContent = formatter.format(totalRecaudado);
+            document.getElementById('total-transacciones').textContent = totalTransacciones;
+            document.getElementById('promedio-pago').textContent = formatter.format(promedioPago);
+            document.getElementById('pendientes-estimados').textContent = 'N/A';
+        }
+        
         function filtrarPagos() {
             const searchTerm = searchBox.value.toLowerCase();
             
@@ -496,11 +538,10 @@
                 });
             }
             
-            currentPage = 1; // Reiniciar a la primera página después de filtrar
+            currentPage = 1; 
             renderizarTabla();
         }
 
-        // Renderiza la tabla de transacciones con paginación
         function renderizarTabla() {
             tablaBodyPagos.innerHTML = '';
             
@@ -514,7 +555,6 @@
                 return;
             }
             
-            // Calcular índices de inicio y fin para la página actual
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
             const pagosPaginados = filteredPagosData.slice(startIndex, endIndex);
@@ -550,7 +590,6 @@
                 accionesCell.innerHTML = `<button class="action-btn delete-btn" data-id="${pago.firebaseId}" onclick="eliminarPago(this)"><i class="fas fa-trash"></i></button>`;
             });
             
-            // Actualizar controles de paginación
             document.getElementById('page-info').textContent = `Página ${currentPage} de ${totalPages}`;
             document.getElementById('prev-btn').disabled = currentPage === 1;
             document.getElementById('next-btn').disabled = currentPage === totalPages;
@@ -566,29 +605,11 @@
             }
         }
         
-        function actualizarResumen(pagos) {
-            // ... (Lógica de resumen, sin cambios) ...
-            let totalRecaudado = 0;
-            let totalTransacciones = pagos.length;
-
-            pagos.forEach(pago => {
-                totalRecaudado += Number(pago.monto);
-            });
-
-            const promedioPago = totalTransacciones > 0 ? (totalRecaudado / totalTransacciones) : 0;
-            const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
-
-            document.getElementById('total-recaudado').textContent = formatter.format(totalRecaudado);
-            document.getElementById('total-transacciones').textContent = totalTransacciones;
-            document.getElementById('promedio-pago').textContent = formatter.format(promedioPago);
-            document.getElementById('pendientes-estimados').textContent = 'N/A';
-        }
-
         // ==================================================
         // 4. GENERACIÓN DE REPORTES DE IMPRESIÓN 
         // ==================================================
         
-        // Reporte para un solo alumno (Individual)
+        // ** MODIFICADO: Asegura que la tabla de impresión use las mismas columnas que la tabla principal **
         function imprimirReporteIndividual() {
             const estudianteId = selectReporteAlumno.value;
             if (!estudianteId) {
@@ -606,7 +627,7 @@
                 return;
             }
             
-            generarContenidoImpresion(pagosAlumno, `Reporte Individual de Pagos`, `Alumno: ${infoEstudiante.nombre} (ID: ${infoEstudiante.id_estudiante})`);
+            generarContenidoImpresion(pagosAlumno, `Reporte Individual de Pagos`, `Alumno: ${infoEstudiante.nombre} (ID: ${infoEstudiante.id_estudiante})`, true); // El último parámetro indica que es un reporte individual
         }
 
         // Reporte para un mes en específico (Mensual)
@@ -629,18 +650,18 @@
                     }
                     return false;
                 })
-                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha)); // Ordenar por fecha
+                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha)); 
 
             if (pagosMensuales.length === 0) {
                 alert(`No se encontraron transacciones para ${nombreMes} de ${anioSeleccionado}.`);
                 return;
             }
 
-            generarContenidoImpresion(pagosMensuales, `Reporte Mensual de Transacciones`, `Período: ${nombreMes} / ${anioSeleccionado}`);
+            generarContenidoImpresion(pagosMensuales, `Reporte Mensual de Transacciones`, `Período: ${nombreMes} / ${anioSeleccionado}`, false);
         }
 
         // Función unificada para crear el HTML de impresión
-        function generarContenidoImpresion(pagosArray, tituloReporte, subtituloReporte) {
+        function generarContenidoImpresion(pagosArray, tituloReporte, subtituloReporte, isIndividual) {
             const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
             let totalPagado = 0;
 
@@ -668,13 +689,12 @@
                 <table class="reporte-tabla">
                     <thead>
                         <tr>
-                            <th>Estudiante</th>
-                            <th>ID Alumno</th>
                             <th>Fecha</th>
                             <th>Concepto</th>
                             <th>Monto</th>
                             <th>Método</th>
                             <th>Referencia/Notas</th>
+                            ${isIndividual ? '' : '<th>Estudiante</th><th>ID Alumno</th>'}
                         </tr>
                     </thead>
                     <tbody>
@@ -698,25 +718,26 @@
                     notasReporte = `Ref: ${pago.referencia}. ${notasReporte}`;
                 }
 
-
                 tablaHTML += `
                     <tr>
-                        <td>${infoEstudiante.nombre}</td>
-                        <td>${infoEstudiante.id_estudiante}</td>
                         <td>${pago.fecha}</td>
                         <td>${conceptoReporte}</td>
                         <td>${formatter.format(pago.monto)}</td>
                         <td>${pago.metodo}</td>
                         <td>${notasReporte}</td>
+                        ${isIndividual ? '' : `<td>${infoEstudiante.nombre}</td><td>${infoEstudiante.id_estudiante}</td>`}
                     </tr>
                 `;
             });
 
+            // Ajuste de colspan para la fila de total
+            const colspanTotal = isIndividual ? 4 : 6; 
+
             tablaHTML += `
                     <tr class="total-row">
-                        <td colspan="4" style="text-align: right;">TOTAL RECAUDADO EN EL PERÍODO:</td>
+                        <td colspan="${colspanTotal}" style="text-align: right;">TOTAL RECAUDADO EN EL PERÍODO:</td>
                         <td>${formatter.format(totalPagado)}</td>
-                        <td colspan="2"></td>
+                        <td colspan="1"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -742,7 +763,7 @@
         function closeModal() {
             pagoModal.style.display = "none";
             document.getElementById('form-registrar-pago').reset();
-            document.getElementById('pago_fecha').value = hoy; 
+            document.getElementById('pago_fecha').value = hoy.toISOString().split('T')[0];
             manejarCamposDinamicos(); 
         }
 
