@@ -1,157 +1,196 @@
 /* ======================================= */
-/* PALETA DE COLORES PARA ESTILO MINIMALISTA */
-/* Fondo Base: #051937 (Azul Oscuro Profundo) */
-/* Contenedores: #082348 (Azul Oscuro Suave) */
-/* Acento Minimalista (Dorado Suave): #DAA520 (Goldenrod, menos brillante que el oro puro) */
+/* ESTILOS DEL DASHBOARD DE CONTROL (Según la Referencia Visual) */
 /* ======================================= */
 
-/* 1. ESTILOS GENERALES Y RESETEO */
+/* Resetear el Body para el diseño de Panel */
 body {
-    font-family: 'Inter', sans-serif; /* Fuente minimalista y legible */
-    margin: 0;
-    padding: 0;
-    background-color: #051937; 
-    color: #E0E0E0; /* Blanco suave para elegancia */
-    line-height: 1.6;
-    min-height: 100vh; 
-    display: flex;
-    flex-direction: column;
+    overflow: hidden; /* Evita scrolls innecesarios en el cuerpo principal */
+    display: block; /* Deshace el flex-column para usar la estructura de dashboard */
 }
 
-h1, h2, h3 {
+/* 1. HEADER SUPERIOR (Barra Fija) */
+.admin-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #343A40; /* Gris oscuro del header de la imagen */
     color: #FFFFFF;
-    font-weight: 300; /* Fuente ligera para minimalismo */
-    letter-spacing: 2px; /* Espaciado sutil para elegancia */
-    margin: 0;
-}
-
-/* ======================================= */
-/* 2. ENCABEZADO MINIMALISTA */
-/* ======================================= */
-header {
-    background-color: #051937; 
-    padding: 25px 0;
-    border-bottom: 1px solid rgba(218, 165, 32, 0.3); /* Línea de separación muy fina */
-}
-
-.header-contenido {
-    display: flex;
-    align-items: center; 
-    justify-content: center; 
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.logo-header {
-    height: 45px; /* Logo más pequeño y discreto */
-    width: auto;
-    margin-right: 20px; 
-    opacity: 0.9;
-    transition: opacity 0.5s;
-}
-
-header h1 {
-    font-size: 1.8em;
-    font-weight: 400;
-}
-
-/* ======================================= */
-/* 3. CONTENIDO PRINCIPAL Y CUADRO DE INICIO (Minimal Card) */
-/* ======================================= */
-main {
-    flex-grow: 1; 
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    padding: 60px 20px; /* Más padding para más espacio en blanco/oscuro */
-}
-
-.contenedor-inicio {
-    background-color: #082348; /* Contenedor sutilmente diferente al fondo */
-    padding: 40px;
-    border-radius: 5px; /* Bordes menos redondeados para líneas limpias */
-    box-shadow: none; /* Elimina la mayoría de las sombras */
-    border: 1px solid rgba(218, 165, 32, 0.2); /* Borde minimalista y elegante */
-    text-align: center;
+    padding: 10px 20px;
+    height: 60px; /* Altura fija */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    position: fixed; /* Fijo en la parte superior */
     width: 100%;
-    max-width: 380px; /* Más estrecho para elegancia */
+    top: 0;
+    z-index: 1000;
 }
 
-.contenedor-inicio h2 {
-    margin-bottom: 35px;
-    font-size: 1.6em;
-    color: #DAA520; /* Dorado Suave */
-    font-weight: 600;
-    letter-spacing: 1px;
+.admin-header-top .header-left,
+.admin-header-top .header-right {
+    display: flex;
+    align-items: center;
 }
 
-/* ======================================= */
-/* 4. ESTILOS DE BOTONES MINIMALISTAS */
-/* ======================================= */
-
-.boton-rol {
-    display: block;
-    background-color: #DAA520; 
-    color: #051937; /* Contraste fuerte */
-    padding: 15px 20px;
-    margin: 15px 0;
-    text-decoration: none; 
-    font-size: 1.1em;
-    font-weight: 700;
-    border-radius: 3px; 
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    border: none;
-    cursor: pointer;
-    letter-spacing: 1px;
+.admin-header-top .logo-top {
+    height: 40px; /* Logo más pequeño para la barra de sistema */
+    margin-right: 15px;
 }
 
-/* Efecto Hover (Minimalista: solo cambio de color sutil) */
-.boton-rol:hover {
-    background-color: #ffd740; /* Dorado ligeramente más brillante al pasar el ratón */
-    transform: translateY(-2px); /* Elevación sutil */
-    box-shadow: none;
-}
-
-/* ======================================= */
-/* 5. ESTILOS DE FORMULARIO (Minimalista) */
-/* ======================================= */
-.campo label {
-    color: #E0E0E0; /* Texto de etiqueta suave */
+.admin-header-top h1 {
+    font-size: 1.2em;
     font-weight: 400;
+    letter-spacing: 0.5px;
+    color: #F8F9FA;
 }
 
-.campo input[type="text"],
-.campo input[type="password"] {
-    padding: 10px; /* Menos padding */
-    border: 1px solid rgba(218, 165, 32, 0.4); 
-    border-radius: 3px;
-    background-color: #051937; /* Misma base del fondo para integrarse */
+.admin-header-top .user-name {
+    margin-right: 15px;
+    font-size: 0.9em;
     color: #FFFFFF;
-    font-size: 1em;
 }
 
-.campo input:focus {
-    border-color: #DAA520; 
-    box-shadow: none; /* Eliminamos el resplandor excesivo */
+.admin-header-top .user-icon {
+    margin-right: 15px;
+    color: #DAA520; /* Dorado para el icono de usuario */
 }
 
-.ayuda-link a {
-    color: #DAA520; 
-    font-weight: 400;
+.admin-header-top .logout-btn {
+    color: #F8F9FA;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+.admin-header-top .logout-btn:hover {
+    color: #E60000; /* Rojo sutil para cerrar sesión */
+}
+
+/* Ocultar el header anterior */
+header:not(.admin-header-top) {
+    display: none;
+}
+
+/* 2. CUERPO PRINCIPAL DEL PANEL */
+.panel-body {
+    display: flex;
+    min-height: calc(100vh - 60px); /* Altura de la vista menos la altura del header fijo */
+    margin-top: 60px; /* Espacio debajo del header fijo */
+}
+
+/* SIDEBAR COLAPSADA */
+.sidebar-colapsada {
+    width: 60px; /* Ancho muy reducido para el menú colapsado */
+    background-color: #212529; /* Negro/Gris muy oscuro para el sidebar */
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.menu-colapsado {
+    text-align: center;
+}
+
+.menu-item {
+    display: block;
+    color: #F8F9FA; /* Iconos en blanco */
+    padding: 15px 0;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    opacity: 0.7;
+}
+
+.menu-item:hover, .menu-active {
+    background-color: #343A40; /* Gris oscuro al pasar o activo */
+    color: #DAA520; /* Dorado para el activo */
+    opacity: 1;
+}
+
+/* 3. CONTENIDO PRINCIPAL */
+.contenido-panel {
+    flex-grow: 1;
+    background-color: #F8F9FA; /* Fondo blanco/gris muy claro para el contenido (como en la imagen) */
+    padding: 0;
+    overflow-y: auto; /* Scroll vertical para el contenido */
+}
+
+/* BARRA DE HERRAMIENTAS DE CONTROL (Toolbar) */
+.toolbar-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #495057; /* Gris oscuro intermedio para el toolbar */
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border-bottom: 1px solid #343A40;
+}
+
+.toolbar-title {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.date-controls input[type="date"] {
+    padding: 5px 10px;
+    border: 1px solid #6C757D;
+    border-radius: 4px;
+    margin-right: 10px;
+    background-color: #F8F9FA;
+    color: #212529;
     font-size: 0.9em;
 }
 
-/* ======================================= */
-/* 6. PIE DE PÁGINA */
-/* ======================================= */
-footer {
-    background-color: #051937; 
-    border-top: 1px solid rgba(218, 165, 32, 0.1); 
-    padding: 15px 0;
-    color: #666666; /* Texto gris suave */
+.refresh-btn {
+    background-color: #DAA520;
+    color: #212529;
+    border: none;
+    padding: 7px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.refresh-btn:hover {
+    background-color: #ffd740;
 }
 
-.enlace-footer {
-    color: #AAAAAA; /* Enlaces sutiles */
+/* CONTENEDOR DE GRÁFICOS (GRID) */
+.grid-dashboard {
+    display: grid;
+    /* 3 columnas para el diseño de la imagen */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px;
+    padding: 20px;
+}
+
+.tarjeta-dashboard {
+    background-color: #FFFFFF; /* Fondo de las tarjetas en blanco */
+    border: 1px solid #E9ECEF; /* Borde muy sutil */
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra muy ligera */
+    min-height: 250px; /* Altura mínima para simular los gráficos */
+}
+
+.tarjeta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #E9ECEF;
+    background-color: #F8F9FA; /* Gris claro para el encabezado de la tarjeta */
+}
+
+.tarjeta-header h4 {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #212529; /* Texto oscuro */
+    margin: 0;
+    letter-spacing: normal;
+}
+
+.tarjeta-header i {
+    color: #6C757D;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.tarjeta-body {
+    padding: 15px;
+    /* Esto simularía el área donde van los gráficos */
+    min-height: 200px; 
 }
