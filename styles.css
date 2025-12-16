@@ -1,0 +1,141 @@
+/* ======================================= */
+/* PALETA DE COLORES */
+/* Azul Ultra Oscuro: #001f3f */
+/* Dorado: #FFD700 */
+/* Blanco: #FFFFFF */
+/* ======================================= */
+
+/* 1. ESTILOS GENERALES Y RESETEO */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #001f3f; /* FONDO: Azul Ultra Oscuro */
+    color: #FFFFFF; /* TEXTO GENERAL: Blanco */
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    color: #FFFFFF; /* Títulos en Blanco */
+}
+
+/* ======================================= */
+/* 2. ENCABEZADO Y PIE DE PÁGINA */
+/* ======================================= */
+header {
+    background-color: #001f3f; /* Encabezado: Mismo Azul Oscuro */
+    color: #FFFFFF;
+    padding: 1.5em 0;
+    text-align: center;
+    border-bottom: 2px solid #FFD700; /* Línea separadora Dorada */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    /* Animación: Deslizamiento sutil al cargar */
+    animation: fadeInDown 1s ease-out; 
+}
+
+footer {
+    background-color: #00142b; /* Un tono de azul ligeramente más oscuro */
+    color: #CCCCCC;
+    text-align: center;
+    padding: 1em 0;
+    margin-top: 40px;
+    font-size: 0.9em;
+}
+
+/* ======================================= */
+/* 3. ESTILOS DEL CONTENIDO PRINCIPAL (MAIN) */
+/* ======================================= */
+main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    min-height: 80vh; 
+}
+
+/* ======================================= */
+/* 4. ESTILOS ESPECÍFICOS: CUADRO DE INICIO */
+/* ======================================= */
+
+.contenedor-inicio {
+    background-color: #002e5c; /* Un azul ligeramente más claro para el cuadro */
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Sombra intensa para contraste */
+    text-align: center;
+    width: 100%;
+    max-width: 400px; 
+    margin-top: 50px;
+    border: 1px solid #FFD700; /* Borde delgado Dorado */
+    
+    /* Animación: Aparecer con zoom sutil */
+    animation: zoomIn 1s ease-out;
+}
+
+.contenedor-inicio h2 {
+    margin-bottom: 25px;
+    font-size: 2em;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.4); /* Sombra de texto Dorada */
+}
+
+/* ======================================= */
+/* 5. ESTILOS ESPECÍFICOS: BOTONES DE ROL */
+/* ======================================= */
+
+.boton-rol {
+    display: block;
+    background-color: #FFD700; /* FONDO DEL BOTÓN: Dorado */
+    color: #001f3f; /* TEXTO DEL BOTÓN: Azul Ultra Oscuro para contraste */
+    padding: 15px 25px;
+    margin: 25px 0;
+    text-decoration: none; 
+    font-size: 1.3em;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; 
+    border: none;
+    cursor: pointer;
+}
+
+/* Animación: Efecto Hover (al pasar el ratón) */
+.boton-rol:hover {
+    background-color: #e0b400; /* Dorado un poco más oscuro */
+    transform: translateY(-3px); /* Se eleva ligeramente */
+    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.5); /* Sombra dorada */
+}
+
+/* Animación: Efecto Active (al hacer click) */
+.boton-rol:active {
+    transform: translateY(0); /* Vuelve a su posición */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ======================================= */
+/* 6. DEFINICIÓN DE ANIMACIONES CSS */
+/* ======================================= */
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale3d(0.9, 0.9, 0.9);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
