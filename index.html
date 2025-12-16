@@ -3,80 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Aviva - Inicio</title>
+    <title>Plataforma Aviva - Acceso</title>
     <style>
-        /* ... [TUS ESTILOS CSS COMPLETOS ANTERIORES] ... */
         /* Paleta de Colores
-        -- Azul Ultra Oscuro: #00004d
-        -- Dorado: #ffc107
-        -- Blanco: #ffffff
+        -- Azul Ultra Oscuro (Fondo/Base): #00004d
+        -- Dorado (Acento/Botón): #ffc107
+        -- Blanco (Texto): #ffffff
         */
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding-top: 70px;
-            background-color: #f0f2f5;
+            /* CAMBIO: Fondo principal Azul Ultra Oscuro */
+            background-color: #00004d; 
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
         /* --- Estilos de la Barra de Navegación (Navbar) --- */
         .navbar {
-            background-color: #00004d;
-            color: white;
+            background-color: #00004d; 
             padding: 5px 20px;
             width: 100%;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
         }
 
         .header-contenido {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
         }
 
         .logo-header {
             height: 50px;
             margin-right: 15px;
+            /* Mantener la animación de pulso del logo */
             animation: pulse 2s infinite ease-in-out; 
         }
 
+        /* CAMBIO: Título de la barra en Blanco */
         .header-contenido h1 {
             font-size: 24px;
             font-weight: bold;
-            color: white;
+            color: white; 
             margin: 0;
         }
 
         /* --- Estilos del Contenedor Central --- */
         .role-selection-container {
             margin-top: 50px;
-            background: white;
+            /* CAMBIO: Fondo del contenedor Blanco para contraste */
+            background: white; 
             padding: 40px 30px;
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
             text-align: center;
             width: 90%;
             max-width: 450px;
         }
 
+        /* CAMBIO: Títulos del contenedor principal en Azul Ultra Oscuro */
         .role-selection-container h1 {
-            color: #333;
+            color: #00004d; 
             margin-bottom: 5px;
         }
 
-        p {
+        .role-selection-container p {
             color: #666;
             margin-bottom: 30px;
         }
 
-        /* --- Estilos de los Botones de Rol --- */
+        /* --- Estilos de los Botones de Rol (Dorado) --- */
         .role-button {
             display: flex;
             align-items: center;
@@ -93,31 +99,23 @@
             text-transform: uppercase;
         }
 
-        #profesor-btn {
-            background-color: #00004d;
-            color: white;
-        }
-
-        #profesor-btn:hover {
-            background-color: #ffc107;
-            color: #00004d;
-            border-color: #00004d;
-            transform: scale(1.05);
-        }
-
-        #estudiante-btn {
-            background-color: #f0f2f5;
-            color: #00004d;
-            border-color: #00004d;
-        }
-
-        #estudiante-btn:hover {
-            background-color: #ffc107;
-            color: #00004d;
+        /* Estilo Base: Fondo Dorado, Texto Azul Ultra Oscuro */
+        .role-button-base {
+            background-color: #ffc107; /* Dorado */
+            color: #00004d; /* Azul Ultra Oscuro */
             border-color: #ffc107;
-            transform: scale(1.05);
         }
 
+        /* Efecto Hover: Fondo Azul, Texto Blanco (Inversión del logo) */
+        .role-button-base:hover {
+            background-color: #00004d; 
+            color: white; 
+            border-color: #ffc107;
+            transform: scale(1.05); /* Animación: Crecimiento */
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); /* Animación: Sombra Dorada */
+        }
+
+        /* Iconos dentro de los botones */
         .button-icon {
             font-size: 22px;
             margin-right: 15px;
@@ -137,34 +135,41 @@
 <nav class="navbar">
     <div class="header-contenido">
         <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-        <h1>Academia de Adoradores AVIVA - LOS ROBLES</h1>
+        <h1>Plataforma Aviva</h1>
     </div>
 </nav>
 
 <div class="role-selection-container">
     <h1>Seleccione su Modo de Acceso</h1>
-    <p>Por favor, identifíquese para continuar en la plataforma Aviva.</p>
+    <p>Por favor, elija su rol para ingresar a la plataforma.</p>
 
-    <button class="role-button" id="profesor-btn" onclick="goToLoginPage('profesor')">
+    <button class="role-button role-button-base" id="admin-btn" onclick="goToPage('administracion')">
+        <span class="button-icon">⚙️</span> Acceso Administración
+    </button>
+    
+    <button class="role-button role-button-base" id="profesor-btn" onclick="goToPage('profesor')">
         <span class="button-icon">🎓</span> Acceso Profesor
     </button>
 
-    <button class="role-button" id="estudiante-btn" onclick="goToLoginPage('estudiante')">
+    <button class="role-button role-button-base" id="estudiante-btn" onclick="goToPage('estudiante')">
         <span class="button-icon">📚</span> Acceso Estudiante
     </button>
 </div>
 
 <script>
     /**
-     * Función que redirige al usuario a la página de login correspondiente.
-     * @param {string} role - 'profesor' o 'estudiante'.
+     * Función que redirige al usuario a la página de acceso correspondiente.
+     * @param {string} role - 'administracion', 'profesor', o 'estudiante'.
      */
-    function goToLoginPage(role) {
-        if (role === 'profesor') {
-            // REDIRECCIÓN SOLICITADA PARA PROFESOR: MAESTROS.HTML
+    function goToPage(role) {
+        if (role === 'administracion') {
+            // Nueva redirección solicitada
+            window.location.href = 'admonlogin.html'; 
+        } else if (role === 'profesor') {
+            // Redirección anterior (maestros.html)
             window.location.href = 'maestros.html';
         } else if (role === 'estudiante') {
-            // REDIRECCIÓN SOLICITADA PARA ESTUDIANTE: ESTUDIANTES.HTML
+            // Redirección anterior (estudiantes.html)
             window.location.href = 'estudiantes.html';
         }
     }
