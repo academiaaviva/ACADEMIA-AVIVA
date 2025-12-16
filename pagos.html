@@ -25,6 +25,7 @@
         .resumen-card .label { color: #DAA520; font-weight: 500; }
 
         /* --- TOOLBARS: BÚSQUEDA Y REPORTE DE IMPRESIÓN --- */
+        /* Contenedor de búsqueda en la parte superior del listado */
         .top-search-bar {
             display: flex;
             align-items: center;
@@ -66,11 +67,6 @@
             width: 100%; padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; box-sizing: border-box; 
         }
         
-        /* Contenedor para campos dinámicos */
-        .dynamic-field-container {
-            grid-column: span 2; /* Ocupa todo el ancho si es necesario */
-        }
-
         /* --- ESTILOS ESPECÍFICOS PARA IMPRESIÓN (Media Query) --- */
         @media print {
             body * { visibility: hidden; }
@@ -317,18 +313,29 @@
         // ==================================================
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pago_fecha').value = hoy; 
-            cargarEstudiantesParaSelect();
+            cargarEstudiantesParaSelect(); // Inicia la carga de estudiantes
             
             selectReporte.addEventListener('change', () => {
                 btnImprimir.disabled = !selectReporte.value;
             });
             
-            // Llamada inicial para establecer el estado de los campos dinámicos
             manejarCamposDinamicos();
         });
         
+        // Listener para los pagos (SE INICIA AL FINAL DE cargarEstudiantesParaSelect)
+        function iniciarPagosListener() {
+            pagosCollection.orderBy('fecha', 'desc').onSnapshot(snapshot => {
+                allPagosData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+                
+                actualizarResumen(allPagosData);
+                filtrarPagos(); 
+            }, error => {
+                console.error("Error al escuchar cambios en Firestore (Pagos):", error);
+                tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos.</td></tr>`;
+            });
+        }
+        
         function cargarEstudiantesParaSelect() {
-            // ... (Función de carga de estudiantes, sin cambios, pero necesaria) ...
             selectEstudiantesPago.innerHTML = '<option value="">Cargando estudiantes...</option>';
             selectReporte.innerHTML = '<option value="">Cargando alumnos...</option>';
             
@@ -353,21 +360,27 @@
                         selectEstudiantesPago.appendChild(option.cloneNode(true));
                         selectReporte.appendChild(option);
                     });
+                    
+                    // === PUNTO DE CORRECCIÓN CLAVE ===
+                    // UNA VEZ QUE EL CACHÉ DE ESTUDIANTES ESTÁ LLENO, INICIAMOS EL LISTENER DE PAGOS
+                    iniciarPagosListener(); 
+
                 })
                 .catch(error => {
                     console.error("Error al cargar estudiantes:", error);
+                    // Si falla la carga de estudiantes, mostramos un error en la tabla de pagos
+                    tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error al cargar datos de estudiantes.</td></tr>`;
                 });
         }
         
-        // Función para mostrar/ocultar y requerir campos dinámicos
         function manejarCamposDinamicos() {
             // 1. Lógica para el Mes (Depende del Concepto)
             const esMensualidad = selectConcepto.value === 'Mensualidad';
             
-            contenedorMes.style.display = esMensualidad ? 'block' : 'none';
+            // Reemplazamos 'block' por 'inline-block' para mantener el formato de dos columnas si es posible
+            contenedorMes.style.display = esMensualidad ? 'block' : 'none'; 
             selectMes.required = esMensualidad;
             
-            // Si no es Mensualidad, borramos el valor para que no se guarde un mes incorrecto
             if (!esMensualidad) {
                 selectMes.value = ""; 
             }
@@ -378,7 +391,6 @@
             contenedorReferencia.style.display = esTransferencia ? 'block' : 'none';
             inputReferencia.required = esTransferencia;
 
-            // Si no es Transferencia, no es requerido y borramos el valor
             if (!esTransferencia) {
                 inputReferencia.value = "";
             }
@@ -389,15 +401,7 @@
         // 3. LÓGICA DE FIREBASE (Lectura y Filtro)
         // ==================================================
 
-        pagosCollection.orderBy('fecha', 'desc').onSnapshot(snapshot => {
-            allPagosData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
-            
-            actualizarResumen(allPagosData);
-            filtrarPagos(); 
-        }, error => {
-            console.error("Error al escuchar cambios en Firestore (Pagos):", error);
-            tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos.</td></tr>`;
-        });
+        // *Se movió la inicialización de este listener a iniciarPagosListener()*
 
         // Actualiza las tarjetas de resumen
         function actualizarResumen(pagos) {
@@ -427,18 +431,20 @@
             }
 
             pagosArray.forEach(pago => {
-                const fila = tablaBodyPagos.insertRow();
+                // Aquí ya estamos seguros de que estudiantesCache está lleno.
+                const infoEstudiante = estudiantesCache[pago.estudianteId] || { 
+                    nombre: 'ID NO VINCULADO', 
+                    id_estudiante: 'N/A' 
+                }; 
                 
-                const infoEstudiante = estudiantesCache[pago.estudianteId] || { nombre: 'Estudiante Eliminado', id_estudiante: 'N/A' };
+                const fila = tablaBodyPagos.insertRow();
                 const montoFormateado = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' }).format(pago.monto);
                 
-                // Concatenamos el concepto y el mes, si existe
                 let conceptoMostrar = pago.concepto || 'N/A';
                 if (pago.mes) {
                     conceptoMostrar += ` (${pago.mes})`;
                 }
                 
-                // Concatenamos el método y la referencia, si existe
                 let metodoMostrar = pago.metodo || 'N/A';
                 if (pago.referencia) {
                     metodoMostrar += ` (Ref: ${pago.referencia})`;
@@ -447,10 +453,10 @@
                 fila.insertCell(0).textContent = pago.firebaseId.substring(0, 6); 
                 fila.insertCell(1).textContent = infoEstudiante.nombre;
                 fila.insertCell(2).textContent = infoEstudiante.id_estudiante;
-                fila.insertCell(3).textContent = conceptoMostrar; // Concepto + Mes
+                fila.insertCell(3).textContent = conceptoMostrar; 
                 fila.insertCell(4).textContent = montoFormateado;
                 fila.insertCell(5).textContent = pago.fecha || 'N/A';
-                fila.insertCell(6).textContent = metodoMostrar; // Método + Referencia
+                fila.insertCell(6).textContent = metodoMostrar; 
                 
                 const accionesCell = fila.insertCell(7);
                 accionesCell.innerHTML = `<button class="action-btn delete-btn" data-id="${pago.firebaseId}" onclick="eliminarPago(this)"><i class="fas fa-trash"></i></button>`;
@@ -474,8 +480,8 @@
                 const nombreEstudiante = (infoEstudiante.nombre || '').toLowerCase();
                 const idEstudiante = (infoEstudiante.id_estudiante || '').toLowerCase();
                 const idTransaccion = (pago.firebaseId || '').substring(0, 6).toLowerCase();
-                const mes = (pago.mes || '').toLowerCase(); // Incluir mes en la búsqueda
-                const referencia = (pago.referencia || '').toLowerCase(); // Incluir referencia en la búsqueda
+                const mes = (pago.mes || '').toLowerCase(); 
+                const referencia = (pago.referencia || '').toLowerCase(); 
 
                 return concepto.includes(searchTerm) || 
                        metodo.includes(searchTerm) ||
@@ -550,7 +556,6 @@
             pagosAlumno.forEach(pago => {
                 totalPagado += Number(pago.monto);
                 
-                // Preparamos los campos para la impresión
                 let conceptoReporte = pago.concepto || 'N/A';
                 if (pago.mes) {
                     conceptoReporte += ` (Mes: ${pago.mes})`;
@@ -598,14 +603,14 @@
 
         function openModal() { 
             pagoModal.style.display = "block"; 
-            manejarCamposDinamicos(); // Aseguramos que se muestren los campos correctos al abrir
+            manejarCamposDinamicos(); 
         }
 
         function closeModal() {
             pagoModal.style.display = "none";
             document.getElementById('form-registrar-pago').reset();
             document.getElementById('pago_fecha').value = hoy; 
-            manejarCamposDinamicos(); // Reestablecer estado por defecto al cerrar
+            manejarCamposDinamicos(); 
         }
 
         window.onclick = function(event) {
@@ -617,7 +622,6 @@
         document.getElementById('form-registrar-pago').addEventListener('submit', function(event) {
             event.preventDefault();
             
-            // Recoger valores dinámicos
             const mes = selectConcepto.value === 'Mensualidad' ? selectMes.value : null;
             const referencia = selectMetodo.value === 'Transferencia' ? inputReferencia.value : null;
 
@@ -626,9 +630,9 @@
                 monto: Number(document.getElementById('pago_monto').value),
                 fecha: document.getElementById('pago_fecha').value,
                 concepto: document.getElementById('pago_concepto').value,
-                mes: mes, // Nuevo campo
+                mes: mes, 
                 metodo: document.getElementById('pago_metodo').value,
-                referencia: referencia, // Nuevo campo
+                referencia: referencia, 
                 descripcion: document.getElementById('pago_descripcion').value || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
