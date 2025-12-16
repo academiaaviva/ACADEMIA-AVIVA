@@ -6,7 +6,7 @@
     <title>Plataforma Aviva - Inicio</title>
     <style>
         /* Paleta de Colores
-        -- Azul Ultra Oscuro: #00004d (o un tono similar muy profundo)
+        -- Azul Ultra Oscuro: #00004d
         -- Dorado: #ffc107
         -- Blanco: #ffffff
         */
@@ -14,7 +14,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding-top: 60px; /* Espacio para el Navbar fijo */
+            padding-top: 70px; /* Espacio para el Navbar fijo más alto */
             background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
@@ -25,33 +25,32 @@
         .navbar {
             background-color: #00004d; /* Azul Ultra Oscuro */
             color: white;
-            padding: 10px 20px;
+            padding: 5px 20px; /* Menos padding vertical */
             width: 100%;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .navbar-brand {
+        .header-contenido {
             display: flex;
             align-items: center;
+            justify-content: flex-start; /* Alineación a la izquierda */
+        }
+
+        .logo-header {
+            height: 50px; /* Tamaño ajustado para el logo */
+            margin-right: 15px;
+            animation: pulse 2s infinite ease-in-out; 
+        }
+
+        .header-contenido h1 {
             font-size: 24px;
             font-weight: bold;
             color: white;
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            color: #ffc107; /* Dorado */
-            font-size: 30px;
-            margin-right: 10px;
-            /* Simple animación de giro para el logo */
-            animation: pulse 2s infinite ease-in-out; 
+            margin: 0; /* Eliminar margen predeterminado del h1 */
         }
 
         /* --- Estilos del Contenedor Central --- */
@@ -66,7 +65,7 @@
             max-width: 450px;
         }
 
-        h1 {
+        .role-selection-container h1 {
             color: #333;
             margin-bottom: 5px;
         }
@@ -89,38 +88,35 @@
             border: 2px solid transparent;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease; /* Transiciones para animaciones */
+            transition: all 0.3s ease;
             text-transform: uppercase;
         }
 
-        /* Estilo para el botón de Profesor */
         #profesor-btn {
-            background-color: #00004d; /* Azul Ultra Oscuro */
+            background-color: #00004d;
             color: white;
         }
 
         #profesor-btn:hover {
-            background-color: #ffc107; /* Fondo Dorado al pasar el mouse */
-            color: #00004d; /* Texto Azul al pasar el mouse */
+            background-color: #ffc107;
+            color: #00004d;
             border-color: #00004d;
-            transform: scale(1.05); /* Efecto de crecimiento */
+            transform: scale(1.05);
         }
 
-        /* Estilo para el botón de Estudiante */
         #estudiante-btn {
-            background-color: #f0f2f5; /* Gris claro/Blanco sucio */
-            color: #00004d; /* Texto Azul Ultra Oscuro */
+            background-color: #f0f2f5;
+            color: #00004d;
             border-color: #00004d;
         }
 
         #estudiante-btn:hover {
-            background-color: #ffc107; /* Fondo Dorado al pasar el mouse */
+            background-color: #ffc107;
             color: #00004d;
             border-color: #ffc107;
             transform: scale(1.05);
         }
 
-        /* Iconos dentro de los botones */
         .button-icon {
             font-size: 22px;
             margin-right: 15px;
@@ -138,14 +134,15 @@
 <body>
 
 <nav class="navbar">
-    <a href="#" class="navbar-brand">
-        <span class="logo-icon">✨</span> Plataforma Aviva
-    </a>
-    </nav>
+    <div class="header-contenido">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+        <h1>Academia de Adoradores AVIVA</h1>
+    </div>
+</nav>
 
 <div class="role-selection-container">
     <h1>Seleccione su Modo de Acceso</h1>
-    <p>Por favor, identifíquese para continuar.</p>
+    <p>Por favor, identifíquese para continuar en la plataforma Aviva.</p>
 
     <button class="role-button" id="profesor-btn" onclick="goToLoginPage('profesor')">
         <span class="button-icon">🎓</span> Acceso Profesor
@@ -161,12 +158,11 @@
         // Al hacer click, nos dirigiremos a la página de login específica.
         
         if (role === 'profesor') {
+            // Este es el camino que nos llevará a las credenciales 'administracion' y 'avivaelfuego'
             alert("Redirigiendo a Login Profesor. (Usuario: administracion, Pass: avivaelfuego)");
-            // Sustituye por la URL real de login del profesor
             // window.location.href = 'login_profesor.html';
         } else if (role === 'estudiante') {
             alert("Redirigiendo a Login Estudiante.");
-            // Sustituye por la URL real de login del estudiante
             // window.location.href = 'login_estudiante.html';
         }
     }
