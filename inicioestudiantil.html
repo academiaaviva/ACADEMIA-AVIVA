@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Estudiante - Plataforma Aviva</title>
+    <style>
+        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 70px; 
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            background-color: #00004d; 
+            color: white;
+            padding: 5px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-contenido { display: flex; align-items: center; }
+        .logo-header { height: 50px; margin-right: 15px; }
+        .header-contenido h1 { font-size: 24px; font-weight: bold; color: white; margin: 0; }
+        
+        /* Botón de Logout */
+        .btn-logout {
+            background-color: #ffc107;
+            color: #00004d;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-logout:hover {
+            background-color: #e0a800;
+        }
+
+        /* --- Contenido Principal / Dashboard --- */
+        .main-content {
+            margin-top: 30px;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        h2 { 
+            color: #00004d; 
+            margin-top: 0; 
+            margin-bottom: 30px; 
+            text-align: center;
+            font-size: 32px;
+            border-bottom: 3px solid #ffc107;
+            padding-bottom: 10px;
+        }
+        
+        .welcome-message {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        /* --- Aviso de Pago Dinámico (Alerta) --- */
+        #paymentReminder {
+            display: none; /* Oculto por defecto */
+            background-color: #dc3545; /* Rojo fuerte para alerta */
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        #paymentReminder button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            line-height: 1;
+        }
+        #paymentReminder button:hover {
+            color: #ffc107;
+        }
+
+        /* --- GRID de Opciones (Menú) --- */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #00004d;
+            border-bottom: 5px solid #00004d;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-bottom-color: #ffc107;
+        }
+
+        .option-card h3 {
+            margin-top: 15px;
+            font-size: 22px;
+            color: #00004d;
+        }
+
+        .icon {
+            font-size: 48px;
+            color: #00004d;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="header-contenido">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+        <h1>Área de Estudiantes</h1>
+    </div>
+    <button class="btn-logout" onclick="handleLogout()">Cerrar Sesión</button>
+</nav>
+
+<div class="main-content">
+    <h2>Mi Panel de Estudiante</h2>
+    
+    <div id="paymentReminder">
+        <button onclick="hideReminder()">×</button>
+        ⭐ ACUÉRDATE DE PAGAR TU MENSUALIDAD ⭐
+    </div>
+
+    <div class="welcome-message">
+        <p>¡Hola, <strong id="userEmailDisplay">Estudiante</strong>! Bienvenido(a) a tu plataforma académica. Usa las opciones de abajo para acceder a tu información.</p>
+    </div>
+    
+    <div class="options-grid">
+        
+        <a href="calificaciones.html" class="option-card">
+            <span class="icon">📈</span>
+            <h3>Ver Calificaciones</h3>
+            <p>Consulta tu historial de notas, promedios y estado académico por año.</p>
+        </a>
+
+        <a href="asistencia.html" class="option-card">
+            <span class="icon">📅</span>
+            <h3>Mi Asistencia</h3>
+            <p>Revisa tu registro de asistencia a clases.</p>
+        </a>
+
+        <a href="#" class="option-card" style="opacity: 0.6; cursor: default;">
+            <span class="icon">📚</span>
+            <h3>Materiales de Clase (Próximamente)</h3>
+            <p>Accede a los recursos y tareas asignadas por tus maestros.</p>
+        </a>
+        
+    </div>
+</div>
+
+<script>
+    // 🔑 TU CONFIGURACIÓN DE FIREBASE 🔑
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
+        authDomain: "academia-aviva.firebaseapp.com",
+        projectId: "academia-aviva",
+        storageBucket: "academia-aviva.firebasestorage.app",
+        messagingSenderId: "1083662705160",
+        appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
+        measurementId: "G-GNBRN8CF2T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    // --- 1. Lógica de Recordatorio de Pago ---
+    
+    function checkPaymentReminder() {
+        const today = new Date();
+        const dayOfMonth = today.getDate();
+        const reminderDiv = document.getElementById('paymentReminder');
+
+        // Muestra el aviso si es uno de los primeros 10 días del mes
+        if (dayOfMonth >= 1 && dayOfMonth <= 10) {
+            // Verifica si el usuario ya lo cerró en esta sesión o recientemente
+            const reminderClosed = localStorage.getItem('reminderClosed');
+            
+            // Si no lo ha cerrado o si ha pasado más de un día desde que lo cerró (para mostrarlo cada mes)
+            // Aquí usaremos la fecha actual como clave para que se resetee al inicio del siguiente mes.
+            const currentMonthKey = today.getFullYear() + '-' + today.getMonth();
+            const closedMonthKey = localStorage.getItem('closedMonth');
+
+            if (currentMonthKey !== closedMonthKey) {
+                 reminderDiv.style.display = 'block';
+            }
+        }
+    }
+
+    window.hideReminder = function() {
+        const reminderDiv = document.getElementById('paymentReminder');
+        reminderDiv.style.display = 'none';
+        
+        // Guarda el estado de cerrado para el mes actual en el almacenamiento local
+        const today = new Date();
+        const currentMonthKey = today.getFullYear() + '-' + today.getMonth();
+        localStorage.setItem('closedMonth', currentMonthKey);
+    }
+
+    // --- 2. Lógica de Autenticación de Firebase ---
+
+    // Función para asegurar que solo los usuarios logueados vean esta página
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // Usuario logueado: Muestra el correo electrónico y chequea el aviso
+            document.getElementById('userEmailDisplay').textContent = user.email;
+            checkPaymentReminder(); 
+        } else {
+            // Usuario NO logueado: Redirige de vuelta al login
+            alert("Acceso denegado. Por favor, inicia sesión.");
+            window.location.href = 'estudiantes.html'; 
+        }
+    });
+
+    window.handleLogout = function() {
+        auth.signOut().then(() => {
+            // Limpia el estado de autenticación y el recordatorio de pago si existe
+            localStorage.removeItem('closedMonth');
+            window.location.href = 'estudiantes.html'; // Redirige al login después de cerrar sesión
+        }).catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+            alert("Error al cerrar sesión.");
+        });
+    }
+</script>
+
+</body>
+</html>
