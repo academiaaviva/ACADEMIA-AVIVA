@@ -29,9 +29,9 @@
             <nav class="menu-colapsado">
                 <a href="administracion.html" class="menu-item" title="Dashboard"><i class="fas fa-chart-line fa-lg"></i></a>
                 <a href="#" class="menu-item menu-active" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
-                <a href="#" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
-                <a href="#" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
-                <a href="#" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
+                <a href="admonclases.html" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
+                <a href="pagos.html" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
+                <a href="admonconfi.html" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
             </nav>
         </aside>
 
@@ -47,7 +47,7 @@
 
             <div class="tarjeta-dashboard-aviva" style="grid-column: 1 / -1; min-height: 500px;">
                 <div class="tarjeta-header-aviva">
-                    <h4>Listado de Estudiantes Activos (Data Local)</h4>
+                    <h4>Listado de Estudiantes Activos (Data Cargada con JS)</h4>
                     <i class="fas fa-table"></i>
                 </div>
                 <div class="tarjeta-body-aviva" style="padding: 0;">
@@ -62,33 +62,15 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tabla-estudiantes-body">
                             <tr>
-                                <td>AV001</td>
-                                <td>Juan Pérez</td>
-                                <td>Guitarra Eléctrica I</td>
-                                <td class="estado-activo">Activo</td>
-                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td>AV002</td>
-                                <td>María López</td>
-                                <td>Voz y Canto Avanzado</td>
-                                <td class="estado-inactivo">En Pausa</td>
-                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td>AV003</td>
-                                <td>Carlos Ruiz</td>
-                                <td>Batería Inicial</td>
-                                <td class="estado-activo">Activo</td>
-                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                                <td colspan="5" style="text-align: center;">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
 
                     <p style="font-size: 0.9em; margin-top: 20px; color: #999;">
-                        * La funcionalidad de guardar y cargar datos desde la "nube de GitHub" requiere código JavaScript.
+                        * Los datos de la tabla son cargados desde 'data.json' usando JavaScript, simulando la carga desde la nube.
                     </p>
                     
                 </div>
@@ -96,6 +78,8 @@
 
         </main>
     </div>
+    
+    <script src="script.js"></script> 
 
 </body>
 </html>
