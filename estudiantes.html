@@ -3,51 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Estudiantes - AVIVA</title>
+    <title>Plataforma Aviva - Estudiantes</title>
+    <style>
+        /* Paleta de Colores
+        -- Azul Ultra Oscuro: #00004d
+        -- Dorado: #ffc107
+        -- Blanco: #ffffff
+        */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 70px; /* Espacio para el Navbar fijo */
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Estilos de la Barra de Navegación (Navbar) --- */
+        .navbar {
+            background-color: #00004d; /* Azul Ultra Oscuro */
+            color: white;
+            padding: 5px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-contenido {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Alineación para incluir el botón de salir */
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-header {
+            height: 50px;
+            margin-right: 15px;
+            /* La animación de pulso debe estar definida en @keyframes pulse */
+            /* animation: pulse 2s infinite ease-in-out; */ 
+        }
+
+        .header-contenido h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+
+        .main-content {
+            margin-top: 50px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h2 {
+            color: #00004d;
+            margin-top: 0;
+        }
+
+        .logout-btn {
+            background-color: #ffc107; /* Dorado */
+            color: #00004d;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #e0a800;
+        }
+    </style>
     
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
-<body class="login-page-body">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    </head>
+<body>
 
-    <header>
-        <div class="header-contenido">
+<nav class="navbar">
+    <div class="header-contenido">
+        <div class="logo-section">
             <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-            <h1>PORTAL DE ESTUDIANTES</h1>
+            <h1>Panel de Administración / Estudiantes</h1>
         </div>
-    </header>
+        <button class="logout-btn" onclick="logout()" id="logoutButton" style="display: none;">
+            Cerrar Sesión
+        </button>
+    </div>
+</nav>
 
-    <main>
-        <section class="contenedor-inicio">
-            <h2>Iniciar Sesión</h2>
+<div class="main-content">
+    <h2 id="welcomeHeader">Cargando datos de usuario...</h2>
+    <p id="authStatus">Verificando estado de autenticación de Firebase.</p>
+    
+    <div id="userDashboard">
+        </div>
+</div>
+
+<script>
+    // ⚠️ REEMPLAZA ESTO CON TUS CREDENCIALES REALES DE FIREBASE ⚠️
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_DOMINIO.firebaseapp.com",
+        projectId: "TU-PROJECT-ID",
+        storageBucket: "TU_BUCKET.appspot.com",
+        messagingSenderId: "TU_SENDER_ID",
+        appId: "TU_APP_ID"
+    };
+
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Función para cerrar sesión
+    function logout() {
+        auth.signOut().then(() => {
+            alert("Sesión cerrada correctamente.");
+            // Redirigir a la página de inicio o login después de cerrar sesión
+            window.location.href = 'index.html'; 
+        }).catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+            alert("Error al cerrar sesión. Intenta de nuevo.");
+        });
+    }
+
+    // Listener de estado de autenticación de Firebase
+    auth.onAuthStateChanged(user => {
+        const welcomeHeader = document.getElementById('welcomeHeader');
+        const authStatus = document.getElementById('authStatus');
+        const userDashboard = document.getElementById('userDashboard');
+        const logoutButton = document.getElementById('logoutButton');
+
+        if (user) {
+            // USUARIO AUTENTICADO (Profesor o Estudiante)
             
-            <form action="admonestudiantes.html" method="GET" class="formulario-login">
-                
-                <div class="campo">
-                    <label for="usuario">ID de Estudiante o Email</label>
-                    <input type="text" id="usuario" name="usuario">
-                </div>
-                
-                <div class="campo">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password">
-                </div>
-
-                <button type="submit" class="boton-rol">
-                    <i class="fas fa-sign-in-alt"></i> Ingresar
-                </button>
-            </form>
+            // Mostrar botón de cerrar sesión
+            logoutButton.style.display = 'block';
             
-            <p class="ayuda-link">
-                <a href="#">¿Olvidaste tu contraseña?</a>
-            </p>
-        </section>
-    </main>
+            // Asumiendo que el Rol se guarda en los Claims (metadata) del usuario al iniciar sesión
+            // Para simplificar, asumiremos que si un usuario inicia sesión, es un "Estudiante", 
+            // pero si necesitas diferenciar el Rol, esto se hace con Firestore o Custom Claims.
+            const userEmail = user.email;
+            const userRole = localStorage.getItem('userRole') || 'Estudiante'; // Fallback a localStorage (temporal) o usar un campo de Firebase real.
 
-    <footer>
-        <p><a href="#" class="enlace-footer">Acerca de</a> | &copy; 2025 AVIVA.</p>
-    </footer>
+            welcomeHeader.textContent = `¡Bienvenido, ${userRole}!`;
+            authStatus.textContent = `Has iniciado sesión como: ${userEmail}`;
+            
+            // Lógica de Contenido por Rol
+            if (userRole === 'Profesor' || userEmail === 'administracion@aviva.com') { // Ejemplo de check de administrador
+                userDashboard.innerHTML = `
+                    <h3 style="color: #00004d;">Panel de Control Administrativo</h3>
+                    <p>Acceso total a la plataforma. Aquí puedes gestionar cursos, usuarios y calificaciones.</p>
+                    <button class="logout-btn" style="background-color: #00004d; color: #ffc107;">Ir a Gestión de Usuarios</button>
+                `;
+            } else {
+                // Contenido normal para estudiantes
+                userDashboard.innerHTML = `
+                    <h3>Tu Espacio de Aprendizaje</h3>
+                    <p>Aquí verás tus cursos, tareas y progreso.</p>
+                    <ul>
+                        <li>Curso de Fundamentos</li>
+                        <li>Tareas Pendientes</li>
+                    </ul>
+                `;
+            }
+
+        } else {
+            // USUARIO NO AUTENTICADO
+            welcomeHeader.textContent = 'Acceso Restringido';
+            authStatus.textContent = 'Por favor, inicie sesión.';
+            userDashboard.innerHTML = '<p><a href="index.html" style="color:#00004d;">Volver a la página de inicio/login</a></p>';
+            logoutButton.style.display = 'none';
+        }
+    });
+</script>
 
 </body>
 </html>
