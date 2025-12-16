@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso de Administración - AVIVA</title>
+    <style>
+        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        
+        /* Estilos Base para Minimalismo y Futurismo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #00004d; /* Fondo Azul Ultra Oscuro */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Ocultar posibles barras de desplazamiento */
+            position: relative;
+        }
+
+        /* --- Efecto de Malla Futurista (Opcional, para el toque futurista) --- */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #00004d 25%, transparent 25%, transparent 75%, #00004d 75%, #00004d),
+                        linear-gradient(-45deg, #00004d 25%, transparent 25%, transparent 75%, #00004d 75%, #00004d);
+            background-size: 40px 40px;
+            opacity: 0.1;
+            z-index: 0;
+            animation: moveGrid 30s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            from { background-position: 0 0; }
+            to { background-position: 40px 40px; }
+        }
+
+        /* --- Contenedor Principal (Login Card) --- */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05); /* Fondo semitransparente oscuro */
+            backdrop-filter: blur(5px); /* Efecto cristal */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 193, 7, 0.5); /* Sombra de neón dorada */
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            border: 1px solid rgba(255, 193, 7, 0.3); /* Borde sutil dorado */
+        }
+
+        /* --- Logo y Título --- */
+        .logo-icon {
+            color: #ffc107; /* Dorado */
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: neonPulse 1.5s infinite alternate; /* Animación de neón */
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #ffffff;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px #ffc107;
+        }
+
+        .subtitle {
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        /* --- Formulario --- */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffc107; /* Etiquetas Doradas */
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3); /* Fondo de input oscuro */
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            border-radius: 5px;
+            box-sizing: border-box;
+            color: #ffffff;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ffc107;
+            outline: none;
+            box-shadow: 0 0 8px rgba(255, 193, 7, 0.8);
+        }
+
+        /* Botón de Iniciar Sesión */
+        button {
+            background-color: #ffc107; /* Dorado */
+            color: #00004d; /* Texto Azul Oscuro */
+            padding: 14px 20px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #ffffff;
+            color: #00004d;
+            transform: scale(1.02);
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #ffc107; /* Mensajes Dorados */
+            font-weight: bold;
+            text-shadow: 0 0 2px #ffc107;
+        }
+
+        /* --- Animaciones --- */
+        @keyframes neonPulse {
+            0% { text-shadow: 0 0 5px #ffc107, 0 0 10px #ffc107; }
+            100% { text-shadow: 0 0 10px #ffc107, 0 0 20px rgba(255, 193, 7, 0.7); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="logo-icon">🚀</div>
+    <h2>ACCESO ADMINISTRATIVO</h2>
+    <p class="subtitle">Verificación de credenciales de nivel superior</p>
+
+    <form id="adminLoginForm">
+        
+        <div class="form-group">
+            <label for="username">USUARIO DE ACCESO:</label>
+            <input type="text" placeholder="Ej: DIRECTOR" name="username" id="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">CÓDIGO DE SEGURIDAD:</label>
+            <input type="password" placeholder="••••••••" name="password" id="password" required>
+        </div>
+
+        <button type="submit">INICIAR CONEXIÓN</button>
+    </form>
+
+    <p class="message" id="loginMessage"></p>
+</div>
+
+<script>
+    // 1. LISTA DE ADMINISTRADORES Y CREDENCIALES FIJAS
+    const ADMIN_CREDENTIALS = [
+        { user: 'ADMINISTRACIONAV', pass: 'ACADEMIALOSROBLES' },
+        { user: 'DIRECTOR', pass: 'DIRECCIONAVIVA' },
+        { user: 'LAWRENCE', pass: 'MIDENCE' }
+    ];
+
+    document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        // Normalizamos a mayúsculas para hacer la verificación insensible a mayúsculas/minúsculas
+        const user = document.getElementById('username').value.trim().toUpperCase(); 
+        const pass = document.getElementById('password').value.trim().toUpperCase();
+        const messageElement = document.getElementById('loginMessage');
+
+        messageElement.textContent = ''; // Limpiar mensajes anteriores
+
+        // 2. VERIFICACIÓN DE CREDENCIALES
+        const isAuthenticated = ADMIN_CREDENTIALS.some(admin => {
+            return admin.user === user && admin.pass === pass;
+        });
+
+        if (isAuthenticated) {
+            messageElement.style.color = '#00ff00'; // Éxito en verde futurista
+            messageElement.textContent = '✅ ACCESO AUTORIZADO. Cargando panel...';
+            
+            // 3. SIMULACIÓN DE SESIÓN (Opcional, para el dashboard)
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userRole', 'Administrador');
+            localStorage.setItem('username', user); 
+            
+            // 4. REDIRECCIÓN SOLICITADA
+            setTimeout(() => {
+                window.location.href = 'administracion.html'; 
+            }, 1000); 
+
+        } else {
+            messageElement.style.color = '#ffc107'; // Error en dorado/neón
+            messageElement.textContent = '❌ ERROR: Credenciales de acceso denegadas. Intente de nuevo.';
+            localStorage.removeItem('isLoggedIn'); 
+        }
+    });
+</script>
+
+</body>
+</html>
