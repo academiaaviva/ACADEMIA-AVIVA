@@ -336,31 +336,43 @@
             });
         }
         
-        // Manejar el formulario de creación de acceso (MODIFICADO)
+        // Manejar el formulario de creación de acceso (CORREGIDO)
         formCrearAcceso.addEventListener('submit', function(event) {
             event.preventDefault();
             statusMessage.textContent = '';
             
+            const boton = this.querySelector('.boton-rol');
+            
+            // 1. Deshabilitar botón antes de la validación
+            boton.disabled = true;
+            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
+
             const tipo = tipoRegistroSelect.value;
             let usuario = '';
             
+            // --- VALIDACIÓN Y ASIGNACIÓN DE USUARIO ---
             if (tipo === 'estudiante') {
                 const idEstudiante = selectEstudianteAcceso.value;
                 if (!idEstudiante) {
                     statusMessage.innerHTML = '<span style="color: #FF7043;">Por favor, seleccione un estudiante.</span>';
-                    return;
+                    boton.disabled = false; // RESTABLECER
+                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                    return; 
                 }
-                // El ID del estudiante es el nombre de usuario
                 usuario = idEstudiante; 
             } else if (tipo === 'profesor') {
                 usuario = inputNombreUsuario.value.trim();
                 if (!usuario) {
                     statusMessage.innerHTML = '<span style="color: #FF7043;">Por favor, ingrese un nombre de usuario.</span>';
-                    return;
+                    boton.disabled = false; // RESTABLECER
+                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                    return; 
                 }
             } else {
                 statusMessage.innerHTML = '<span style="color: #FF7043;">Seleccione un tipo de registro (Estudiante o Profesor).</span>';
-                return;
+                boton.disabled = false; // RESTABLECER
+                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
+                return; 
             }
 
             const passwordPlana = inputPassword.value;
@@ -368,6 +380,8 @@
             
             if (passwordPlana.length < 6) {
                 statusMessage.innerHTML = '<span style="color: #FF7043;">La contraseña debe tener al menos 6 caracteres.</span>';
+                boton.disabled = false; // RESTABLECER
+                boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial'; // RESTABLECER
                 return;
             }
             
@@ -377,43 +391,48 @@
             const nuevoUsuario = {
                 usuario: usuario,
                 password: passwordHasheada, 
-                rol: rolAcceso, // Rol es ahora la URL de redirección (alumno -> estudiantes.html, profesor -> maestros.html)
-                tipo_entidad: tipo, // Guardamos si fue registrado como estudiante o profesor
+                rol: rolAcceso, // Rol es la URL de redirección
+                tipo_entidad: tipo, 
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
-
-            const boton = this.querySelector('.boton-rol');
-            boton.disabled = true;
+            
+            // Cambiar texto después de validación exitosa, antes de la llamada a Firebase
             boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
 
-            // 1. Verificar si el usuario ya existe para evitar duplicados
+
+            // 2. Iniciar la cadena de Promesas de Firebase
             usuariosAccesoCollection.where('usuario', '==', usuario).limit(1).get()
                 .then(snapshot => {
                     if (!snapshot.empty) {
                          statusMessage.innerHTML = `<span style="color: #FF7043;">Error: El usuario **${usuario}** ya existe.</span>`;
-                         return Promise.reject('Usuario duplicado');
+                         // Usar Promise.reject para forzar la entrada al catch y evitar el registro
+                         return Promise.reject('Usuario duplicado'); 
                     }
-                    // 2. Si no existe, agregar el nuevo usuario
+                    // Si no existe, agregar el nuevo usuario
                     return usuariosAccesoCollection.add(nuevoUsuario);
                 })
                 .then(() => {
+                    // Éxito en el registro
                     statusMessage.innerHTML = `<span style="color: #8BC34A;">Acceso para **${usuario}** (Rol: ${rolAcceso}) creado exitosamente.</span>`;
                     formCrearAcceso.reset();
                     toggleCamposRegistro(); // Reinicia la interfaz
                 })
                 .catch((error) => {
-                    if (error !== 'Usuario duplicado') {
+                    // Manejo de errores (incluyendo el error de "Usuario duplicado")
+                    if (error === 'Usuario duplicado') {
+                        // El mensaje ya se mostró arriba
+                    } else {
                          console.error("Error al registrar el acceso:", error);
-                         statusMessage.innerHTML = '<span style="color: #FF7043;">Error al registrar: ' + (error.message || 'Error de Firebase.') + '</span>';
+                         statusMessage.innerHTML = '<span style="color: #FF7043;">Error al registrar: ' + (error.message || 'Error de Firebase.') + '. Revise la consola del navegador.</span>';
                     }
                 })
                 .finally(() => {
+                    // 3. Siempre restablecer el botón al final de la cadena
                     boton.disabled = false;
                     boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
                 });
         });
 
-        // Función para eliminar acceso
         function eliminarAcceso(boton) {
             const docId = boton.getAttribute('data-id');
             if (confirm(`¿Estás seguro de que deseas ELIMINAR PERMANENTEMENTE este acceso? El usuario ya no podrá ingresar.`)) {
