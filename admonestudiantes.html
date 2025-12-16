@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estudiantes - AVIVA</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="admin-header-top">
+        <div class="header-left">
+            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-top">
+            <h1>Gestión de Alumnos | Academia AVIVA</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">Director/a</span>
+            <i class="fas fa-user-circle fa-2x user-icon"></i>
+            <a href="estudiantes.html" class="logout-btn" title="Cerrar Sesión"><i class="fas fa-power-off"></i></a>
+        </div>
+    </header>
+
+    <div class="panel-body-wrapper">
+        
+        <aside class="sidebar-aviva">
+            <nav class="menu-colapsado">
+                <a href="administracion.html" class="menu-item" title="Dashboard"><i class="fas fa-chart-line fa-lg"></i></a>
+                <a href="#" class="menu-item menu-active" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
+                <a href="#" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
+            </nav>
+        </aside>
+
+        <main class="contenido-panel-aviva">
+            
+            <div class="toolbar-control-aviva">
+                <span class="toolbar-title">Alumnos Registrados</span>
+                <div class="date-controls">
+                    <button class="refresh-btn-aviva" style="margin-right: 10px;"><i class="fas fa-plus"></i> Nuevo Alumno</button>
+                    <button class="refresh-btn-aviva"><i class="fas fa-sync-alt"></i> Sincronizar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-dashboard-aviva" style="grid-column: 1 / -1; min-height: 500px;">
+                <div class="tarjeta-header-aviva">
+                    <h4>Listado de Estudiantes Activos (Data Local)</h4>
+                    <i class="fas fa-table"></i>
+                </div>
+                <div class="tarjeta-body-aviva" style="padding: 0;">
+                    
+                    <table class="tabla-gestion-aviva">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre Completo</th>
+                                <th>Curso Principal</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AV001</td>
+                                <td>Juan Pérez</td>
+                                <td>Guitarra Eléctrica I</td>
+                                <td class="estado-activo">Activo</td>
+                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>AV002</td>
+                                <td>María López</td>
+                                <td>Voz y Canto Avanzado</td>
+                                <td class="estado-inactivo">En Pausa</td>
+                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>AV003</td>
+                                <td>Carlos Ruiz</td>
+                                <td>Batería Inicial</td>
+                                <td class="estado-activo">Activo</td>
+                                <td><button class="btn-tabla editar"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="font-size: 0.9em; margin-top: 20px; color: #999;">
+                        * La funcionalidad de guardar y cargar datos desde la "nube de GitHub" requiere código JavaScript.
+                    </p>
+                    
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
