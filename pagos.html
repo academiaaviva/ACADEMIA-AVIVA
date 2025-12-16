@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pagos - AVIVA</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="admin-header-top">
+        <div class="header-left">
+            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-top">
+            <h1>Gestión de Pagos | Academia AVIVA</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">Director/a</span>
+            <i class="fas fa-user-circle fa-2x user-icon"></i>
+            <a href="maestros.html" class="logout-btn" title="Cerrar Sesión"><i class="fas fa-power-off"></i></a>
+        </div>
+    </header>
+
+    <div class="panel-body-wrapper">
+        
+        <aside class="sidebar-aviva">
+            <nav class="menu-colapsado">
+                <a href="administracion.html" class="menu-item" title="Dashboard"><i class="fas fa-chart-line fa-lg"></i></a>
+                <a href="admonestudiantes.html" class="menu-item" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
+                <a href="admonclases.html" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
+                <a href="pagos.html" class="menu-item menu-active" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
+                <a href="admonconfi.html" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
+            </nav>
+        </aside>
+
+        <main class="contenido-panel-aviva">
+            
+            <div class="toolbar-control-aviva">
+                <span class="toolbar-title">Resumen Financiero y Transacciones</span>
+                <div class="date-controls">
+                    <button class="refresh-btn-aviva" style="margin-right: 10px;"><i class="fas fa-file-invoice-dollar"></i> Registrar Pago</button>
+                    <button class="refresh-btn-aviva"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-dashboard-aviva" style="grid-column: 1 / -1; min-height: 500px;">
+                <div class="tarjeta-header-aviva">
+                    <h4>Últimos Pagos Recibidos</h4>
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="tarjeta-body-aviva" style="padding: 0;">
+                    
+                    <table class="tabla-gestion-aviva">
+                        <thead>
+                            <tr>
+                                <th>Transacción ID</th>
+                                <th>Estudiante</th>
+                                <th>Concepto</th>
+                                <th>Monto</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRX8734</td>
+                                <td>Juan Pérez</td>
+                                <td>Mensualidad Guitarra</td>
+                                <td>$50.00</td>
+                                <td>15/Dic/2025</td>
+                                <td class="estado-activo">Completado</td>
+                            </tr>
+                            <tr>
+                                <td>TRX8733</td>
+                                <td>Carlos Ruiz</td>
+                                <td>Mensualidad Batería</td>
+                                <td>$65.00</td>
+                                <td>14/Dic/2025</td>
+                                <td class="estado-activo">Completado</td>
+                            </tr>
+                            <tr>
+                                <td>TRX8732</td>
+                                <td>Ana Gómez</td>
+                                <td>Clase de Prueba</td>
+                                <td>$0.00</td>
+                                <td>14/Dic/2025</td>
+                                <td class="estado-inactivo">Pendiente</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
