@@ -13,28 +13,34 @@
         /* --- ESTILOS GENERALES Y LAYOUT --- */
         .contenido-admin { max-width: 1400px; margin: 20px auto; padding: 0 20px 80px; }
         .tarjeta-gestion { background-color: #082348; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); margin-bottom: 25px; }
-        .action-btn { background-color: transparent; border: none; color: #DAA520; cursor: pointer; margin: 0 5px; font-size: 1.1em; transition: color 0.2s; }
-        .action-btn:hover { color: #ffd740; }
         
-        /* --- TABLA DE TRANSACCIONES (Excel Style) --- */
+        /* --- ESTILOS DE TABLA Y RESUMEN (KPIs) --- */
         .tabla-gestion-aviva th, .tabla-gestion-aviva td { min-width: 80px; padding: 10px 15px; white-space: nowrap; }
         .tabla-gestion-aviva thead th { font-weight: 700; text-transform: uppercase; background-color: #051937; }
-
-        /* --- CUADRO RESUMEN FINANCIERO (KPIs) --- */
         .resumen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .resumen-card { 
-            background-color: #051937; 
-            padding: 15px; 
-            border-left: 5px solid #DAA520; 
-            border-radius: 5px; 
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
+        .resumen-card { background-color: #051937; padding: 15px; border-left: 5px solid #DAA520; border-radius: 5px; }
         .resumen-card .valor { font-size: 2em; font-weight: 700; color: #FFFFFF; }
-        .resumen-card .valor.red { color: #FF7043; } /* Color para montos negativos o pendientes */
-        .resumen-card .valor.green { color: #8BC34A; } /* Color para montos positivos */
+        .resumen-card .valor.red { color: #FF7043; } 
+        .resumen-card .valor.green { color: #8BC34A; } 
         .resumen-card .label { color: #DAA520; font-weight: 500; }
 
-        /* --- ESTILOS DEL MODAL Y FORMULARIO (Adaptados) --- */
+        /* --- BÚSQUEDA Y REPORTE DE IMPRESIÓN --- */
+        .gestion-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
+        #search-box { padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; flex-grow: 1; max-width: 400px; }
+        
+        .report-toolbar { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            background-color: #051937; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+        }
+        .report-toolbar label { color: #E0E0E0; font-weight: 600; }
+        #select-alumno-reporte { padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; min-width: 250px; }
+        
+        /* --- ESTILOS DEL MODAL Y FORMULARIO (Sin cambios) --- */
         .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); padding-top: 60px; }
         .modal-contenido { background-color: #051937; margin: 5% auto; padding: 30px; border: 1px solid #DAA520; width: 90%; max-width: 600px; border-radius: 8px; }
         .modal-close { color: #DAA520; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
@@ -43,6 +49,25 @@
         .formulario-grid label { color: #E0E0E0; display: block; margin-bottom: 5px; }
         .formulario-grid input[type="text"], .formulario-grid input[type="number"], .formulario-grid input[type="date"], .formulario-grid select { 
             width: 100%; padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; box-sizing: border-box; 
+        }
+        
+        /* --- ESTILOS ESPECÍFICOS PARA IMPRESIÓN (Se inyectan dinámicamente) --- */
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                font-size: 10pt;
+                color: black; /* Asegura texto negro para impresión */
+            }
+            #print-area table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+            #print-area th, #print-area td { border: 1px solid #ccc; padding: 8px; text-align: left; color: black; }
+            #print-area h1, #print-area h2 { color: black; }
+            .print-header { border-bottom: 3px solid #DAA520; padding-bottom: 15px; margin-bottom: 20px; }
+            .print-header img { height: 60px; margin-right: 15px; vertical-align: middle; }
         }
     </style>
 </head>
@@ -90,10 +115,23 @@
             </div>
         </div>
 
+        <div class="report-toolbar">
+            <label for="select-alumno-reporte"><i class="fas fa-print"></i> Seleccionar Alumno para Reporte:</label>
+            <select id="select-alumno-reporte">
+                <option value="">-- Seleccionar Alumno --</option>
+            </select>
+            <button class="boton-rol" style="width: auto;" onclick="imprimirReporte()" id="btn-imprimir" disabled>
+                <i class="fas fa-print"></i> Imprimir Historial
+            </button>
+        </div>
+
 
         <div class="tarjeta-gestion">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="gestion-toolbar">
                 <h4><i class="fas fa-list-alt"></i> Historial de Transacciones</h4>
+                
+                <input type="text" id="search-box" placeholder="Buscar por Concepto, Estudiante o ID..." onkeyup="filtrarPagos()">
+                
                 <button class="boton-rol" style="width: auto;" onclick="openModal()">
                     <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
                 </button>
@@ -131,17 +169,14 @@
         <div class="modal-contenido">
             <span class="modal-close" onclick="closeModal()">&times;</span>
             <h2><i class="fas fa-plus-circle"></i> Registrar Pago</h2>
-
             <form id="form-registrar-pago">
                 <div class="formulario-grid">
-                    
                     <div class="campo-completo">
                         <label for="pago_estudiante_id">Estudiante</label>
                         <select id="pago_estudiante_id" required>
                             <option value="">-- Seleccionar Estudiante --</option>
                         </select>
                     </div>
-
                     <div class="campo">
                         <label for="pago_monto">Monto ($)</label>
                         <input type="number" id="pago_monto" min="1" step="0.01" required placeholder="Ej: 150.00">
@@ -150,7 +185,6 @@
                         <label for="pago_fecha">Fecha de Pago</label>
                         <input type="date" id="pago_fecha" required>
                     </div>
-                    
                     <div class="campo">
                         <label for="pago_concepto">Concepto</label>
                         <select id="pago_concepto" required>
@@ -169,13 +203,10 @@
                             <option value="Cheque">Cheque</option>
                         </select>
                     </div>
-
                     <div class="campo-completo">
                         <label for="pago_descripcion">Descripción (Opcional)</label>
                         <input type="text" id="pago_descripcion" placeholder="Notas adicionales o referencia">
                     </div>
-
-
                     <div class="campo-completo">
                         <button type="submit" class="boton-rol" style="margin-top: 10px;">
                             <i class="fas fa-receipt"></i> Registrar Transacción
@@ -185,6 +216,10 @@
             </form>
         </div>
     </div>
+    
+    <div id="print-area" style="display: none;"></div>
+
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
@@ -203,71 +238,82 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Colecciones de Firebase
-        const pagosCollection = db.collection('pagos'); // Nueva colección para pagos
+        const pagosCollection = db.collection('pagos'); 
         const estudiantesCollection = db.collection('estudiantes'); 
 
-        // Referencias de la interfaz
         const tablaBodyPagos = document.getElementById('tabla-body-pagos');
         const pagoModal = document.getElementById('pagoModal');
         const selectEstudiantesPago = document.getElementById('pago_estudiante_id');
+        const selectReporte = document.getElementById('select-alumno-reporte');
+        const btnImprimir = document.getElementById('btn-imprimir');
+        const searchBox = document.getElementById('search-box');
         
-        let estudiantesCache = {}; // Para buscar el nombre del estudiante rápidamente
+        let estudiantesCache = {}; 
+        let allPagosData = []; 
         const hoy = new Date().toISOString().split('T')[0];
-
+        const LOGO_URL = "https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png"; // URL de tu logo
 
         // ==================================================
         // 2. INICIALIZACIÓN Y CARGA DE ESTUDIANTES
         // ==================================================
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('pago_fecha').value = hoy; // Pone la fecha de hoy por defecto
+            document.getElementById('pago_fecha').value = hoy; 
             cargarEstudiantesParaSelect();
+            
+            // Habilitar/deshabilitar botón de imprimir
+            selectReporte.addEventListener('change', () => {
+                btnImprimir.disabled = !selectReporte.value;
+            });
         });
         
-        // Carga los estudiantes en el <select> del formulario de pago
         function cargarEstudiantesParaSelect() {
             selectEstudiantesPago.innerHTML = '<option value="">Cargando estudiantes...</option>';
+            selectReporte.innerHTML = '<option value="">Cargando alumnos...</option>';
+            
             estudiantesCollection.orderBy('apellido', 'asc').get()
                 .then(snapshot => {
                     selectEstudiantesPago.innerHTML = '<option value="">-- Seleccionar Estudiante --</option>';
+                    selectReporte.innerHTML = '<option value="">-- Seleccionar Alumno --</option>';
                     estudiantesCache = {};
-                    if (snapshot.empty) {
-                        selectEstudiantesPago.innerHTML += '<option value="" disabled>No hay estudiantes registrados.</option>';
-                        return;
-                    }
+                    
                     snapshot.forEach(doc => {
                         const data = doc.data();
                         const nombreCompleto = `${data.apellido || ''}, ${data.nombre || ''} (${data.id_estudiante || 'ID N/A'})`;
                         
-                        // Guardar en cache para usar en la tabla
+                        // Carga en caché
                         estudiantesCache[doc.id] = { 
                             nombre: `${data.nombre} ${data.apellido}`, 
                             id_estudiante: data.id_estudiante 
                         };
 
-                        const option = document.createElement('option');
-                        option.value = doc.id; // ID de Firebase del estudiante
-                        option.textContent = nombreCompleto;
-                        selectEstudiantesPago.appendChild(option);
+                        // Select de Registro de Pago
+                        let optionPago = document.createElement('option');
+                        optionPago.value = doc.id; 
+                        optionPago.textContent = nombreCompleto;
+                        selectEstudiantesPago.appendChild(optionPago);
+
+                        // Select de Reporte de Impresión
+                        let optionReporte = document.createElement('option');
+                        optionReporte.value = doc.id; 
+                        optionReporte.textContent = nombreCompleto;
+                        selectReporte.appendChild(optionReporte);
                     });
                 })
                 .catch(error => {
-                    console.error("Error al cargar estudiantes para el select:", error);
-                    selectEstudiantesPago.innerHTML = '<option value="" disabled>Error de carga.</option>';
+                    console.error("Error al cargar estudiantes:", error);
                 });
         }
 
 
         // ==================================================
-        // 3. LÓGICA DE FIREBASE (CRUD y Resumen)
+        // 3. LÓGICA DE FIREBASE (Lectura y Filtro)
         // ==================================================
 
-        // Escucha en tiempo real para la colección de pagos
         pagosCollection.orderBy('fecha', 'desc').onSnapshot(snapshot => {
-            const allPagos = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+            allPagosData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
             
-            actualizarResumen(allPagos);
-            renderizarTabla(allPagos);
+            actualizarResumen(allPagosData);
+            filtrarPagos(); 
         }, error => {
             console.error("Error al escuchar cambios en Firestore (Pagos):", error);
             tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos.</td></tr>`;
@@ -283,16 +329,11 @@
             });
 
             const promedioPago = totalTransacciones > 0 ? (totalRecaudado / totalTransacciones) : 0;
-            
-            // Formateo a moneda (ajusta 'es-NI' o 'en-US' según tu moneda local)
             const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
 
             document.getElementById('total-recaudado').textContent = formatter.format(totalRecaudado);
             document.getElementById('total-transacciones').textContent = totalTransacciones;
             document.getElementById('promedio-pago').textContent = formatter.format(promedioPago);
-            
-            // La estimación de pendientes requiere más lógica (clases, mensualidades), 
-            // por ahora la dejamos en 0.
             document.getElementById('pendientes-estimados').textContent = 'N/A';
         }
 
@@ -301,20 +342,17 @@
             tablaBodyPagos.innerHTML = '';
             
             if (pagosArray.length === 0) {
-                tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center;">No hay transacciones registradas.</td></tr>`;
+                tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center;">No se encontraron transacciones.</td></tr>`;
                 return;
             }
 
             pagosArray.forEach(pago => {
                 const fila = tablaBodyPagos.insertRow();
                 
-                // Intentar obtener el nombre/ID del estudiante de la caché
                 const infoEstudiante = estudiantesCache[pago.estudianteId] || { nombre: 'Estudiante Eliminado', id_estudiante: 'N/A' };
-                
-                // Formateo del monto
                 const montoFormateado = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' }).format(pago.monto);
 
-                fila.insertCell(0).textContent = pago.firebaseId.substring(0, 6); // ID corto de Firebase
+                fila.insertCell(0).textContent = pago.firebaseId.substring(0, 6); 
                 fila.insertCell(1).textContent = infoEstudiante.nombre;
                 fila.insertCell(2).textContent = infoEstudiante.id_estudiante;
                 fila.insertCell(3).textContent = pago.concepto || 'N/A';
@@ -326,10 +364,128 @@
                 accionesCell.innerHTML = `<button class="action-btn delete-btn" data-id="${pago.firebaseId}" onclick="eliminarPago(this)"><i class="fas fa-trash"></i></button>`;
             });
         }
+        
+        // Función de filtrado/búsqueda
+        function filtrarPagos() {
+            const searchTerm = searchBox.value.toLowerCase();
+            
+            if (searchTerm.length === 0) {
+                renderizarTabla(allPagosData);
+                return;
+            }
 
+            const resultados = allPagosData.filter(pago => {
+                const infoEstudiante = estudiantesCache[pago.estudianteId] || {};
+
+                const concepto = (pago.concepto || '').toLowerCase();
+                const metodo = (pago.metodo || '').toLowerCase();
+                const nombreEstudiante = (infoEstudiante.nombre || '').toLowerCase();
+                const idEstudiante = (infoEstudiante.id_estudiante || '').toLowerCase();
+                const idTransaccion = (pago.firebaseId || '').substring(0, 6).toLowerCase();
+
+                return concepto.includes(searchTerm) || 
+                       metodo.includes(searchTerm) ||
+                       nombreEstudiante.includes(searchTerm) || 
+                       idEstudiante.includes(searchTerm) ||
+                       idTransaccion.includes(searchTerm);
+            });
+
+            renderizarTabla(resultados);
+        }
 
         // ==================================================
-        // 4. GESTIÓN DEL MODAL Y EVENTOS
+        // 4. GENERACIÓN DEL REPORTE DE IMPRESIÓN
+        // ==================================================
+
+        function imprimirReporte() {
+            const estudianteId = selectReporte.value;
+            if (!estudianteId) {
+                alert("Por favor, selecciona un alumno para imprimir su historial.");
+                return;
+            }
+
+            const infoEstudiante = estudiantesCache[estudianteId];
+            const pagosAlumno = allPagosData.filter(pago => pago.estudianteId === estudianteId);
+            
+            if (pagosAlumno.length === 0) {
+                alert(`El alumno ${infoEstudiante.nombre} no tiene pagos registrados.`);
+                return;
+            }
+
+            const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
+            let totalPagado = 0;
+
+            // 1. Crear el contenido del reporte
+            let tablaHTML = `
+                <style>
+                    /* Estilos internos para asegurar la impresión */
+                    .print-header { display: flex; align-items: center; border-bottom: 3px solid #DAA520; padding-bottom: 15px; margin-bottom: 20px; color: black; }
+                    .print-header img { height: 60px; margin-right: 15px; vertical-align: middle; }
+                    .print-header h1 { margin: 0; font-size: 18pt; color: black; }
+                    .info-alumno p { margin: 5px 0; color: black; }
+                    .reporte-tabla { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    .reporte-tabla th, .reporte-tabla td { border: 1px solid #ccc; padding: 8px; text-align: left; color: black; }
+                    .reporte-tabla th { background-color: #f0f0f0; }
+                    .total-row td { font-weight: bold; background-color: #DAA520; }
+                </style>
+                <div class="print-header">
+                    <img src="${LOGO_URL}" alt="Logo Academia AVIVA">
+                    <h1>Academia AVIVA - Historial de Pagos</h1>
+                </div>
+                <div class="info-alumno">
+                    <h2>Reporte de Pagos</h2>
+                    <p><strong>Alumno:</strong> ${infoEstudiante.nombre}</p>
+                    <p><strong>ID Académico:</strong> ${infoEstudiante.id_estudiante}</p>
+                    <p><strong>Fecha de Reporte:</strong> ${new Date().toLocaleDateString('es-NI')}</p>
+                </div>
+                <table class="reporte-tabla">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                            <th>Método</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            pagosAlumno.forEach(pago => {
+                totalPagado += Number(pago.monto);
+                tablaHTML += `
+                    <tr>
+                        <td>${pago.fecha}</td>
+                        <td>${pago.concepto}</td>
+                        <td>${formatter.format(pago.monto)}</td>
+                        <td>${pago.metodo}</td>
+                        <td>${pago.descripcion || '---'}</td>
+                    </tr>
+                `;
+            });
+
+            tablaHTML += `
+                    <tr class="total-row">
+                        <td colspan="2">TOTAL PAGADO</td>
+                        <td>${formatter.format(totalPagado)}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            `;
+
+            // 2. Insertar y mandar a imprimir
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = tablaHTML;
+            
+            // Usamos un pequeño timeout para asegurar que el DOM se haya actualizado antes de imprimir
+            setTimeout(() => {
+                window.print();
+            }, 50);
+        }
+
+        // ==================================================
+        // 5. GESTIÓN DEL MODAL Y EVENTOS (CRUD)
         // ==================================================
 
         function openModal() { pagoModal.style.display = "block"; }
@@ -337,7 +493,7 @@
         function closeModal() {
             pagoModal.style.display = "none";
             document.getElementById('form-registrar-pago').reset();
-            document.getElementById('pago_fecha').value = hoy; // Resetear fecha a hoy
+            document.getElementById('pago_fecha').value = hoy; 
         }
 
         window.onclick = function(event) {
@@ -346,7 +502,6 @@
             }
         }
 
-        // Guardar la transacción en Firebase
         document.getElementById('form-registrar-pago').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -367,7 +522,6 @@
             pagosCollection.add(nuevoPago)
                 .then(() => {
                     closeModal();
-                    console.log("Pago registrado con éxito.");
                 })
                 .catch((error) => {
                     console.error("Error al registrar el pago:", error);
@@ -379,15 +533,13 @@
                 });
         });
 
-        // Eliminar pago
         function eliminarPago(boton) {
             const docId = boton.getAttribute('data-id');
             if (confirm(`¿Estás seguro de que deseas eliminar esta transacción?`)) {
                 boton.disabled = true;
                 pagosCollection.doc(docId).delete()
                     .then(() => {
-                        console.log(`Transacción ${docId} eliminada.`);
-                        // onSnapshot se encarga de la recarga
+                        // onSnapshot recarga automáticamente
                     })
                     .catch((error) => {
                         console.error("Error al eliminar la transacción:", error);
