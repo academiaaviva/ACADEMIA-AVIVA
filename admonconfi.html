@@ -86,7 +86,7 @@
             <a href="administracion.html" style="margin-left: auto; margin-right: 20px; color: #DAA520; font-size: 1.1em;" title="Volver al Panel">
                  <i class="fas fa-arrow-left"></i> Panel
             </a>
-            <a href="maestros.html" style="color: #DAA520; font-size: 1.1em;" title="Cerrar Sesión">
+            <a href="index.html" style="color: #DAA520; font-size: 1.1em;" title="Cerrar Sesión">
                  <i class="fas fa-power-off"></i> Salir
             </a>
         </div>
@@ -126,7 +126,7 @@
                     <label for="rol_acceso">Redirección al Iniciar Sesión</label>
                     <select id="rol_acceso" required>
                         <option value="">-- Seleccione Página de Acceso --</option>
-                        <option value="alumno">Acceso Alumno (estudiantes.html)</option>
+                        <option value="alumno">Acceso Estudiante (estudiantes.html)</option>
                         <option value="profesor">Acceso Profesor (maestros.html)</option>
                     </select>
 
@@ -147,16 +147,16 @@
                         <thead>
                             <tr>
                                 <th>Usuario (Login)</th>
+                                <th>Email (Auth)</th>
                                 <th>Rol/Redirección</th>
-                                <th>Acceso URL</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-body-accesos">
                             <tr>
                                 <td>DirectorAVIVA</td>
+                                <td>N/A</td>
                                 <td><span class="tag-rol tag-director">DIRECTOR</span></td>
-                                <td>administracion.html</td>
                                 <td><i class="fas fa-ban" title="No se puede eliminar el acceso principal"></i></td>
                             </tr>
                             <tr><td colspan="4" style="text-align: center;">Cargando usuarios...</td></tr>
@@ -176,6 +176,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-md5/0.7.3/md5.min.js"></script> 
 
     <script>
@@ -192,6 +193,7 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth(); // Objeto de autenticación
 
         const usuariosAccesoCollection = db.collection('usuariosAcceso'); 
         const estudiantesCollection = db.collection('estudiantes'); 
@@ -220,6 +222,7 @@
         });
 
         function cargarEstudiantesParaSelect() {
+            // ... (función de carga de estudiantes, sin cambios)
             estudiantesCollection.orderBy('apellido', 'asc').get()
                 .then(snapshot => {
                     selectEstudianteAcceso.innerHTML = '<option value="">-- Seleccionar Estudiante --</option>';
@@ -249,9 +252,9 @@
         }
         
         function toggleCamposRegistro() {
+            // ... (función para alternar campos de estudiante/profesor, sin cambios)
             const tipo = tipoRegistroSelect.value;
             
-            // Ocultar y deshabilitar todo por defecto
             camposEstudianteDiv.style.display = 'none';
             selectEstudianteAcceso.required = false;
             selectEstudianteAcceso.disabled = true;
@@ -281,6 +284,7 @@
         // ==================================================
 
         function iniciarListenerUsuarios() {
+            // ... (función para escuchar cambios en Firestore, sin cambios)
             usuariosAccesoCollection.orderBy('rol', 'asc').onSnapshot(snapshot => {
                 renderizarTablaUsuarios(snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() })));
             }, error => {
@@ -290,7 +294,7 @@
         }
         
         function renderizarTablaUsuarios(usuarios) {
-            // Mantener la fila del Director y limpiar el resto
+            // ... (función para dibujar la tabla, sin cambios mayores, adaptada para email)
             const directorRow = tablaBodyAccesos.querySelector('tr');
             tablaBodyAccesos.innerHTML = '';
             tablaBodyAccesos.appendChild(directorRow);
@@ -323,60 +327,44 @@
                 }
                 
                 fila.insertCell(0).textContent = usuario.usuario;
-                fila.insertCell(1).innerHTML = `<span class="tag-rol ${rolTagClass}">${rolDisplay}</span>`;
-                fila.insertCell(2).textContent = accesoURL;
+                fila.insertCell(1).textContent = usuario.email || 'N/A'; // Nuevo campo de email
+                fila.insertCell(2).innerHTML = `<span class="tag-rol ${rolTagClass}">${rolDisplay}</span>`;
                 
                 const accionesCell = fila.insertCell(3);
+                // Añadimos data-email para la posible eliminación
                 accionesCell.innerHTML = `
-                    <button class="action-btn delete-btn" data-id="${usuario.firebaseId}" onclick="eliminarAcceso(this)" title="Eliminar Acceso">
+                    <button class="action-btn delete-btn" data-id="${usuario.firebaseId}" data-email="${usuario.email}" onclick="eliminarAcceso(this)" title="Eliminar Acceso">
                         <i class="fas fa-trash"></i>
                     </button>
                 `;
             });
         }
         
-        // Manejar el formulario de creación de acceso (CORREGIDO PARA EVITAR QUE SE QUEDE PEGADO)
+        // MANEJO DEL FORMULARIO DE CREACIÓN DE ACCESO - ¡FUNCIÓN MODIFICADA PARA AUTH!
         formCrearAcceso.addEventListener('submit', function(event) {
             event.preventDefault();
             statusMessage.textContent = '';
             
             const boton = this.querySelector('.boton-rol');
-            
-            // 1. Deshabilitar botón antes de la validación
             boton.disabled = true;
             boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
 
             const tipo = tipoRegistroSelect.value;
             let usuario = '';
             
-            // --- VALIDACIÓN Y ASIGNACIÓN DE USUARIO ---
+            // Asignación de usuario
             if (tipo === 'estudiante') {
-                const idEstudiante = selectEstudianteAcceso.value;
-                if (!idEstudiante) {
-                    statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Por favor, seleccione un estudiante.</span>';
-                    boton.disabled = false;
-                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
-                    return; 
-                }
-                usuario = idEstudiante; 
+                usuario = selectEstudianteAcceso.value;
             } else if (tipo === 'profesor') {
                 usuario = inputNombreUsuario.value.trim();
-                if (!usuario) {
-                    statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Por favor, ingrese un nombre de usuario.</span>';
-                    boton.disabled = false;
-                    boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
-                    return; 
-                }
             } else {
-                statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Seleccione un tipo de registro (Estudiante o Profesor).</span>';
+                statusMessage.innerHTML = '<span style="color: #FF7043;">Error: Seleccione un tipo de registro.</span>';
                 boton.disabled = false;
                 boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
-                return; 
+                return;
             }
 
             const passwordPlana = inputPassword.value;
-            const rolAcceso = document.getElementById('rol_acceso').value;
-            
             if (passwordPlana.length < 6) {
                 statusMessage.innerHTML = '<span style="color: #FF7043;">Error: La contraseña debe tener al menos 6 caracteres.</span>';
                 boton.disabled = false;
@@ -384,66 +372,82 @@
                 return;
             }
             
-            // ⚠️ HASHEAR LA CONTRASEÑA
-            const passwordHasheada = md5(passwordPlana);
-
-            const nuevoUsuario = {
-                usuario: usuario,
-                password: passwordHasheada, 
-                rol: rolAcceso, // Rol es la URL de redirección (alumno o profesor)
-                tipo_entidad: tipo, 
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
+            const rolAcceso = document.getElementById('rol_acceso').value;
+            // ⚠️ Creación del email estandarizado para Firebase Auth
+            const email = `${usuario.toLowerCase()}@aviva.edu`; 
             
-            // Texto de estado mientras se comunica con la base de datos
-            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando en DB...';
+            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta Auth...';
 
+            // 1. Crear el usuario en Firebase Authentication (para acceso multidispositivo)
+            auth.createUserWithEmailAndPassword(email, passwordPlana)
+                .then((userCredential) => {
+                    // La cuenta Auth se creó con éxito
+                    const userAuthId = userCredential.user.uid;
+                    const passwordHasheada = md5(passwordPlana); // Hash para registro en Firestore
 
-            // 2. Iniciar la cadena de Promesas de Firebase
-            usuariosAccesoCollection.where('usuario', '==', usuario).limit(1).get()
-                .then(snapshot => {
-                    if (!snapshot.empty) {
-                         statusMessage.innerHTML = `<span style="color: #FF7043;">Error: El usuario **${usuario}** ya existe.</span>`;
-                         // Usar Promise.reject para forzar el paso al .catch() y evitar el registro.
-                         return Promise.reject(new Error('Usuario duplicado')); 
-                    }
-                    // Si no existe, agregar el nuevo usuario
+                    const nuevoUsuario = {
+                        usuario: usuario,
+                        password: passwordHasheada, // Mantenemos hash para referencia/auditoría
+                        rol: rolAcceso, 
+                        tipo_entidad: tipo, 
+                        email: email, // El email usado para iniciar sesión
+                        authUid: userAuthId, // ID único de Auth
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando roles en Firestore...';
+                    
+                    // 2. Guardar el rol y datos en Firestore
                     return usuariosAccesoCollection.add(nuevoUsuario);
                 })
                 .then(() => {
-                    // Éxito en el registro
                     statusMessage.innerHTML = `<span style="color: #8BC34A;">Acceso para **${usuario}** (Rol: ${rolAcceso}) creado exitosamente.</span>`;
                     formCrearAcceso.reset();
-                    toggleCamposRegistro(); // Reinicia la interfaz
+                    toggleCamposRegistro(); 
                 })
                 .catch((error) => {
-                    // Manejo de errores
-                    if (error.message !== 'Usuario duplicado') {
-                         console.error("Error al registrar el acceso:", error);
-                         statusMessage.innerHTML = '<span style="color: #FF7043;">Error al registrar: ' + (error.message || 'Error desconocido de Firebase.') + '. Revise la consola (F12).</span>';
+                    console.error("Error al registrar:", error);
+                    let msg = "Error al registrar. ";
+                    // Errores comunes de Firebase Auth
+                    if (error.code === 'auth/email-already-in-use') {
+                        msg = `Error: El usuario (${usuario}) ya tiene una cuenta.`;
+                    } else if (error.code === 'auth/weak-password') {
+                        msg = `Error: Contraseña muy débil (mínimo 6 caracteres).`;
+                    } else {
+                        msg += error.message;
                     }
+                    statusMessage.innerHTML = `<span style="color: #FF7043;">${msg}</span>`;
                 })
                 .finally(() => {
-                    // 3. Siempre restablecer el botón al final de la cadena
                     boton.disabled = false;
                     boton.innerHTML = '<i class="fas fa-save"></i> Registrar Credencial';
                 });
         });
 
+        // Función para eliminar acceso (SOLO ELIMINAMOS DE FIRESTORE Y ALERTAMOS AL DIRECTOR)
         function eliminarAcceso(boton) {
             const docId = boton.getAttribute('data-id');
-            if (confirm(`¿Estás seguro de que deseas ELIMINAR PERMANENTEMENTE este acceso? El usuario ya no podrá ingresar.`)) {
-                boton.disabled = true;
-                usuariosAccesoCollection.doc(docId).delete()
-                    .then(() => {
-                        // onSnapshot se encargará de recargar la tabla
-                    })
-                    .catch((error) => {
-                        console.error("Error al eliminar el acceso:", error);
-                        alert("Error al eliminar: " + error.message);
-                        boton.disabled = false;
-                    });
+            const userEmail = boton.getAttribute('data-email');
+            
+            if (!confirm(`¿Estás seguro de que deseas ELIMINAR PERMANENTEMENTE este acceso? Esto solo eliminará el registro de la base de datos (Firestore). DEBES ELIMINAR MANUALMENTE la cuenta en Firebase Authentication: ${userEmail}`)) {
+                return;
             }
+
+            boton.disabled = true;
+            
+            // Eliminar el registro de Firestore
+            usuariosAccesoCollection.doc(docId).delete()
+                .then(() => {
+                    // La tabla se actualizará automáticamente con onSnapshot
+                    alert(`Registro de Firestore eliminado. Por favor, NO OLVIDE eliminar la cuenta de Firebase Authentication para el email: ${userEmail}`);
+                })
+                .catch((error) => {
+                    console.error("Error al eliminar el acceso:", error);
+                    alert("Error al eliminar de Firestore: " + error.message);
+                })
+                .finally(() => {
+                     boton.disabled = false;
+                });
         }
     </script>
 
