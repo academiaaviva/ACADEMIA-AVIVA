@@ -1,0 +1,20 @@
+[
+    {
+        "id": "AV001",
+        "nombre": "Juan Pérez",
+        "curso": "Guitarra Eléctrica I",
+        "estado": "Activo"
+    },
+    {
+        "id": "AV002",
+        "nombre": "María López",
+        "curso": "Voz y Canto Avanzado",
+        "estado": "En Pausa"
+    },
+    {
+        "id": "AV003",
+        "nombre": "Carlos Ruiz",
+        "curso": "Batería Inicial",
+        "estado": "Activo"
+    }
+]
