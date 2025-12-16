@@ -1,27 +1,196 @@
 /* ================================================================= */
-/* !!! ESTILOS EXCLUSIVOS PARA EL PANEL ADMINISTRATIVO (AVIVA) !!! */
-/* Estos estilos no afectarán a index.html ni a maestros.html */
+/* PALETA DE COLORES AVIVA (Consistencia reforzada) */
+/* Azul Ultra Oscuro (Fondo/Base): #051937 */
+/* Azul Intermedio (Contenedores/Sidebar): #082348 */
+/* Dorado (Acento/Activo): #DAA520 */
+/* Blanco (Texto): #FFFFFF */
 /* ================================================================= */
 
-/* --- AJUSTES DE ESTRUCTURA Y RESETEO DEL BODY PARA EL PANEL --- */
+/* ------------------------------------------------------------- */
+/* I. ESTILOS GENERALES Y LAYOUT BASE (Se aplica a TODAS las páginas) */
+/* ------------------------------------------------------------- */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    background-color: #051937; /* Fondo principal en azul ultra oscuro */
+    color: #E0E0E0; /* Texto principal en gris claro */
+}
 
-/* 1. Oculta el encabezado estándar y el footer en el panel */
-.admin-header-top ~ header, 
-.admin-header-top ~ footer {
+a {
+    text-decoration: none;
+    color: #DAA520; /* Enlaces en dorado */
+}
+
+a:hover {
+    color: #ffd740;
+}
+
+/* ------------------------------------------------------------- */
+/* II. ESTILOS DE LOGIN Y MENÚ PRINCIPAL (index.html, maestros.html, estudiantes.html) */
+/* Se aplican solo si NO es un Dashboard */
+/* ------------------------------------------------------------- */
+
+/* Contenedor principal para centrar el contenido de login */
+main {
+    /* El selector :not(:has(...)) es crucial para aislar estos estilos */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px); /* 100vh menos header y footer */
+    padding: 20px;
+}
+
+/* Header del Login/Menú Principal */
+header {
+    background-color: #082348; /* Azul intermedio para el header */
+    color: #FFFFFF;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.header-contenido {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo-header {
+    height: 50px;
+    margin-right: 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+/* Footer del Login/Menú Principal */
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #082348; /* Azul intermedio para el footer */
+    color: #CCCCCC;
+    font-size: 0.9em;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.enlace-footer {
+    color: #DAA520;
+}
+
+/* Estilos de la caja de Login/Menú */
+.contenedor-inicio {
+    background-color: #082348; /* Azul intermedio para el formulario */
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.contenedor-inicio h2 {
+    color: #DAA520; /* Título en dorado */
+    margin-top: 0;
+    border-bottom: 2px solid rgba(218, 165, 32, 0.5);
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+/* Formularios y Campos */
+.formulario-login {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.campo {
+    text-align: left;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 5px;
+    color: #E0E0E0;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.campo input[type="text"],
+.campo input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #DAA520; /* Borde dorado */
+    border-radius: 4px;
+    background-color: #051937; /* Fondo de input en azul ultra oscuro */
+    color: #FFFFFF;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.campo input:focus {
+    outline: none;
+    box-shadow: 0 0 5px #ffd740;
+}
+
+/* Botones de Rol y Submit */
+.boton-rol {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 15px;
+    background-color: #DAA520; /* Botón en dorado */
+    color: #051937; /* Texto del botón en azul ultra oscuro */
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    text-align: center;
+}
+
+.boton-rol:hover {
+    background-color: #ffd740;
+    transform: translateY(-2px);
+}
+
+.ayuda-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+
+/* ------------------------------------------------------------- */
+/* III. ESTILOS EXCLUSIVOS PARA EL PANEL ADMINISTRATIVO (Dashboard) */
+/* Estos estilos usan selectores específicos para evitar conflictos */
+/* ------------------------------------------------------------- */
+
+/* 1. Ocultar el header y footer estándar cuando el header admin fijo está presente */
+/* Este es el selector CRUCIAL para evitar conflictos de layout */
+body:has(.admin-header-top) > header:not(.admin-header-top), 
+body:has(.admin-header-top) > footer {
     display: none !important;
 }
 
-/* 2. Reconfiguración del BODY para la vista de Dashboard */
-/* Solo se aplica si el BODY contiene el encabezado fijo del admin */
+/* Reconfiguración del BODY y MAIN para la vista de Dashboard */
 body:has(.admin-header-top) {
-    overflow: hidden; /* Evita scroll doble en la ventana principal */
-    display: block; /* Deshabilita el flex-column que se pudo usar antes */
-    margin: 0;
+    overflow: hidden; 
+    display: block; 
+}
+body:has(.admin-header-top) > main {
+    display: block; /* Deshabilita el centrado de login */
     padding: 0;
-    background-color: #051937; /* Asegura el fondo ultra oscuro */
+    min-height: 0;
 }
 
-/* 3. ENCABEZADO SUPERIOR (Barra Fija) - AZUL ULTRA OSCURO */
+
+/* 2. HEADER SUPERIOR (Barra Fija) - AZUL ULTRA OSCURO */
 .admin-header-top {
     display: flex;
     justify-content: space-between;
@@ -58,7 +227,7 @@ body:has(.admin-header-top) {
 .admin-header-top .user-name {
     margin-right: 15px;
     font-size: 0.9em;
-    color: #DAA520; /* Dorado para el nombre */
+    color: #DAA520; 
 }
 
 .admin-header-top .user-icon {
@@ -75,17 +244,17 @@ body:has(.admin-header-top) {
     color: #ffd740;
 }
 
-/* 4. CUERPO PRINCIPAL DEL PANEL (Sidebar y Contenido) */
+/* 3. CUERPO PRINCIPAL DEL PANEL (Sidebar y Contenido) */
 .panel-body-wrapper {
-    display: flex; /* La clave para poner el sidebar y el main lado a lado */
+    display: flex; 
     min-height: calc(100vh - 60px); 
-    margin-top: 60px; /* Despeja espacio debajo del header fijo */
+    margin-top: 60px; 
 }
 
-/* 5. SIDEBAR COLAPSADA - AZUL INTERMEDIO */
+/* SIDEBAR COLAPSADA - AZUL INTERMEDIO */
 .sidebar-aviva {
     width: 60px; 
-    background-color: #082348; /* AZUL INTERMEDIO */
+    background-color: #082348;
     padding-top: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
     flex-shrink: 0; 
@@ -105,14 +274,14 @@ body:has(.admin-header-top) {
 }
 
 .menu-item:hover, .menu-active {
-    background-color: #051937; /* AZUL ULTRA OSCURO al pasar o activo */
-    color: #DAA520; /* Dorado para el activo */
+    background-color: #051937;
+    color: #DAA520;
     opacity: 1;
 }
 
-/* 6. CONTENIDO PRINCIPAL - FONDO AZUL ULTRA OSCURO */
+/* CONTENIDO PRINCIPAL */
 .contenido-panel-aviva {
-    flex-grow: 1; /* Ocupa el espacio restante */
+    flex-grow: 1; 
     background-color: #051937; 
     padding: 0;
     overflow-y: auto; 
@@ -123,7 +292,7 @@ body:has(.admin-header-top) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #082348; /* AZUL INTERMEDIO para el toolbar */
+    background-color: #082348;
     color: #FFFFFF;
     padding: 10px 20px;
     border-bottom: 1px solid rgba(218, 165, 32, 0.2);
@@ -165,7 +334,6 @@ body:has(.admin-header-top) {
 /* CONTENEDOR DE GRÁFICOS (GRID) */
 .grid-dashboard-aviva {
     display: grid;
-    /* Ajuste para 2 o 3 columnas, según el tamaño de la pantalla */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
     gap: 20px;
     padding: 20px;
@@ -173,11 +341,11 @@ body:has(.admin-header-top) {
 
 /* TARJETAS DEL DASHBOARD */
 .tarjeta-dashboard-aviva {
-    background-color: #082348; /* AZUL INTERMEDIO para el fondo de las tarjetas */
+    background-color: #082348; 
     border: 1px solid rgba(218, 165, 32, 0.2);
     border-radius: 5px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    min-height: 250px; 
+    min-height: 150px; 
     color: #FFFFFF;
 }
 
@@ -187,13 +355,13 @@ body:has(.admin-header-top) {
     align-items: center;
     padding: 10px 15px;
     border-bottom: 1px solid rgba(218, 165, 32, 0.2);
-    background-color: #051937; /* AZUL ULTRA OSCURO para el encabezado de la tarjeta */
+    background-color: #051937; 
 }
 
 .tarjeta-header-aviva h4 {
     font-size: 1em;
     font-weight: 600;
-    color: #DAA520; /* Título en dorado */
+    color: #DAA520; 
     margin: 0;
     letter-spacing: normal;
 }
@@ -208,4 +376,62 @@ body:has(.admin-header-top) {
     padding: 15px;
     color: #E0E0E0;
     text-align: center;
+}
+
+/* ------------------------------------------------------------- */
+/* IV. ESTILOS DE TABLA DE GESTIÓN (Para admonestudiantes.html, etc.) */
+/* ------------------------------------------------------------- */
+
+.tabla-gestion-aviva {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+    text-align: left;
+}
+
+.tabla-gestion-aviva thead {
+    background-color: #051937;
+}
+
+.tabla-gestion-aviva th {
+    padding: 12px 15px;
+    color: #DAA520; 
+    font-weight: 600;
+}
+
+.tabla-gestion-aviva td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    color: #E0E0E0;
+}
+
+.tabla-gestion-aviva tbody tr:hover {
+    background-color: rgba(218, 165, 32, 0.05); 
+}
+
+/* Estilos de Botones de Tabla */
+.btn-tabla {
+    background-color: transparent;
+    border: none;
+    color: #DAA520;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.btn-tabla:hover {
+    color: #FFFFFF;
+}
+
+/* Estilos de Estado */
+.estado-activo {
+    color: #66BB6A; /* Verde para activo */
+    font-weight: 600;
+}
+
+.estado-inactivo {
+    color: #FF7043; /* Naranja para en pausa */
+    font-weight: 600;
 }
