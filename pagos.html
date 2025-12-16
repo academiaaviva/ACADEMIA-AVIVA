@@ -24,16 +24,21 @@
         .resumen-card .valor.green { color: #8BC34A; } 
         .resumen-card .label { color: #DAA520; font-weight: 500; }
 
-        /* --- TOOLBARS: BÚSQUEDA Y REPORTE DE IMPRESIÓN --- */
-        /* Contenedor de búsqueda en la parte superior del listado */
-        .top-search-bar {
+        /* --- TOOLBARS REUBICADOS DENTRO DEL PANEL --- */
+        .toolbar-pagos {
             display: flex;
             align-items: center;
+            flex-wrap: wrap; /* Permite que los elementos salten de línea en pantallas pequeñas */
             gap: 15px;
-            background-color: #051937; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-bottom: 25px; 
+            padding: 15px 0 20px 0;
+            border-bottom: 1px solid #1a3c63;
+            margin-bottom: 20px;
+        }
+
+        .toolbar-pagos h4 {
+            margin: 0;
+            white-space: nowrap;
+            font-size: 1.2em;
         }
 
         #search-box { 
@@ -43,20 +48,54 @@
             background-color: #082348; 
             color: #FFFFFF; 
             flex-grow: 1; 
-            max-width: 500px; 
+            max-width: 400px; /* Ancho para la barra de búsqueda */
         }
         
-        .report-toolbar { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            flex-wrap: wrap;
-            margin-bottom: 25px; 
+        .report-selectors {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
-        .report-toolbar label { color: #E0E0E0; font-weight: 600; }
-        #select-alumno-reporte { padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; min-width: 250px; }
+
+        .report-selectors select, .report-selectors button {
+            padding: 10px; 
+            border: 1px solid #DAA520; 
+            border-radius: 4px; 
+            background-color: #082348; 
+            color: #FFFFFF; 
+            width: auto;
+        }
         
-        /* --- ESTILOS DEL MODAL Y FORMULARIO --- */
+        /* --- PAGINACIÓN --- */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .pagination-controls button {
+            background-color: #DAA520;
+            color: #051937;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: #b88b1b;
+        }
+        .pagination-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination-controls span {
+            color: #E0E0E0;
+            font-weight: 600;
+        }
+
+        /* --- ESTILOS DEL MODAL Y FORMULARIO (Sin cambios en Modal) --- */
         .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); padding-top: 60px; }
         .modal-contenido { background-color: #051937; margin: 5% auto; padding: 30px; border: 1px solid #DAA520; width: 90%; max-width: 600px; border-radius: 8px; }
         .modal-close { color: #DAA520; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
@@ -131,29 +170,52 @@
             </div>
         </div>
 
-        <div class="top-search-bar">
-            <i class="fas fa-search" style="color: #DAA520; font-size: 1.5em;"></i>
-            <input type="text" id="search-box" placeholder="Buscar en Historial (Concepto, Estudiante o ID)..." onkeyup="filtrarPagos()">
-            
-            <button class="boton-rol" style="width: auto;" onclick="openModal()">
-                <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
-            </button>
-        </div>
-
-
-        <div class="report-toolbar">
-            <label for="select-alumno-reporte"><i class="fas fa-file-invoice"></i> Reporte Individual de Pagos:</label>
-            <select id="select-alumno-reporte">
-                <option value="">-- Seleccionar Alumno --</option>
-            </select>
-            <button class="boton-rol" style="width: auto;" onclick="imprimirReporte()" id="btn-imprimir" disabled>
-                <i class="fas fa-print"></i> Imprimir Registros
-            </button>
-        </div>
+        <button class="boton-rol" style="width: auto; margin-bottom: 25px;" onclick="openModal()">
+            <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
+        </button>
 
 
         <div class="tarjeta-gestion">
-            <h4 style="margin-top: 0;"><i class="fas fa-list-alt"></i> Historial de Transacciones (Filtrado)</h4>
+            
+            <div class="toolbar-pagos">
+                <h4><i class="fas fa-list-alt"></i> Historial de Transacciones (Filtrado)</h4>
+                
+                <input type="text" id="search-box" placeholder="Buscar Concepto, Estudiante o ID..." onkeyup="filtrarPagos()">
+                
+                <div class="report-selectors">
+                    <label for="select-mes-reporte">Reporte Mensual:</label>
+                    <select id="select-mes-reporte">
+                        <option value="">-- Seleccionar Mes --</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <input type="number" id="input-anio-reporte" placeholder="Año" min="2020" max="2100" style="width: 80px;">
+                    <button class="boton-rol" style="width: auto;" onclick="imprimirReporteMensual()" id="btn-imprimir-mes">
+                        <i class="fas fa-calendar-check"></i> Imprimir Mes
+                    </button>
+                </div>
+
+                <div class="report-selectors">
+                    <label for="select-alumno-reporte">Reporte Alumno:</label>
+                    <select id="select-alumno-reporte">
+                        <option value="">-- Seleccionar Alumno --</option>
+                    </select>
+                    <button class="boton-rol" style="width: auto;" onclick="imprimirReporteIndividual()" id="btn-imprimir-alumno" disabled>
+                        <i class="fas fa-print"></i> Imprimir Alumno
+                    </button>
+                </div>
+            </div>
+
             
             <div style="overflow-x: auto;">
                 <table class="tabla-gestion-aviva">
@@ -173,6 +235,12 @@
                         <tr><td colspan="8" style="text-align: center;">Cargando historial de pagos...</td></tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="pagination-controls">
+                <button id="prev-btn" onclick="cambiarPagina(-1)"><i class="fas fa-chevron-left"></i> Anterior</button>
+                <span id="page-info">Página 1 de 1</span>
+                <button id="next-btn" onclick="cambiarPagina(1)">Siguiente <i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
@@ -290,13 +358,23 @@
         const tablaBodyPagos = document.getElementById('tabla-body-pagos');
         const pagoModal = document.getElementById('pagoModal');
         const selectEstudiantesPago = document.getElementById('pago_estudiante_id');
-        const selectReporte = document.getElementById('select-alumno-reporte');
-        const btnImprimir = document.getElementById('btn-imprimir');
+        
+        // Controles de Reporte
+        const selectReporteAlumno = document.getElementById('select-alumno-reporte');
+        const btnImprimirAlumno = document.getElementById('btn-imprimir-alumno');
+        const selectReporteMes = document.getElementById('select-mes-reporte');
+        const inputReporteAnio = document.getElementById('input-anio-reporte');
+        
         const searchBox = document.getElementById('search-box');
         
         let estudiantesCache = {}; 
         let allPagosData = []; 
+        let filteredPagosData = []; // Datos después de aplicar el filtro de búsqueda
+        let currentPage = 1;
+        const rowsPerPage = 20;
+        
         const hoy = new Date().toISOString().split('T')[0];
+        const anioActual = new Date().getFullYear();
         const LOGO_URL = "https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png"; 
 
         // Referencias a campos dinámicos
@@ -313,22 +391,24 @@
         // ==================================================
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pago_fecha').value = hoy; 
-            cargarEstudiantesParaSelect(); // Inicia la carga de estudiantes
+            inputReporteAnio.value = anioActual; // Establecer el año actual por defecto
             
-            selectReporte.addEventListener('change', () => {
-                btnImprimir.disabled = !selectReporte.value;
+            cargarEstudiantesParaSelect(); 
+            
+            // Listener para el botón de imprimir alumno
+            selectReporteAlumno.addEventListener('change', () => {
+                btnImprimirAlumno.disabled = !selectReporteAlumno.value;
             });
             
             manejarCamposDinamicos();
         });
         
-        // Listener para los pagos (SE INICIA AL FINAL DE cargarEstudiantesParaSelect)
         function iniciarPagosListener() {
             pagosCollection.orderBy('fecha', 'desc').onSnapshot(snapshot => {
                 allPagosData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
                 
                 actualizarResumen(allPagosData);
-                filtrarPagos(); 
+                filtrarPagos(); // Llama a filtrarPagos (que a su vez llama a renderizarTabla)
             }, error => {
                 console.error("Error al escuchar cambios en Firestore (Pagos):", error);
                 tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos.</td></tr>`;
@@ -337,12 +417,12 @@
         
         function cargarEstudiantesParaSelect() {
             selectEstudiantesPago.innerHTML = '<option value="">Cargando estudiantes...</option>';
-            selectReporte.innerHTML = '<option value="">Cargando alumnos...</option>';
+            selectReporteAlumno.innerHTML = '<option value="">Cargando alumnos...</option>';
             
             estudiantesCollection.orderBy('apellido', 'asc').get()
                 .then(snapshot => {
                     selectEstudiantesPago.innerHTML = '<option value="">-- Seleccionar Estudiante --</option>';
-                    selectReporte.innerHTML = '<option value="">-- Seleccionar Alumno --</option>';
+                    selectReporteAlumno.innerHTML = '<option value="">-- Seleccionar Alumno --</option>';
                     estudiantesCache = {};
                     
                     snapshot.forEach(doc => {
@@ -358,80 +438,88 @@
                         option.value = doc.id; 
                         option.textContent = nombreCompleto;
                         selectEstudiantesPago.appendChild(option.cloneNode(true));
-                        selectReporte.appendChild(option);
+                        selectReporteAlumno.appendChild(option);
                     });
                     
-                    // === PUNTO DE CORRECCIÓN CLAVE ===
-                    // UNA VEZ QUE EL CACHÉ DE ESTUDIANTES ESTÁ LLENO, INICIAMOS EL LISTENER DE PAGOS
+                    // Iniciamos el listener de pagos solo después de cargar el caché
                     iniciarPagosListener(); 
 
                 })
                 .catch(error => {
                     console.error("Error al cargar estudiantes:", error);
-                    // Si falla la carga de estudiantes, mostramos un error en la tabla de pagos
                     tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #FF7043;">Error al cargar datos de estudiantes.</td></tr>`;
                 });
         }
         
         function manejarCamposDinamicos() {
-            // 1. Lógica para el Mes (Depende del Concepto)
             const esMensualidad = selectConcepto.value === 'Mensualidad';
-            
-            // Reemplazamos 'block' por 'inline-block' para mantener el formato de dos columnas si es posible
             contenedorMes.style.display = esMensualidad ? 'block' : 'none'; 
             selectMes.required = esMensualidad;
-            
-            if (!esMensualidad) {
-                selectMes.value = ""; 
-            }
+            if (!esMensualidad) { selectMes.value = ""; }
 
-            // 2. Lógica para la Referencia (Depende del Método)
             const esTransferencia = selectMetodo.value === 'Transferencia';
-
             contenedorReferencia.style.display = esTransferencia ? 'block' : 'none';
             inputReferencia.required = esTransferencia;
+            if (!esTransferencia) { inputReferencia.value = ""; }
+        }
 
-            if (!esTransferencia) {
-                inputReferencia.value = "";
+
+        // ==================================================
+        // 3. PAGINACIÓN Y FILTRADO (Controlando la Vista)
+        // ==================================================
+        
+        // Función de filtrado/búsqueda (Aplica a allPagosData y actualiza filteredPagosData)
+        function filtrarPagos() {
+            const searchTerm = searchBox.value.toLowerCase();
+            
+            if (searchTerm.length === 0) {
+                filteredPagosData = [...allPagosData];
+            } else {
+                filteredPagosData = allPagosData.filter(pago => {
+                    const infoEstudiante = estudiantesCache[pago.estudianteId] || {};
+
+                    const concepto = (pago.concepto || '').toLowerCase();
+                    const metodo = (pago.metodo || '').toLowerCase();
+                    const nombreEstudiante = (infoEstudiante.nombre || '').toLowerCase();
+                    const idEstudiante = (infoEstudiante.id_estudiante || '').toLowerCase();
+                    const idTransaccion = (pago.firebaseId || '').substring(0, 6).toLowerCase();
+                    const mes = (pago.mes || '').toLowerCase(); 
+                    const referencia = (pago.referencia || '').toLowerCase(); 
+
+                    return concepto.includes(searchTerm) || 
+                           metodo.includes(searchTerm) ||
+                           nombreEstudiante.includes(searchTerm) || 
+                           idEstudiante.includes(searchTerm) ||
+                           idTransaccion.includes(searchTerm) ||
+                           mes.includes(searchTerm) ||
+                           referencia.includes(searchTerm);
+                });
             }
+            
+            currentPage = 1; // Reiniciar a la primera página después de filtrar
+            renderizarTabla();
         }
 
-
-        // ==================================================
-        // 3. LÓGICA DE FIREBASE (Lectura y Filtro)
-        // ==================================================
-
-        // *Se movió la inicialización de este listener a iniciarPagosListener()*
-
-        // Actualiza las tarjetas de resumen
-        function actualizarResumen(pagos) {
-            let totalRecaudado = 0;
-            let totalTransacciones = pagos.length;
-
-            pagos.forEach(pago => {
-                totalRecaudado += Number(pago.monto);
-            });
-
-            const promedioPago = totalTransacciones > 0 ? (totalRecaudado / totalTransacciones) : 0;
-            const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
-
-            document.getElementById('total-recaudado').textContent = formatter.format(totalRecaudado);
-            document.getElementById('total-transacciones').textContent = totalTransacciones;
-            document.getElementById('promedio-pago').textContent = formatter.format(promedioPago);
-            document.getElementById('pendientes-estimados').textContent = 'N/A';
-        }
-
-        // Renderiza la tabla de transacciones
-        function renderizarTabla(pagosArray) {
+        // Renderiza la tabla de transacciones con paginación
+        function renderizarTabla() {
             tablaBodyPagos.innerHTML = '';
             
-            if (pagosArray.length === 0) {
+            const totalPages = Math.ceil(filteredPagosData.length / rowsPerPage);
+            
+            if (filteredPagosData.length === 0) {
                 tablaBodyPagos.innerHTML = `<tr><td colspan="8" style="text-align: center;">No se encontraron transacciones.</td></tr>`;
+                document.getElementById('page-info').textContent = 'Página 0 de 0';
+                document.getElementById('prev-btn').disabled = true;
+                document.getElementById('next-btn').disabled = true;
                 return;
             }
+            
+            // Calcular índices de inicio y fin para la página actual
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pagosPaginados = filteredPagosData.slice(startIndex, endIndex);
 
-            pagosArray.forEach(pago => {
-                // Aquí ya estamos seguros de que estudiantesCache está lleno.
+            pagosPaginados.forEach(pago => {
                 const infoEstudiante = estudiantesCache[pago.estudianteId] || { 
                     nombre: 'ID NO VINCULADO', 
                     id_estudiante: 'N/A' 
@@ -461,125 +549,172 @@
                 const accionesCell = fila.insertCell(7);
                 accionesCell.innerHTML = `<button class="action-btn delete-btn" data-id="${pago.firebaseId}" onclick="eliminarPago(this)"><i class="fas fa-trash"></i></button>`;
             });
+            
+            // Actualizar controles de paginación
+            document.getElementById('page-info').textContent = `Página ${currentPage} de ${totalPages}`;
+            document.getElementById('prev-btn').disabled = currentPage === 1;
+            document.getElementById('next-btn').disabled = currentPage === totalPages;
         }
         
-        // Función de filtrado/búsqueda
-        function filtrarPagos() {
-            const searchTerm = searchBox.value.toLowerCase();
+        function cambiarPagina(direction) {
+            const totalPages = Math.ceil(filteredPagosData.length / rowsPerPage);
+            const newPage = currentPage + direction;
             
-            if (searchTerm.length === 0) {
-                renderizarTabla(allPagosData);
-                return;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderizarTabla();
             }
+        }
+        
+        function actualizarResumen(pagos) {
+            // ... (Lógica de resumen, sin cambios) ...
+            let totalRecaudado = 0;
+            let totalTransacciones = pagos.length;
 
-            const resultados = allPagosData.filter(pago => {
-                const infoEstudiante = estudiantesCache[pago.estudianteId] || {};
-
-                const concepto = (pago.concepto || '').toLowerCase();
-                const metodo = (pago.metodo || '').toLowerCase();
-                const nombreEstudiante = (infoEstudiante.nombre || '').toLowerCase();
-                const idEstudiante = (infoEstudiante.id_estudiante || '').toLowerCase();
-                const idTransaccion = (pago.firebaseId || '').substring(0, 6).toLowerCase();
-                const mes = (pago.mes || '').toLowerCase(); 
-                const referencia = (pago.referencia || '').toLowerCase(); 
-
-                return concepto.includes(searchTerm) || 
-                       metodo.includes(searchTerm) ||
-                       nombreEstudiante.includes(searchTerm) || 
-                       idEstudiante.includes(searchTerm) ||
-                       idTransaccion.includes(searchTerm) ||
-                       mes.includes(searchTerm) ||
-                       referencia.includes(searchTerm);
+            pagos.forEach(pago => {
+                totalRecaudado += Number(pago.monto);
             });
 
-            renderizarTabla(resultados);
+            const promedioPago = totalTransacciones > 0 ? (totalRecaudado / totalTransacciones) : 0;
+            const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
+
+            document.getElementById('total-recaudado').textContent = formatter.format(totalRecaudado);
+            document.getElementById('total-transacciones').textContent = totalTransacciones;
+            document.getElementById('promedio-pago').textContent = formatter.format(promedioPago);
+            document.getElementById('pendientes-estimados').textContent = 'N/A';
         }
 
         // ==================================================
-        // 4. GENERACIÓN DEL REPORTE DE IMPRESIÓN 
+        // 4. GENERACIÓN DE REPORTES DE IMPRESIÓN 
         // ==================================================
-
-        function imprimirReporte() {
-            const estudianteId = selectReporte.value;
+        
+        // Reporte para un solo alumno (Individual)
+        function imprimirReporteIndividual() {
+            const estudianteId = selectReporteAlumno.value;
             if (!estudianteId) {
                 alert("Por favor, selecciona un alumno para imprimir su historial completo.");
                 return;
             }
             
             const infoEstudiante = estudiantesCache[estudianteId];
-            const pagosAlumno = allPagosData.filter(pago => pago.estudianteId === estudianteId);
+            const pagosAlumno = allPagosData
+                .filter(pago => pago.estudianteId === estudianteId)
+                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha)); // Ordenar por fecha
             
             if (pagosAlumno.length === 0) {
                 alert(`El alumno ${infoEstudiante.nombre} no tiene pagos registrados.`);
                 return;
             }
+            
+            generarContenidoImpresion(pagosAlumno, `Reporte Individual de Pagos`, `Alumno: ${infoEstudiante.nombre} (ID: ${infoEstudiante.id_estudiante})`);
+        }
 
+        // Reporte para un mes en específico (Mensual)
+        function imprimirReporteMensual() {
+            const mesSeleccionado = selectReporteMes.value;
+            const anioSeleccionado = inputReporteAnio.value;
+            
+            if (!mesSeleccionado || !anioSeleccionado || anioSeleccionado.length !== 4) {
+                alert("Por favor, selecciona un mes y un año válidos (YYYY) para el reporte.");
+                return;
+            }
+            
+            const nombreMes = selectReporteMes.options[selectReporteMes.selectedIndex].text;
+
+            const pagosMensuales = allPagosData
+                .filter(pago => {
+                    if (pago.fecha) {
+                        const [pagoAnio, pagoMes] = pago.fecha.split('-');
+                        return pagoAnio === anioSeleccionado && pagoMes === mesSeleccionado;
+                    }
+                    return false;
+                })
+                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha)); // Ordenar por fecha
+
+            if (pagosMensuales.length === 0) {
+                alert(`No se encontraron transacciones para ${nombreMes} de ${anioSeleccionado}.`);
+                return;
+            }
+
+            generarContenidoImpresion(pagosMensuales, `Reporte Mensual de Transacciones`, `Período: ${nombreMes} / ${anioSeleccionado}`);
+        }
+
+        // Función unificada para crear el HTML de impresión
+        function generarContenidoImpresion(pagosArray, tituloReporte, subtituloReporte) {
             const formatter = new Intl.NumberFormat('es-NI', { style: 'currency', currency: 'USD' });
             let totalPagado = 0;
 
-            // 1. Crear el contenido del reporte
             let tablaHTML = `
                 <style>
                     /* Estilos internos para asegurar la impresión */
                     .print-header { display: flex; align-items: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px; color: black; }
                     .print-header img { height: 60px; margin-right: 15px; vertical-align: middle; }
                     .print-header h1 { margin: 0; font-size: 18pt; color: black; }
-                    .info-alumno p { margin: 5px 0; color: black; }
+                    .info-reporte p { margin: 5px 0; color: black; }
                     .reporte-tabla { width: 100%; border-collapse: collapse; margin-top: 20px; }
                     .reporte-tabla th, .reporte-tabla td { border: 1px solid #ccc; padding: 8px; text-align: left; color: black; }
                     .reporte-tabla th { background-color: #f0f0f0; }
-                    .total-row td { font-weight: bold; background-color: #DAA520; color: black; } 
+                    .total-row td { font-weight: bold; background-color: #DAA520; -webkit-print-color-adjust: exact; color: black !important; } 
                 </style>
                 <div class="print-header">
                     <img src="${LOGO_URL}" alt="Logo Academia AVIVA">
-                    <h1>Academia AVIVA - Historial de Pagos</h1>
+                    <h1>Academia AVIVA - Sistema de Gestión</h1>
                 </div>
-                <div class="info-alumno">
-                    <h2>Reporte de Pagos</h2>
-                    <p><strong>Alumno:</strong> ${infoEstudiante.nombre}</p>
-                    <p><strong>ID Académico:</strong> ${infoEstudiante.id_estudiante}</p>
-                    <p><strong>Fecha de Reporte:</strong> ${new Date().toLocaleDateString('es-NI')}</p>
+                <div class="info-reporte">
+                    <h2>${tituloReporte}</h2>
+                    <p><strong>${subtituloReporte}</strong></p>
+                    <p><strong>Fecha de Generación:</strong> ${new Date().toLocaleDateString('es-NI')}</p>
                 </div>
                 <table class="reporte-tabla">
                     <thead>
                         <tr>
+                            <th>Estudiante</th>
+                            <th>ID Alumno</th>
                             <th>Fecha</th>
                             <th>Concepto</th>
                             <th>Monto</th>
                             <th>Método</th>
-                            <th>Descripción</th>
+                            <th>Referencia/Notas</th>
                         </tr>
                     </thead>
                     <tbody>
             `;
 
-            pagosAlumno.forEach(pago => {
+            pagosArray.forEach(pago => {
                 totalPagado += Number(pago.monto);
+                
+                const infoEstudiante = estudiantesCache[pago.estudianteId] || { 
+                    nombre: 'ID NO VINCULADO', 
+                    id_estudiante: 'N/A' 
+                };
                 
                 let conceptoReporte = pago.concepto || 'N/A';
                 if (pago.mes) {
                     conceptoReporte += ` (Mes: ${pago.mes})`;
                 }
 
-                let metodoReporte = pago.metodo || 'N/A';
+                let notasReporte = pago.descripcion || '---';
                 if (pago.referencia) {
-                    metodoReporte += ` (Ref: ${pago.referencia})`;
+                    notasReporte = `Ref: ${pago.referencia}. ${notasReporte}`;
                 }
+
 
                 tablaHTML += `
                     <tr>
+                        <td>${infoEstudiante.nombre}</td>
+                        <td>${infoEstudiante.id_estudiante}</td>
                         <td>${pago.fecha}</td>
                         <td>${conceptoReporte}</td>
                         <td>${formatter.format(pago.monto)}</td>
-                        <td>${metodoReporte}</td>
-                        <td>${pago.descripcion || '---'}</td>
+                        <td>${pago.metodo}</td>
+                        <td>${notasReporte}</td>
                     </tr>
                 `;
             });
 
             tablaHTML += `
                     <tr class="total-row">
-                        <td colspan="2">TOTAL PAGADO</td>
+                        <td colspan="4" style="text-align: right;">TOTAL RECAUDADO EN EL PERÍODO:</td>
                         <td>${formatter.format(totalPagado)}</td>
                         <td colspan="2"></td>
                     </tr>
@@ -588,7 +723,6 @@
                 <p style="margin-top: 30px; font-style: italic; color: black;">Reporte generado automáticamente por el Sistema de Gestión AVIVA.</p>
             `;
 
-            // 2. Insertar y mandar a imprimir
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = tablaHTML;
             
@@ -596,7 +730,6 @@
                 window.print();
             }, 50);
         }
-
         // ==================================================
         // 5. GESTIÓN DEL MODAL Y EVENTOS (CRUD)
         // ==================================================
