@@ -24,18 +24,42 @@
         .resumen-card .valor.green { color: #8BC34A; } 
         .resumen-card .label { color: #DAA520; font-weight: 500; }
 
-        /* --- BÚSQUEDA Y REPORTE DE IMPRESIÓN --- */
-        .gestion-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
-        #search-box { padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; flex-grow: 1; max-width: 400px; }
+        /* --- TOOLBARS: BÚSQUEDA Y REPORTE DE IMPRESIÓN --- */
+        .gestion-toolbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+        }
+        
+        /* Contenedor de búsqueda en la parte superior */
+        .top-search-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #051937; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 25px; 
+        }
+
+        #search-box { 
+            padding: 10px; 
+            border: 1px solid #DAA520; 
+            border-radius: 4px; 
+            background-color: #082348; 
+            color: #FFFFFF; 
+            flex-grow: 1; 
+            max-width: 500px; 
+        }
         
         .report-toolbar { 
             display: flex; 
             align-items: center; 
             gap: 15px; 
-            background-color: #051937; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
+            flex-wrap: wrap;
         }
         .report-toolbar label { color: #E0E0E0; font-weight: 600; }
         #select-alumno-reporte { padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; min-width: 250px; }
@@ -51,7 +75,7 @@
             width: 100%; padding: 10px; border: 1px solid #DAA520; border-radius: 4px; background-color: #082348; color: #FFFFFF; box-sizing: border-box; 
         }
         
-        /* --- ESTILOS ESPECÍFICOS PARA IMPRESIÓN (Se inyectan dinámicamente) --- */
+        /* --- ESTILOS ESPECÍFICOS PARA IMPRESIÓN (Media Query) --- */
         @media print {
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
@@ -61,13 +85,13 @@
                 top: 0;
                 width: 100%;
                 font-size: 10pt;
-                color: black; /* Asegura texto negro para impresión */
+                color: black;
             }
             #print-area table { border-collapse: collapse; width: 100%; margin-top: 20px; }
             #print-area th, #print-area td { border: 1px solid #ccc; padding: 8px; text-align: left; color: black; }
-            #print-area h1, #print-area h2 { color: black; }
             .print-header { border-bottom: 3px solid #DAA520; padding-bottom: 15px; margin-bottom: 20px; }
             .print-header img { height: 60px; margin-right: 15px; vertical-align: middle; }
+            .total-row td { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; color: black !important; }
         }
     </style>
 </head>
@@ -115,27 +139,29 @@
             </div>
         </div>
 
+        <div class="top-search-bar">
+            <i class="fas fa-search" style="color: #DAA520; font-size: 1.5em;"></i>
+            <input type="text" id="search-box" placeholder="Buscar en Historial (Concepto, Estudiante o ID)..." onkeyup="filtrarPagos()">
+            
+            <button class="boton-rol" style="width: auto;" onclick="openModal()">
+                <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
+            </button>
+        </div>
+
+
         <div class="report-toolbar">
-            <label for="select-alumno-reporte"><i class="fas fa-print"></i> Seleccionar Alumno para Reporte:</label>
+            <label for="select-alumno-reporte"><i class="fas fa-file-invoice"></i> Reporte Individual de Pagos:</label>
             <select id="select-alumno-reporte">
                 <option value="">-- Seleccionar Alumno --</option>
             </select>
             <button class="boton-rol" style="width: auto;" onclick="imprimirReporte()" id="btn-imprimir" disabled>
-                <i class="fas fa-print"></i> Imprimir Historial
+                <i class="fas fa-print"></i> Imprimir Registros
             </button>
         </div>
 
 
         <div class="tarjeta-gestion">
-            <div class="gestion-toolbar">
-                <h4><i class="fas fa-list-alt"></i> Historial de Transacciones</h4>
-                
-                <input type="text" id="search-box" placeholder="Buscar por Concepto, Estudiante o ID..." onkeyup="filtrarPagos()">
-                
-                <button class="boton-rol" style="width: auto;" onclick="openModal()">
-                    <i class="fas fa-plus-circle"></i> Registrar Nuevo Pago
-                </button>
-            </div>
+            <h4 style="margin-top: 0;"><i class="fas fa-list-alt"></i> Historial de Transacciones (Filtrado)</h4>
             
             <div style="overflow-x: auto;">
                 <table class="tabla-gestion-aviva">
@@ -365,10 +391,11 @@
             });
         }
         
-        // Función de filtrado/búsqueda
+        // Función de filtrado/búsqueda (Aplica solo a la tabla visible)
         function filtrarPagos() {
             const searchTerm = searchBox.value.toLowerCase();
             
+            // Si el campo de búsqueda está vacío, mostramos todos los pagos
             if (searchTerm.length === 0) {
                 renderizarTabla(allPagosData);
                 return;
@@ -394,16 +421,17 @@
         }
 
         // ==================================================
-        // 4. GENERACIÓN DEL REPORTE DE IMPRESIÓN
+        // 4. GENERACIÓN DEL REPORTE DE IMPRESIÓN (SIN FILTRO DE BÚSQUEDA)
         // ==================================================
 
         function imprimirReporte() {
             const estudianteId = selectReporte.value;
             if (!estudianteId) {
-                alert("Por favor, selecciona un alumno para imprimir su historial.");
+                alert("Por favor, selecciona un alumno para imprimir su historial completo.");
                 return;
             }
-
+            
+            // Aseguramos que tomamos TODOS los pagos del alumno, no solo los que puedan estar filtrados en la tabla
             const infoEstudiante = estudiantesCache[estudianteId];
             const pagosAlumno = allPagosData.filter(pago => pago.estudianteId === estudianteId);
             
@@ -419,14 +447,14 @@
             let tablaHTML = `
                 <style>
                     /* Estilos internos para asegurar la impresión */
-                    .print-header { display: flex; align-items: center; border-bottom: 3px solid #DAA520; padding-bottom: 15px; margin-bottom: 20px; color: black; }
+                    .print-header { display: flex; align-items: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px; color: black; }
                     .print-header img { height: 60px; margin-right: 15px; vertical-align: middle; }
                     .print-header h1 { margin: 0; font-size: 18pt; color: black; }
                     .info-alumno p { margin: 5px 0; color: black; }
                     .reporte-tabla { width: 100%; border-collapse: collapse; margin-top: 20px; }
                     .reporte-tabla th, .reporte-tabla td { border: 1px solid #ccc; padding: 8px; text-align: left; color: black; }
                     .reporte-tabla th { background-color: #f0f0f0; }
-                    .total-row td { font-weight: bold; background-color: #DAA520; }
+                    .total-row td { font-weight: bold; background-color: #DAA520; color: black; } /* Estilo para el total */
                 </style>
                 <div class="print-header">
                     <img src="${LOGO_URL}" alt="Logo Academia AVIVA">
@@ -472,13 +500,13 @@
                     </tr>
                     </tbody>
                 </table>
+                <p style="margin-top: 30px; font-style: italic; color: black;">Reporte generado automáticamente por el Sistema de Gestión AVIVA.</p>
             `;
 
             // 2. Insertar y mandar a imprimir
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = tablaHTML;
             
-            // Usamos un pequeño timeout para asegurar que el DOM se haya actualizado antes de imprimir
             setTimeout(() => {
                 window.print();
             }, 50);
