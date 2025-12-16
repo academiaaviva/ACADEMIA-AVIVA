@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    
     <style>
         /* Estilos adicionales para los botones de acción */
         .action-btn {
@@ -57,6 +57,26 @@
             flex: 0 1 150px; /* Botón de agregar con ancho fijo */
             margin-top: 22px; /* Alineación con los campos de texto */
         }
+        
+        /* Estilos de gestión simplificada */
+        .contenido-admin { 
+            max-width: 1200px; 
+            margin: 20px auto; 
+            padding: 0 20px 80px; /* Padding extra para que el footer no tape el contenido */
+        }
+        .tarjeta-gestion { 
+            background-color: #082348; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+            margin-bottom: 20px; 
+        }
+        .tarjeta-gestion h4 { 
+            color: #DAA520; 
+            border-bottom: 1px solid rgba(218, 165, 32, 0.3); 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+        }
     </style>
 </head>
 <body>
@@ -64,7 +84,7 @@
     <header>
         <div class="header-contenido">
             <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-            <h1>Gestión de Estudiantes</h1>
+            <h1>Gestión de Estudiantes (Firebase)</h1>
             <a href="administracion.html" style="margin-left: auto; margin-right: 20px; color: #DAA520; font-size: 1.1em;" title="Volver al Panel">
                  <i class="fas fa-arrow-left"></i> Panel
             </a>
@@ -93,18 +113,18 @@
                     <input type="text" id="estado" value="Activo" required>
                 </div>
                 <button type="submit" class="boton-rol">
-                    <i class="fas fa-plus-circle"></i> Agregar
+                    <i class="fas fa-save"></i> Guardar en Nube
                 </button>
             </form>
         </div>
 
         <div class="tarjeta-gestion">
-            <h4><i class="fas fa-list"></i> Listado de Estudiantes</h4>
+            <h4><i class="fas fa-list"></i> Listado de Estudiantes (Datos Persistentes)</h4>
             
             <table class="tabla-gestion-aviva">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ID (DB)</th>
                         <th>Nombre</th>
                         <th>Clase Asignada</th>
                         <th>Estado</th>
@@ -112,33 +132,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabla-body">
-                    <tr>
-                        <td>AV001</td>
-                        <td>María Fernanda López</td>
-                        <td>Canto Intermedio</td>
-                        <td class="estado-activo">Activo</td>
-                        <td>
-                            <button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>AV002</td>
-                        <td>Juan Carlos Ramírez</td>
-                        <td>Guitarra Básica</td>
-                        <td class="estado-inactivo">Inactivo</td>
-                        <td>
-                            <button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>AV003</td>
-                        <td>Sofía Daniela Torres</td>
-                        <td>Teclado Avanzado</td>
-                        <td class="estado-activo">Activo</td>
-                        <td>
-                            <button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
+                    <tr><td colspan="5" style="text-align: center;">Cargando estudiantes...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -149,58 +143,105 @@
         <p><a href="#" class="enlace-footer">Acerca de</a> | &copy; 2025 Academia AVIVA.</p>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
     <script>
-        // Función para generar un ID simple (solo para el ejemplo)
-        function generarNuevoID() {
-            const filas = document.getElementById('tabla-body').rows;
-            return 'AV' + (filas.length + 1).toString().padStart(3, '0');
+        // *** 1. TUS CLAVES DE CONFIGURACIÓN DE FIREBASE ***
+        const firebaseConfig = {
+          apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
+          authDomain: "academia-aviva.firebaseapp.com",
+          projectId: "academia-aviva",
+          storageBucket: "academia-aviva.firebasestorage.app",
+          messagingSenderId: "1083662705160",
+          appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
+          measurementId: "G-GNBRN8CF2T"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Referencia a Firestore
+        const db = firebase.firestore();
+
+        // Referencia a la colección 'estudiantes'
+        const estudiantesCollection = db.collection('estudiantes');
+
+        // Referencia al cuerpo de la tabla
+        const tablaBody = document.getElementById('tabla-body');
+
+        // ==================================================
+        // 2. FUNCIÓN DE RENDERIZADO (MOSTRAR DATOS)
+        // ==================================================
+        function renderizarTabla(snapshot) {
+            tablaBody.innerHTML = '';
+            
+            if (snapshot.empty) {
+                tablaBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay estudiantes registrados.</td></tr>`;
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const estudiante = doc.data();
+                const fila = tablaBody.insertRow();
+                // Aseguramos que 'estado' sea una cadena para evitar errores
+                const estadoStr = String(estudiante.estado || 'Inactivo'); 
+                const estadoClase = estadoStr.toLowerCase() === 'activo' ? 'estado-activo' : 'estado-inactivo';
+
+                // Usamos doc.id (el ID de Firestore) para la columna ID
+                fila.insertCell(0).textContent = doc.id; 
+                fila.insertCell(1).textContent = estudiante.nombre || 'N/A';
+                fila.insertCell(2).textContent = estudiante.clase || 'N/A';
+                
+                const estadoCell = fila.insertCell(3);
+                estadoCell.textContent = estadoStr;
+                estadoCell.className = estadoClase;
+
+                // Botón de eliminar con el ID de Firestore
+                const accionesCell = fila.insertCell(4);
+                accionesCell.innerHTML = `<button class="action-btn delete-btn" data-id="${doc.id}" onclick="eliminarEstudiante(this)"><i class="fas fa-trash"></i></button>`;
+            });
         }
 
-        // ----------------------------------------------------
-        // LÓGICA DE AGREGAR ESTUDIANTE
-        // ----------------------------------------------------
+        // ==================================================
+        // 3. FUNCIÓN DE CARGA INICIAL Y ESCUCHA EN TIEMPO REAL
+        // ==================================================
+        // onSnapshot escucha los cambios en tiempo real y llama a renderizarTabla cada vez que hay una modificación.
+        estudiantesCollection.onSnapshot(renderizarTabla, error => {
+            console.error("Error al escuchar cambios en Firestore:", error);
+            tablaBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #FF7043;">Error de conexión a la base de datos. Verifica las reglas de seguridad de Firebase.</td></tr>`;
+        });
+        
+        // ==================================================
+        // 4. LÓGICA DE AGREGAR ESTUDIANTE (PERSISTENTE)
+        // ==================================================
         document.getElementById('form-agregar-estudiante').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evita que el formulario se envíe
+            event.preventDefault(); 
 
             const nombre = document.getElementById('nombre').value;
             const clase = document.getElementById('clase').value;
             const estado = document.getElementById('estado').value;
 
-            // 1. Crear una nueva fila
-            const tablaBody = document.getElementById('tabla-body');
-            const nuevaFila = tablaBody.insertRow();
-            const nuevoID = generarNuevoID();
-            
-            // 2. Insertar celdas
-            nuevaFila.insertCell(0).textContent = nuevoID; // ID
-            nuevaFila.insertCell(1).textContent = nombre; // Nombre
-            nuevaFila.insertCell(2).textContent = clase; // Clase
-            
-            // 3. Celda de Estado (con estilo)
-            const estadoCell = nuevaFila.insertCell(3);
-            estadoCell.textContent = estado;
-            estadoCell.className = estado.toLowerCase() === 'activo' ? 'estado-activo' : 'estado-inactivo';
+            // Bloquear botón para evitar doble envío
+            const boton = this.querySelector('.boton-rol');
+            boton.disabled = true;
 
-            // 4. Celda de Acciones (con botón de eliminar)
-            const accionesCell = nuevaFila.insertCell(4);
-            accionesCell.innerHTML = `<button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>`;
-
-            // 5. Limpiar el formulario
-            this.reset();
-            document.getElementById('estado').value = 'Activo'; // Asegura que el valor por defecto se mantenga
-        });
-
-        // ----------------------------------------------------
-        // LÓGICA DE ELIMINAR ESTUDIANTE
-        // ----------------------------------------------------
-        function eliminarFila(boton) {
-            if (confirm('¿Estás seguro de que deseas eliminar a este estudiante?')) {
-                // 'boton' es el botón, .parentNode es el <td>, .parentNode de nuevo es el <tr>
-                const fila = boton.parentNode.parentNode;
-                fila.remove();
-            }
-        }
-    </script>
-
-</body>
-</html>
+            // Guardar en Firestore
+            estudiantesCollection.add({
+                nombre: nombre,
+                clase: clase,
+                estado: estado
+            })
+            .then(() => {
+                // Éxito: El onSnapshot se encarga de actualizar la tabla
+                console.log("Estudiante guardado con éxito.");
+                this.reset();
+                document.getElementById('estado').value = 'Activo';
+            })
+            .catch((error) => {
+                console.error("Error al agregar el documento:", error);
+                alert("Error al guardar: " + error.message);
+            })
+            .finally(() => {
+                // Desbloquear botón
+                boton.disabled
