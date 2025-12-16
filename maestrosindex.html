@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Maestros - Plataforma Aviva</title>
+    <style>
+        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 70px; 
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            background-color: #00004d; 
+            color: white;
+            padding: 5px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-contenido { display: flex; align-items: center; }
+        .logo-header { height: 50px; margin-right: 15px; }
+        .header-contenido h1 { font-size: 24px; font-weight: bold; color: white; margin: 0; }
+        
+        /* Botón de Logout */
+        .btn-logout {
+            background-color: #ffc107;
+            color: #00004d;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-logout:hover {
+            background-color: #e0a800;
+        }
+
+        /* --- Contenido Principal / Dashboard --- */
+        .main-content {
+            margin-top: 30px;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        h2 { 
+            color: #00004d; 
+            margin-top: 0; 
+            margin-bottom: 30px; 
+            text-align: center;
+            font-size: 32px;
+            border-bottom: 3px solid #ffc107;
+            padding-bottom: 10px;
+        }
+
+        /* --- GRID de Opciones (Menú) --- */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding-top: 20px;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #00004d;
+            border-top: 5px solid #00004d;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-top-color: #ffc107;
+        }
+
+        .option-card h3 {
+            margin-top: 15px;
+            font-size: 22px;
+            color: #00004d;
+        }
+
+        .option-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .icon {
+            font-size: 48px;
+            color: #ffc107;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="header-contenido">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+        <h1>Dashboard del Profesor</h1>
+    </div>
+    <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+</nav>
+
+<div class="main-content">
+    <h2>Centro de Control Docente</h2>
+    
+    <div class="options-grid">
+        
+        <a href="profesores.html" class="option-card">
+            <span class="icon">📝</span>
+            <h3>Gestión de Calificaciones</h3>
+            <p>Accede para editar, modificar y registrar las notas de los estudiantes por materia y año.</p>
+        </a>
+
+        <a href="asistencia.html" class="option-card">
+            <span class="icon">🗓️</span>
+            <h3>Registro de Asistencia</h3>
+            <p>Controla la presencia de los alumnos en tus clases y lleva el registro diario.</p>
+        </a>
+
+        <a href="#" class="option-card" style="opacity: 0.6; cursor: default;">
+            <span class="icon">⚙️</span>
+            <h3>Ajustes (Próximamente)</h3>
+            <p>Configuración de perfil y herramientas adicionales.</p>
+        </a>
+        
+    </div>
+</div>
+
+<script>
+    // Función simple de simulación de cierre de sesión
+    function logout() {
+        if(confirm("¿Estás seguro de que quieres cerrar la sesión?")) {
+            // En un sistema real, aquí se usaría Firebase Auth signOut()
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userRole');
+            window.location.href = 'index.html'; // Redirige a la página de inicio o login
+        }
+    }
+</script>
+
+</body>
+</html>
