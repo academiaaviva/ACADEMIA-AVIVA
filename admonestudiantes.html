@@ -8,78 +8,199 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* Estilos adicionales para los botones de acción */
+        .action-btn {
+            background-color: transparent;
+            border: none;
+            color: #DAA520;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #ffd740;
+        }
+
+        .delete-btn {
+            color: #FF7043; /* Naranja para eliminar */
+        }
+        .delete-btn:hover {
+            color: #ff3d00;
+        }
+
+        /* Estilos para el formulario de agregar */
+        #form-agregar-estudiante {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        #form-agregar-estudiante .campo-inline {
+            flex: 1 1 200px; /* Permite que los campos se organicen en línea */
+        }
+
+        #form-agregar-estudiante .campo-inline input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #DAA520;
+            border-radius: 4px;
+            background-color: #051937;
+            color: #FFFFFF;
+        }
+        
+        #form-agregar-estudiante .boton-rol {
+            flex: 0 1 150px; /* Botón de agregar con ancho fijo */
+            margin-top: 22px; /* Alineación con los campos de texto */
+        }
+    </style>
 </head>
 <body>
 
-    <header class="admin-header-top">
-        <div class="header-left">
-            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-top">
-            <h1>Gestión de Alumnos | Academia AVIVA</h1>
-        </div>
-        <div class="header-right">
-            <span class="user-name">Director/a</span>
-            <i class="fas fa-user-circle fa-2x user-icon"></i>
-            <a href="estudiantes.html" class="logout-btn" title="Cerrar Sesión"><i class="fas fa-power-off"></i></a>
+    <header>
+        <div class="header-contenido">
+            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+            <h1>Gestión de Estudiantes</h1>
+            <a href="administracion.html" style="margin-left: auto; margin-right: 20px; color: #DAA520; font-size: 1.1em;" title="Volver al Panel">
+                 <i class="fas fa-arrow-left"></i> Panel
+            </a>
+            <a href="maestros.html" style="color: #DAA520; font-size: 1.1em;" title="Cerrar Sesión">
+                 <i class="fas fa-power-off"></i> Salir
+            </a>
         </div>
     </header>
 
-    <div class="panel-body-wrapper">
+    <main class="contenido-admin">
         
-        <aside class="sidebar-aviva">
-            <nav class="menu-colapsado">
-                <a href="administracion.html" class="menu-item" title="Dashboard"><i class="fas fa-chart-line fa-lg"></i></a>
-                <a href="#" class="menu-item menu-active" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
-                <a href="admonclases.html" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
-                <a href="pagos.html" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
-                <a href="admonconfi.html" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
-            </nav>
-        </aside>
-
-        <main class="contenido-panel-aviva">
+        <div class="tarjeta-gestion">
+            <h4><i class="fas fa-user-plus"></i> Agregar Nuevo Estudiante</h4>
             
-            <div class="toolbar-control-aviva">
-                <span class="toolbar-title">Alumnos Registrados</span>
-                <div class="date-controls">
-                    <button class="refresh-btn-aviva" style="margin-right: 10px;"><i class="fas fa-plus"></i> Nuevo Alumno</button>
-                    <button class="refresh-btn-aviva"><i class="fas fa-sync-alt"></i> Sincronizar</button>
+            <form id="form-agregar-estudiante">
+                <div class="campo-inline">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" required>
                 </div>
-            </div>
-
-            <div class="tarjeta-dashboard-aviva" style="grid-column: 1 / -1; min-height: 500px;">
-                <div class="tarjeta-header-aviva">
-                    <h4>Listado de Estudiantes Activos (Data Cargada con JS)</h4>
-                    <i class="fas fa-table"></i>
+                <div class="campo-inline">
+                    <label for="clase">Clase Asignada</label>
+                    <input type="text" id="clase" required>
                 </div>
-                <div class="tarjeta-body-aviva" style="padding: 0;">
-                    
-                    <table class="tabla-gestion-aviva">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre Completo</th>
-                                <th>Curso Principal</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-estudiantes-body">
-                            <tr>
-                                <td colspan="5" style="text-align: center;">Cargando datos...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <p style="font-size: 0.9em; margin-top: 20px; color: #999;">
-                        * Los datos de la tabla son cargados desde 'data.json' usando JavaScript, simulando la carga desde la nube.
-                    </p>
-                    
+                <div class="campo-inline">
+                    <label for="estado">Estado (Activo/Inactivo)</label>
+                    <input type="text" id="estado" value="Activo" required>
                 </div>
-            </div>
+                <button type="submit" class="boton-rol">
+                    <i class="fas fa-plus-circle"></i> Agregar
+                </button>
+            </form>
+        </div>
 
-        </main>
-    </div>
+        <div class="tarjeta-gestion">
+            <h4><i class="fas fa-list"></i> Listado de Estudiantes</h4>
+            
+            <table class="tabla-gestion-aviva">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Clase Asignada</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                    <tr>
+                        <td>AV001</td>
+                        <td>María Fernanda López</td>
+                        <td>Canto Intermedio</td>
+                        <td class="estado-activo">Activo</td>
+                        <td>
+                            <button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>AV002</td>
+                        <td>Juan Carlos Ramírez</td>
+                        <td>Guitarra Básica</td>
+                        <td class="estado-inactivo">Inactivo</td>
+                        <td>
+                            <button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>AV003</td>
+                        <td>Sofía Daniela Torres</td>
+                        <td>Teclado Avanzado</td>
+                        <td class="estado-activo">Activo</td>
+                        <td>
+                            <button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
     
-    <script src="script.js"></script> 
+    <footer>
+        <p><a href="#" class="enlace-footer">Acerca de</a> | &copy; 2025 Academia AVIVA.</p>
+    </footer>
+
+    <script>
+        // Función para generar un ID simple (solo para el ejemplo)
+        function generarNuevoID() {
+            const filas = document.getElementById('tabla-body').rows;
+            return 'AV' + (filas.length + 1).toString().padStart(3, '0');
+        }
+
+        // ----------------------------------------------------
+        // LÓGICA DE AGREGAR ESTUDIANTE
+        // ----------------------------------------------------
+        document.getElementById('form-agregar-estudiante').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita que el formulario se envíe
+
+            const nombre = document.getElementById('nombre').value;
+            const clase = document.getElementById('clase').value;
+            const estado = document.getElementById('estado').value;
+
+            // 1. Crear una nueva fila
+            const tablaBody = document.getElementById('tabla-body');
+            const nuevaFila = tablaBody.insertRow();
+            const nuevoID = generarNuevoID();
+            
+            // 2. Insertar celdas
+            nuevaFila.insertCell(0).textContent = nuevoID; // ID
+            nuevaFila.insertCell(1).textContent = nombre; // Nombre
+            nuevaFila.insertCell(2).textContent = clase; // Clase
+            
+            // 3. Celda de Estado (con estilo)
+            const estadoCell = nuevaFila.insertCell(3);
+            estadoCell.textContent = estado;
+            estadoCell.className = estado.toLowerCase() === 'activo' ? 'estado-activo' : 'estado-inactivo';
+
+            // 4. Celda de Acciones (con botón de eliminar)
+            const accionesCell = nuevaFila.insertCell(4);
+            accionesCell.innerHTML = `<button class="action-btn delete-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>`;
+
+            // 5. Limpiar el formulario
+            this.reset();
+            document.getElementById('estado').value = 'Activo'; // Asegura que el valor por defecto se mantenga
+        });
+
+        // ----------------------------------------------------
+        // LÓGICA DE ELIMINAR ESTUDIANTE
+        // ----------------------------------------------------
+        function eliminarFila(boton) {
+            if (confirm('¿Estás seguro de que deseas eliminar a este estudiante?')) {
+                // 'boton' es el botón, .parentNode es el <td>, .parentNode de nuevo es el <tr>
+                const fila = boton.parentNode.parentNode;
+                fila.remove();
+            }
+        }
+    </script>
 
 </body>
 </html>
