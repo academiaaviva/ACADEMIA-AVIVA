@@ -1,24 +1,37 @@
-/* ======================================= */
-/* ESTILOS DEL DASHBOARD DE CONTROL (Según la Referencia Visual) */
-/* ======================================= */
+/* ================================================================= */
+/* !!! ESTILOS EXCLUSIVOS PARA EL PANEL ADMINISTRATIVO (AVIVA) !!! */
+/* Estos estilos no afectarán a index.html ni a maestros.html */
+/* ================================================================= */
 
-/* Resetear el Body para el diseño de Panel */
-body {
-    overflow: hidden; /* Evita scrolls innecesarios en el cuerpo principal */
-    display: block; /* Deshace el flex-column para usar la estructura de dashboard */
+/* --- AJUSTES DE ESTRUCTURA Y RESETEO DEL BODY PARA EL PANEL --- */
+
+/* 1. Oculta el encabezado estándar y el footer en el panel */
+.admin-header-top ~ header, 
+.admin-header-top ~ footer {
+    display: none !important;
 }
 
-/* 1. HEADER SUPERIOR (Barra Fija) */
+/* 2. Reconfiguración del BODY para la vista de Dashboard */
+/* Solo se aplica si el BODY contiene el encabezado fijo del admin */
+body:has(.admin-header-top) {
+    overflow: hidden; /* Evita scroll doble en la ventana principal */
+    display: block; /* Deshabilita el flex-column que se pudo usar antes */
+    margin: 0;
+    padding: 0;
+    background-color: #051937; /* Asegura el fondo ultra oscuro */
+}
+
+/* 3. ENCABEZADO SUPERIOR (Barra Fija) - AZUL ULTRA OSCURO */
 .admin-header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #343A40; /* Gris oscuro del header de la imagen */
+    background-color: #051937; 
     color: #FFFFFF;
     padding: 10px 20px;
-    height: 60px; /* Altura fija */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    position: fixed; /* Fijo en la parte superior */
+    height: 60px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
+    position: fixed; 
     width: 100%;
     top: 0;
     z-index: 1000;
@@ -31,7 +44,7 @@ body {
 }
 
 .admin-header-top .logo-top {
-    height: 40px; /* Logo más pequeño para la barra de sistema */
+    height: 40px; 
     margin-right: 15px;
 }
 
@@ -39,48 +52,43 @@ body {
     font-size: 1.2em;
     font-weight: 400;
     letter-spacing: 0.5px;
-    color: #F8F9FA;
+    color: #FFFFFF;
 }
 
 .admin-header-top .user-name {
     margin-right: 15px;
     font-size: 0.9em;
-    color: #FFFFFF;
+    color: #DAA520; /* Dorado para el nombre */
 }
 
 .admin-header-top .user-icon {
     margin-right: 15px;
-    color: #DAA520; /* Dorado para el icono de usuario */
+    color: #FFFFFF; 
 }
 
 .admin-header-top .logout-btn {
-    color: #F8F9FA;
+    color: #DAA520;
     padding: 5px 10px;
     transition: color 0.3s;
 }
 .admin-header-top .logout-btn:hover {
-    color: #E60000; /* Rojo sutil para cerrar sesión */
+    color: #ffd740;
 }
 
-/* Ocultar el header anterior */
-header:not(.admin-header-top) {
-    display: none;
+/* 4. CUERPO PRINCIPAL DEL PANEL (Sidebar y Contenido) */
+.panel-body-wrapper {
+    display: flex; /* La clave para poner el sidebar y el main lado a lado */
+    min-height: calc(100vh - 60px); 
+    margin-top: 60px; /* Despeja espacio debajo del header fijo */
 }
 
-/* 2. CUERPO PRINCIPAL DEL PANEL */
-.panel-body {
-    display: flex;
-    min-height: calc(100vh - 60px); /* Altura de la vista menos la altura del header fijo */
-    margin-top: 60px; /* Espacio debajo del header fijo */
-}
-
-/* SIDEBAR COLAPSADA */
-.sidebar-colapsada {
-    width: 60px; /* Ancho muy reducido para el menú colapsado */
-    background-color: #212529; /* Negro/Gris muy oscuro para el sidebar */
+/* 5. SIDEBAR COLAPSADA - AZUL INTERMEDIO */
+.sidebar-aviva {
+    width: 60px; 
+    background-color: #082348; /* AZUL INTERMEDIO */
     padding-top: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-    flex-shrink: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0; 
 }
 
 .menu-colapsado {
@@ -89,36 +97,36 @@ header:not(.admin-header-top) {
 
 .menu-item {
     display: block;
-    color: #F8F9FA; /* Iconos en blanco */
+    color: #E0E0E0; 
     padding: 15px 0;
     text-decoration: none;
     transition: background-color 0.2s, color 0.2s;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .menu-item:hover, .menu-active {
-    background-color: #343A40; /* Gris oscuro al pasar o activo */
+    background-color: #051937; /* AZUL ULTRA OSCURO al pasar o activo */
     color: #DAA520; /* Dorado para el activo */
     opacity: 1;
 }
 
-/* 3. CONTENIDO PRINCIPAL */
-.contenido-panel {
-    flex-grow: 1;
-    background-color: #F8F9FA; /* Fondo blanco/gris muy claro para el contenido (como en la imagen) */
+/* 6. CONTENIDO PRINCIPAL - FONDO AZUL ULTRA OSCURO */
+.contenido-panel-aviva {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    background-color: #051937; 
     padding: 0;
-    overflow-y: auto; /* Scroll vertical para el contenido */
+    overflow-y: auto; 
 }
 
 /* BARRA DE HERRAMIENTAS DE CONTROL (Toolbar) */
-.toolbar-control {
+.toolbar-control-aviva {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #495057; /* Gris oscuro intermedio para el toolbar */
+    background-color: #082348; /* AZUL INTERMEDIO para el toolbar */
     color: #FFFFFF;
     padding: 10px 20px;
-    border-bottom: 1px solid #343A40;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
 }
 
 .toolbar-title {
@@ -126,71 +134,78 @@ header:not(.admin-header-top) {
     font-weight: 600;
 }
 
+.date-controls {
+    display: flex;
+    align-items: center;
+}
+
 .date-controls input[type="date"] {
     padding: 5px 10px;
-    border: 1px solid #6C757D;
+    border: 1px solid #051937; 
     border-radius: 4px;
     margin-right: 10px;
-    background-color: #F8F9FA;
-    color: #212529;
+    background-color: #051937; 
+    color: #FFFFFF;
     font-size: 0.9em;
 }
 
-.refresh-btn {
+.refresh-btn-aviva {
     background-color: #DAA520;
-    color: #212529;
+    color: #051937;
     border: none;
     padding: 7px 10px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.refresh-btn:hover {
+.refresh-btn-aviva:hover {
     background-color: #ffd740;
 }
 
 /* CONTENEDOR DE GRÁFICOS (GRID) */
-.grid-dashboard {
+.grid-dashboard-aviva {
     display: grid;
-    /* 3 columnas para el diseño de la imagen */
-    grid-template-columns: repeat(3, 1fr); 
+    /* Ajuste para 2 o 3 columnas, según el tamaño de la pantalla */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
     gap: 20px;
     padding: 20px;
 }
 
-.tarjeta-dashboard {
-    background-color: #FFFFFF; /* Fondo de las tarjetas en blanco */
-    border: 1px solid #E9ECEF; /* Borde muy sutil */
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra muy ligera */
-    min-height: 250px; /* Altura mínima para simular los gráficos */
+/* TARJETAS DEL DASHBOARD */
+.tarjeta-dashboard-aviva {
+    background-color: #082348; /* AZUL INTERMEDIO para el fondo de las tarjetas */
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    min-height: 250px; 
+    color: #FFFFFF;
 }
 
-.tarjeta-header {
+.tarjeta-header-aviva {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    border-bottom: 1px solid #E9ECEF;
-    background-color: #F8F9FA; /* Gris claro para el encabezado de la tarjeta */
+    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
+    background-color: #051937; /* AZUL ULTRA OSCURO para el encabezado de la tarjeta */
 }
 
-.tarjeta-header h4 {
-    font-size: 0.9em;
+.tarjeta-header-aviva h4 {
+    font-size: 1em;
     font-weight: 600;
-    color: #212529; /* Texto oscuro */
+    color: #DAA520; /* Título en dorado */
     margin: 0;
     letter-spacing: normal;
 }
 
-.tarjeta-header i {
-    color: #6C757D;
+.tarjeta-header-aviva i {
+    color: #E0E0E0;
     font-size: 0.8em;
     cursor: pointer;
 }
 
-.tarjeta-body {
+.tarjeta-body-aviva {
     padding: 15px;
-    /* Esto simularía el área donde van los gráficos */
-    min-height: 200px; 
+    color: #E0E0E0;
+    text-align: center;
 }
