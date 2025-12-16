@@ -3,41 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso de Administración - Plataforma Aviva</title>
+    <title>Administración - Crear Usuarios</title>
     <style>
-        /* Paleta de Colores
-        -- Azul Ultra Oscuro: #00004d
-        -- Dorado: #ffc107
-        -- Blanco: #ffffff
-        */
+        /* Paleta de Colores: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 70px; 
             background-color: #f0f2f5;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
+        }
+        
+        /* --- Navbar y Header --- */
+        .navbar {
+            background-color: #00004d;
+            color: white;
+            padding: 5px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-contenido {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-header {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        .header-contenido h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
             margin: 0;
         }
 
-        .login-box {
+        /* --- Contenedor Principal --- */
+        .main-content {
+            margin-top: 50px;
             background: white;
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             width: 90%;
-            max-width: 400px;
+            max-width: 500px;
             text-align: center;
         }
 
         h2 {
             color: #00004d;
+            margin-top: 0;
             margin-bottom: 25px;
-            font-size: 28px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: left;
         }
 
@@ -48,9 +80,9 @@
             color: #333;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="email"], input[type="password"] {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
             box-sizing: border-box;
@@ -58,10 +90,10 @@
         }
 
         button {
-            background-color: #00004d; /* Azul Ultra Oscuro */
-            color: white;
-            padding: 14px 20px;
-            margin-top: 15px;
+            background-color: #ffc107;
+            color: #00004d;
+            padding: 12px 20px;
+            margin-top: 20px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -72,90 +104,114 @@
         }
 
         button:hover {
-            background-color: #ffc107; /* Dorado */
-            color: #00004d;
+            background-color: #e0a800;
         }
 
         .message {
             margin-top: 20px;
-            color: red;
-            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
         }
 
-        /* Estilo para el campo de Rol que estará oculto */
-        #role-display {
-            color: #666;
-            font-style: italic;
-            margin-bottom: 15px;
-        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 </head>
 <body>
 
-<div class="login-box">
-    <h2>Acceso Profesor</h2>
-
-    <div id="role-display">
-        Rol Asignado: **Profesor** (Acceso Total)
+<nav class="navbar">
+    <div class="header-contenido">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+        <h1>Panel de Administración</h1>
     </div>
+    <button class="logout-btn" onclick="logout()">Salir</button>
+</nav>
 
-    <form id="adminLoginForm">
+<div class="main-content">
+    <h2>Crear Nuevo Usuario (Estudiante/Profesor)</h2>
+    <p>La contraseña debe tener un mínimo de 6 caracteres.</p>
+    
+    <form id="createUserForm">
+        <div class="form-group">
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" required placeholder="nuevo.usuario@aviva.com">
+        </div>
         
         <div class="form-group">
-            <label for="username">Usuario (Correo):</label>
-            <input type="text" placeholder="administracion" name="username" id="username" required>
-        </div>
-
-        <div class="form-group">
             <label for="password">Contraseña:</label>
-            <input type="password" placeholder="avivaelfuego" name="password" id="password" required>
+            <input type="password" id="password" required placeholder="••••••••">
         </div>
-
-        <input type="hidden" id="role" value="profesor">
-
-        <button type="submit">Iniciar Sesión</button>
+        
+        <button type="submit">Crear Cuenta en Firebase Auth</button>
     </form>
-
-    <p class="message" id="loginMessage"></p>
+    
+    <div id="statusMessage" class="message"></div>
 </div>
 
 <script>
-    document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+    // 🔑 TU CONFIGURACIÓN DE FIREBASE 🔑
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
+        authDomain: "academia-aviva.firebaseapp.com",
+        projectId: "academia-aviva",
+        storageBucket: "academia-aviva.firebasestorage.app",
+        messagingSenderId: "1083662705160",
+        appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
+        measurementId: "G-GNBRN8CF2T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const statusMessage = document.getElementById('statusMessage');
+
+    function displayMessage(message, isSuccess) {
+        statusMessage.textContent = message;
+        statusMessage.className = 'message ' + (isSuccess ? 'success' : 'error');
+        statusMessage.style.display = 'block';
+    }
+
+    document.getElementById('createUserForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        statusMessage.style.display = 'none';
 
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
-        const role = document.getElementById('role').value; // 'profesor'
-        const messageElement = document.getElementById('loginMessage');
+        // CREAR USUARIO EN FIREBASE
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                displayMessage(`✅ Usuario ${email} creado. Ahora puede iniciar sesión en estudiantes.html.`, true);
+                document.getElementById('createUserForm').reset();
+                
+                // OPCIONAL: Cerrar la sesión de administrador si firebase te loguea automáticamente al crear
+                auth.signOut();
+            })
+            .catch((error) => {
+                let userFriendlyError = "Error desconocido al crear el usuario.";
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    userFriendlyError = 'El correo ya está registrado.';
+                } else if (error.code === 'auth/weak-password') {
+                    userFriendlyError = 'La contraseña es demasiado débil (mínimo 6 caracteres).';
+                }
 
-        // 1. Verificación de Credenciales Fijas (Profesor)
-        const ADMIN_USER = 'administracion';
-        const ADMIN_PASS = 'avivaelfuego';
-
-        if (user === ADMIN_USER && pass === ADMIN_PASS) {
-            messageElement.style.color = 'green';
-            messageElement.textContent = '✅ Acceso Consedido. Guardando sesión...';
-
-            // 2. Guardar datos de sesión en localStorage para que 'estudiantes.html' los reconozca.
-            // Guardamos el rol y el estado de autenticación.
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userRole', role);
-            localStorage.setItem('username', user); // Opcional: guardar el nombre de usuario
-            
-            // 3. Redirigir a estudiantes.html después de un breve retraso
-            setTimeout(() => {
-                // Aquí se produce la redirección donde el usuario logueado como 'profesor'
-                // podrá ser reconocido en la siguiente página.
-                window.location.href = 'estudiantes.html'; 
-            }, 1000); 
-
-        } else {
-            messageElement.style.color = 'red';
-            messageElement.textContent = '❌ Usuario o Contraseña incorrectos.';
-            localStorage.removeItem('isLoggedIn'); // Asegurarse de que no quede sesión
-            localStorage.removeItem('userRole');
-        }
+                displayMessage(`❌ Error: ${userFriendlyError}`, false);
+            });
     });
+
+    function logout() {
+        auth.signOut().then(() => {
+            alert("Sesión cerrada.");
+            window.location.href = 'index.html'; 
+        }).catch(() => {
+            alert("Error al cerrar sesión.");
+        });
+    }
 </script>
 
 </body>
