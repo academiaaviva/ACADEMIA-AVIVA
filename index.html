@@ -3,25 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Inicio Estándar</title>
+    <title>Selección de Rol</title>
+    <style>
+        /* Estilos generales para centrar el contenido y el fondo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+        }
+
+        /* Contenedor principal de la tarjeta */
+        .role-selection-container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        /* Estilo del Logo */
+        .logo {
+            font-size: 48px;
+            color: #007bff; /* Color azul representativo */
+            margin-bottom: 10px;
+        }
+
+        /* Títulos */
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Estilos para los botones de rol */
+        .role-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .role-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Estilo para el botón de Profesor (acceso total) */
+        #profesor-btn {
+            background-color: #28a745; /* Verde */
+            color: white;
+        }
+
+        #profesor-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Estilo para el botón de Estudiante */
+        #estudiante-btn {
+            background-color: #007bff; /* Azul */
+            color: white;
+        }
+
+        #estudiante-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilos para iconos (opcional) */
+        .icon {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Bienvenido al Sistema</h1>
-        <p>Esta es la página principal de su aplicación.</p>
-    </header>
 
-    <main>
-        <section>
-            <h2>Contenido Principal</h2>
-            <p>Aquí se cargará la información o el contenido inicial de la aplicación.</p>
-        </section>
+<div class="role-selection-container">
+    <div class="logo">🚀</div> 
+    <h1>Seleccione su Rol</h1>
+    <p>¿Cómo desea acceder al sistema?</p>
+
+    <button class="role-button" id="profesor-btn" onclick="goToLoginPage('profesor')">
+        <span class="icon">👨‍🏫</span> Profesor
+    </button>
+
+    <button class="role-button" id="estudiante-btn" onclick="goToLoginPage('estudiante')">
+        <span class="icon">👩‍🎓</span> Estudiante
+    </button>
+</div>
+
+<script>
+    function goToLoginPage(role) {
+        // Esta función simula la navegación a la página de inicio de sesión
+        // El rol de 'profesor' debe llevar al formulario con las credenciales 'administracion' y 'avivaelfuego'
         
-        </main>
+        if (role === 'profesor') {
+            alert("Redirigiendo a la página de login de Profesor...");
+            // En un entorno real, aquí se usaría: window.location.href = 'login_profesor.html';
+        } else if (role === 'estudiante') {
+            alert("Redirigiendo a la página de login de Estudiante...");
+            // En un entorno real, aquí se usaría: window.location.href = 'login_estudiante.html';
+        }
+    }
+</script>
 
-    <footer>
-        <p>&copy; 2024 Mi Aplicación</p>
-    </footer>
-
-    </body>
+</body>
 </html>
