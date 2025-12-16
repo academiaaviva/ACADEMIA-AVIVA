@@ -10,107 +10,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header class="admin-header-top">
-        <div class="header-left">
-            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-top">
-            <h1>Sistema de Administración de Academia AVIVA</h1>
-        </div>
-        <div class="header-right">
-            <span class="user-name">Director/a</span>
-            <i class="fas fa-user-circle fa-2x user-icon"></i>
-            <a href="maestros.html" class="logout-btn" title="Cerrar Sesión"><i class="fas fa-power-off"></i></a>
+
+    <header>
+        <div class="header-contenido">
+            <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+            <h1>Tablero de Administración</h1>
+            <a href="maestros.html" style="margin-left: auto; color: #DAA520; font-size: 1.1em;">
+                 <i class="fas fa-power-off"></i> Cerrar Sesión
+            </a>
         </div>
     </header>
 
-    <div class="panel-body-wrapper">
+    <main class="contenido-admin">
         
-        <aside class="sidebar-aviva">
-            <nav class="menu-colapsado">
-                
-                <a href="administracion.html" class="menu-item menu-active" title="Tablero"><i class="fas fa-chart-line fa-lg"></i></a>
-                
-                <a href="admonestudiantes.html" class="menu-item" title="Estudiantes"><i class="fas fa-user-graduate fa-lg"></i></a>
-                
-                <a href="admonclases.html" class="menu-item" title="Clases"><i class="fas fa-book fa-lg"></i></a>
-                
-                <a href="pagos.html" class="menu-item" title="Pagos"><i class="fas fa-dollar-sign fa-lg"></i></a>
-                
-                <a href="admonconfi.html" class="menu-item" title="Configuración"><i class="fas fa-cog fa-lg"></i></a>
-                
-            </nav>
-        </aside>
+        <h2>Menú Principal</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+            <a href="admonestudiantes.html" class="boton-rol" style="width: calc(50% - 10px); background-color: #082348;">
+                <i class="fas fa-user-graduate"></i> Gestión de Estudiantes
+            </a>
+            <a href="admonclases.html" class="boton-rol" style="width: calc(50% - 10px); background-color: #082348;">
+                <i class="fas fa-book"></i> Gestión de Clases
+            </a>
+            <a href="pagos.html" class="boton-rol" style="width: calc(50% - 10px); background-color: #082348;">
+                <i class="fas fa-dollar-sign"></i> Gestión de Pagos
+            </a>
+            <a href="admonconfi.html" class="boton-rol" style="width: calc(50% - 10px); background-color: #082348;">
+                <i class="fas fa-cog"></i> Configuración
+            </a>
+        </div>
+        
+        <div class="tarjeta-gestion" style="margin-top: 30px;">
+            <h4>Resumen Rápido</h4>
+            <p><strong>Estudiantes Activos:</strong> 128</p>
+            <p><strong>Ingresos del Mes:</strong> $5,450</p>
+            <p><strong>Tareas Pendientes:</strong> 3</p>
+        </div>
 
-        <main class="contenido-panel-aviva">
-            
-            <div class="toolbar-control-aviva">
-                <span class="toolbar-title">Tablero Principal</span>
-                <div class="date-controls">
-                    <input type="date" value="2025-12-01">
-                    <input type="date" value="2025-12-31">
-                    <button class="refresh-btn-aviva"><i class="fas fa-sync-alt"></i></button>
-                </div>
-            </div>
-
-            <div class="grid-dashboard-aviva">
-                
-                <div class="tarjeta-dashboard-aviva">
-                    <div class="tarjeta-header-aviva">
-                        <h4>Estudiantes Activos</h4>
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="tarjeta-body-aviva">
-                        <p style="font-size: 3em; font-weight: bold; color: #DAA520;">128</p>
-                    </div>
-                </div>
-
-                <div class="tarjeta-dashboard-aviva">
-                    <div class="tarjeta-header-aviva">
-                        <h4>Ingresos del Mes</h4>
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="tarjeta-body-aviva">
-                        <p style="font-size: 3em; font-weight: bold; color: #DAA520;">$5,450</p>
-                    </div>
-                </div>
-
-                <div class="tarjeta-dashboard-aviva">
-                    <div class="tarjeta-header-aviva">
-                        <h4>Clases Programadas</h4>
-                        <i class="fas fa-music"></i>
-                    </div>
-                    <div class="tarjeta-body-aviva">
-                        <p style="font-size: 3em; font-weight: bold; color: #DAA520;">25</p>
-                    </div>
-                </div>
-                
-                <div class="tarjeta-dashboard-aviva" style="grid-column: span 2;">
-                    <div class="tarjeta-header-aviva">
-                        <h4>Pendientes del Administrador</h4>
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div class="tarjeta-body-aviva" style="text-align: left; padding: 20px;">
-                        <ul>
-                            <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: #DAA520;"></i> Revisar 3 inscripciones nuevas.</li>
-                            <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: #DAA520;"></i> Notificar pagos vencidos (5 estudiantes).</li>
-                            <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: #DAA520;"></i> Programar reunión de profesores.</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="tarjeta-dashboard-aviva">
-                    <div class="tarjeta-header-aviva">
-                        <h4>Profesores</h4>
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <div class="tarjeta-body-aviva">
-                         <p style="font-size: 3em; font-weight: bold; color: #DAA520;">12</p>
-                    </div>
-                </div>
-
-            </div>
-
-        </main>
-    </div>
+    </main>
+    
+    <footer>
+        <p><a href="#" class="enlace-footer">Acerca de</a> | &copy; 2025 Academia AVIVA.</p>
+    </footer>
 
 </body>
 </html>
