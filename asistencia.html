@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesores - Registro de Asistencia</title>
+    <style>
+        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 70px; 
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar y Botones --- */
+        .navbar { background-color: #00004d; color: white; padding: 5px 20px; width: 100%; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); display: flex; justify-content: space-between; align-items: center; }
+        .header-contenido { display: flex; align-items: center; }
+        .logo-header { height: 50px; margin-right: 15px; }
+        .header-contenido h1 { font-size: 24px; font-weight: bold; color: white; margin: 0; }
+        .btn-logout { background-color: #ffc107; color: #00004d; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
+        .btn-add { background-color: #28a745; color: white; margin-bottom: 20px; padding: 10px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;}
+        .btn-add:hover { background-color: #218838; }
+
+        /* --- Estructura Principal --- */
+        .container { display: flex; width: 95%; max-width: 1400px; margin-top: 30px; }
+        .main-content { flex-grow: 1; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+        h2 { color: #00004d; margin-top: 0; margin-bottom: 20px; }
+
+        /* --- Barra Lateral de Categorías --- */
+        .sidebar { width: 250px; background-color: #00004d; color: white; padding: 20px 0; border-radius: 12px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); height: fit-content; margin-right: 20px; }
+        .sidebar h3 { text-align: center; margin-top: 0; padding: 0 10px 10px; border-bottom: 1px solid #ffc107; }
+        .category-item { padding: 12px 20px; cursor: pointer; transition: background-color 0.2s; font-weight: 500; }
+        .category-item:hover, .category-item.active { background-color: #ffc107; color: #00004d; }
+
+        /* --- Tabla de Asistencia (Vista) --- */
+        #attendanceTable { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        #attendanceTable th { background-color: #ffc107; color: #00004d; padding: 10px 5px; font-size: 14px; }
+        #attendanceTable td { border: 1px solid #ddd; padding: 5px; text-align: center; vertical-align: middle; font-size: 13px; }
+        
+        /* Estilos de las celdas de asistencia */
+        .attendance-cell { width: 60px; height: 35px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; transition: background-color 0.1s; }
+        .attended-yes { background-color: #28a745; color: white; } /* Verde */
+        .attended-no { background-color: #dc3545; color: white; } /* Rojo */
+        .attended-none { background-color: #f8f9fa; color: #6c757d; } /* Gris claro */
+        
+        /* --- Modal de Formulario --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 30px; border: 1px solid #888; width: 90%; max-width: 700px; border-radius: 10px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.5); color: #00004d; }
+        .modal-close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .modal-close:hover, .modal-close:focus { color: #ffc107; text-decoration: none; cursor: pointer; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .form-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #00004d; }
+        .form-input-group input, .form-input-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .btn-submit-modal { background-color: #ffc107; color: #00004d; padding: 12px 20px; margin-top: 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+
+        /* Estilo para la tabla de asistencia generada dinámicamente en el modal */
+        #dynamicAttendanceTable {
+            width: 100%; margin-top: 20px; border-collapse: collapse;
+        }
+        #dynamicAttendanceTable th { background-color: #00004d; color: white; padding: 8px; font-size: 12px;}
+        #dynamicAttendanceTable td { border: 1px solid #ddd; padding: 5px; text-align: center; }
+
+    </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="header-contenido">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
+        <h1>Registro de Asistencia (PROFESORES)</h1>
+    </div>
+    <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+</nav>
+
+<div class="container">
+    
+    <div class="sidebar">
+        <h3>Materias</h3>
+        <div class="category-item active" data-category="TODAS" onclick="filterByCategory('TODAS', this)">TODAS</div>
+        <div class="category-item" data-category="SOLFEO" onclick="filterByCategory('SOLFEO', this)">SOLFEO</div>
+        <div class="category-item" data-category="CANTO" onclick="filterByCategory('CANTO', this)">CANTO</div>
+        <div class="category-item" data-category="BATERIA" onclick="filterByCategory('BATERIA', this)">BATERIA</div>
+        <div class="category-item" data-category="PIANO" onclick="filterByCategory('PIANO', this)">PIANO</div>
+        <div class="category-item" data-category="IMUSICAL" onclick="filterByCategory('IMUSICAL', this)">INICIACIÓN MUSICAL</div>
+        <div class="category-item" data-category="BAJO" onclick="filterByCategory('BAJO', this)">BAJO</div>
+        <div class="category-item" data-category="GUITARRA" onclick="filterByCategory('GUITARRA', this)">GUITARRA</div>
+        <div class="category-item" data-category="VIOLIN" onclick="filterByCategory('VIOLIN', this)">VIOLÍN</div>
+    </div>
+
+    <div class="main-content">
+        <h2 id="currentCategoryTitle">Asistencia: TODAS las Materias</h2>
+        
+        <button class="btn-add" onclick="openModal()">➕ Agregar Nueva Sesión de Asistencia</button>
+
+        <div style="overflow-x: auto;">
+            <table id="mainAttendanceTable">
+                <thead>
+                    <tr>
+                        <th style="width:120px;">Estudiante (ID)</th>
+                        <th style="width:120px;">Maestro</th>
+                        <th style="width:100px;">Materia</th>
+                        <th style="width:80px;">Mes/Día</th>
+                        <th colspan="6">Fechas de Clase (Máx. 6 por Mes)</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTbody">
+                    <tr><td colspan="10" style="text-align: center;">Seleccione una materia o agregue una nueva sesión.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="addAttendanceModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h2>Registrar Sesión de Asistencia Mensual</h2>
+        
+        <form id="addAttendanceForm">
+            <div class="form-grid">
+                <div class="form-input-group">
+                    <label for="new_student">Nombre Estudiante:</label>
+                    <input type="text" id="new_student" required>
+                </div>
+                <div class="form-input-group">
+                    <label for="new_teacher">Maestro:</label>
+                    <input type="text" id="new_teacher" required>
+                </div>
+                <div class="form-input-group">
+                    <label for="new_category">Materia:</label>
+                    <select id="new_category" required>
+                        <option value="">Seleccione...</option>
+                        <option value="SOLFEO">SOLFEO</option><option value="CANTO">CANTO</option><option value="BATERIA">BATERIA</option>
+                        <option value="PIANO">PIANO</option><option value="IMUSICAL">INICIACIÓN MUSICAL</option><option value="BAJO">BAJO</option>
+                        <option value="GUITARRA">GUITARRA</option><option value="VIOLIN">VIOLÍN</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="form-input-group">
+                    <label for="new_month">Mes y Año:</label>
+                    <input type="month" id="new_month" required onchange="generateDates()">
+                </div>
+                <div class="form-input-group">
+                    <label for="new_day_of_week">Día de Clase (Semana):</label>
+                    <select id="new_day_of_week" required onchange="generateDates()">
+                        <option value="">Seleccione...</option>
+                        <option value="1">Lunes</option>
+                        <option value="2">Martes</option>
+                        <option value="3">Miércoles</option>
+                        <option value="4">Jueves</option>
+                        <option value="5">Viernes</option>
+                        <option value="6">Sábado</option>
+                        <option value="0">Domingo</option>
+                    </select>
+                </div>
+            </div>
+
+            <p style="font-weight: bold; margin-top: 10px;">Completar Asistencia para este Mes:</p>
+            <div style="overflow-x: auto;">
+                <table id="dynamicAttendanceTable">
+                    <thead></thead>
+                    <tbody id="dynamicAttendanceTbody">
+                        <tr><td colspan="10">Seleccione Mes y Día para generar las fechas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button type="submit" class="btn-submit-modal">Guardar Asistencia en Firebase</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 🔑 TU CONFIGURACIÓN DE FIREBASE 🔑
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
+        authDomain: "academia-aviva.firebaseapp.com",
+        projectId: "academia-aviva",
+        storageBucket: "academia-aviva.firebasestorage.app",
+        messagingSenderId: "1083662705160",
+        appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
+        measurementId: "G-GNBRN8CF2T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    // Usaremos una colección para guardar los registros de asistencia
+    const attendanceCollection = db.collection('student_attendance'); 
+
+    let allAttendanceRecords = [];
+    let activeCategory = 'TODAS';
+
+    // MAPA para convertir los números de día de JS (0-6) a strings legibles
+    const dayMap = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+
+    // 1. OYENTE EN TIEMPO REAL (LECTURA DE DATOS)
+    attendanceCollection.onSnapshot(snapshot => {
+        allAttendanceRecords = snapshot.docs.map(doc => ({
+            id: doc.id, 
+            ...doc.data()
+        }));
+        renderMainTable();
+    }, error => {
+        console.error("Error al escuchar cambios en Firebase:", error);
+    });
+
+    // 2. FILTRADO POR CATEGORÍA
+    window.filterByCategory = function(category, element) {
+        activeCategory = category;
+        document.getElementById('currentCategoryTitle').textContent = `Asistencia: ${category}`;
+        
+        document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+
+        renderMainTable();
+    };
+    
+    // 3. GENERACIÓN DINÁMICA DE FECHAS DE CLASE
+    function getDatesForMonth(year, month, dayOfWeek) {
+        const dates = [];
+        const date = new Date(year, month, 1);
+        const day = parseInt(dayOfWeek); // 0 (Domingo) a 6 (Sábado)
+
+        while (date.getMonth() === month) {
+            if (date.getDay() === day) {
+                // Formato YYYY-MM-DD
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                dates.push(dateString);
+            }
+            date.setDate(date.getDate() + 1);
+        }
+        return dates;
+    }
+
+    // 4. GENERACIÓN DE LA TABLA DE ASISTENCIA EN EL MODAL
+    window.generateDates = function() {
+        const monthYear = document.getElementById('new_month').value;
+        const dayOfWeek = document.getElementById('new_day_of_week').value;
+        const tbody = document.getElementById('dynamicAttendanceTbody');
+        const thead = document.querySelector('#dynamicAttendanceTable thead');
+
+        tbody.innerHTML = '';
+        thead.innerHTML = '';
+
+        if (!monthYear || !dayOfWeek) {
+            tbody.innerHTML = '<tr><td colspan="10">Seleccione Mes y Día para generar las fechas...</td></tr>';
+            return;
+        }
+
+        const [year, month] = monthYear.split('-').map(Number);
+        // month en JS es 0-indexado, por eso es (month - 1)
+        const datesArray = getDatesForMonth(year, month - 1, dayOfWeek);
+        
+        if (datesArray.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10">No se encontraron días de clase para la selección.</td></tr>';
+            return;
+        }
+
+        // Crear encabezados de fecha
+        let headerRow = '<tr>';
+        datesArray.forEach((date, index) => {
+            headerRow += `<th>${dayMap[parseInt(dayOfWeek)]}<br>(${date.slice(5)})</th>`;
+        });
+        thead.innerHTML = headerRow + '</tr>';
+
+        // Crear fila de selección Si/No
+        let dataRow = '<tr>';
+        datesArray.forEach((date, index) => {
+            // Valor inicial: 0 (No definido)
+            dataRow += `
+                <td>
+                    <div id="status-${index}" class="attendance-cell attended-none" onclick="toggleAttendance(this, '${date}', ${index})">
+                        PENDIENTE
+                    </div>
+                </td>
+            `;
+        });
+        tbody.innerHTML = dataRow + '</tr>';
+        
+        // Almacenar las fechas generadas en un campo oculto para el guardado
+        document.getElementById('generatedDatesInput').value = JSON.stringify(datesArray.map(date => ({ date: date, attended: null })));
+    }
+
+    // 5. CAMBIO DE ESTADO SI/NO Y ALMACENAMIENTO TEMPORAL EN EL MODAL
+    window.toggleAttendance = function(element, date, index) {
+        let currentStatus = element.textContent;
+        let newStatus = 'SI';
+        let attendedValue = true;
+        let newClass = 'attended-yes';
+
+        if (currentStatus === 'SI') {
+            newStatus = 'NO';
+            attendedValue = false;
+            newClass = 'attended-no';
+        } else if (currentStatus === 'NO') {
+            newStatus = 'PENDIENTE';
+            attendedValue = null;
+            newClass = 'attended-none';
+        }
+
+        element.textContent = newStatus;
+        element.className = `attendance-cell ${newClass}`;
+
+        // Actualizar el campo oculto con el nuevo estado
+        const hiddenInput = document.getElementById('generatedDatesInput');
+        let datesData = JSON.parse(hiddenInput.value);
+        
+        // Buscar y actualizar el estado de la fecha correspondiente
+        if (datesData[index]) {
+            datesData[index].attended = attendedValue;
+            hiddenInput.value = JSON.stringify(datesData);
+        }
+    };
+
+    // 6. MANEJO DEL MODAL Y AÑADIR (CREATE)
+    window.openModal = function() {
+        document.getElementById('addAttendanceModal').style.display = 'block';
+        document.getElementById('addAttendanceForm').reset();
+        document.getElementById('dynamicAttendanceTbody').innerHTML = '<tr><td colspan="10">Seleccione Mes y Día para generar las fechas...</td></tr>';
+        document.querySelector('#dynamicAttendanceTable thead').innerHTML = '';
+
+        // Asegurarse de que el campo oculto existe y está vacío
+        if (!document.getElementById('generatedDatesInput')) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.id = 'generatedDatesInput';
+            document.getElementById('addAttendanceForm').appendChild(hiddenInput);
+        }
+        document.getElementById('generatedDatesInput').value = '[]';
+    }
+
+    window.closeModal = function() {
+        document.getElementById('addAttendanceModal').style.display = 'none';
+    }
+
+    document.getElementById('addAttendanceForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const studentId = 'STU-' + Math.floor(Math.random() * 1000); // Generación de ID simple para demo
+
+        // Datos del formulario
+        const data = {
+            studentId: studentId, 
+            studentName: document.getElementById('new_student').value.trim(),
+            teacherName: document.getElementById('new_teacher').value.trim(),
+            category: document.getElementById('new_category').value.trim().toUpperCase(),
+            monthYear: document.getElementById('new_month').value,
+            dayOfWeek: dayMap[parseInt(document.getElementById('new_day_of_week').value)],
+            // Fechas y asistencia del campo oculto
+            dates: JSON.parse(document.getElementById('generatedDatesInput').value) 
+        };
+
+        // Guardar en Firestore
+        attendanceCollection.add(data)
+            .then(() => {
+                alert("¡Sesión de asistencia registrada con éxito!");
+                closeModal();
+            })
+            .catch(error => {
+                console.error("Error al añadir la asistencia: ", error);
+                alert("Error al guardar la asistencia.");
+            });
+    });
+
+    // 7. RENDERIZADO DE LA TABLA PRINCIPAL (Lector de Registros)
+    function renderMainTable() {
+        const tbody = document.getElementById('attendanceTbody');
+        const thead = document.querySelector('#mainAttendanceTable thead');
+        tbody.innerHTML = '';
+        
+        const filteredRecords = activeCategory === 'TODAS'
+            ? allAttendanceRecords
+            : allAttendanceRecords.filter(r => r.category.toUpperCase() === activeCategory);
+
+        if (filteredRecords.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align: center;">No hay registros para la materia: ${activeCategory}.</td></tr>`;
+            // Reiniciar encabezado para evitar fechas incorrectas
+            thead.innerHTML = `<tr><th style="width:120px;">Estudiante (ID)</th><th style="width:120px;">Maestro</th><th style="width:100px;">Materia</th><th style="width:80px;">Mes/Día</th><th colspan="6">Fechas de Clase (Máx. 6 por Mes)</th></tr>`;
+            return;
+        }
+
+        // Determinar el máximo de columnas de fecha
+        const maxDates = filteredRecords.reduce((max, record) => Math.max(max, record.dates ? record.dates.length : 0), 0);
+        
+        // Re-crear el encabezado de la tabla principal para ajustar las columnas
+        let mainHeader = `<tr><th style="width:120px;">Estudiante (ID)</th><th style="width:120px;">Maestro</th><th style="width:100px;">Materia</th><th style="width:80px;">Mes/Día</th>`;
+        if (maxDates > 0) {
+             mainHeader += `<th colspan="${maxDates}">Fechas de Clase (${maxDates} por Mes)</th>`;
+        } else {
+             mainHeader += `<th colspan="6">Fechas de Clase (Máx. 6 por Mes)</th>`;
+        }
+        mainHeader += '</tr>';
+        thead.innerHTML = mainHeader;
+
+
+        filteredRecords.forEach(record => {
+            const row = tbody.insertRow();
+            
+            row.insertCell().textContent = record.studentName + ' (' + record.studentId.slice(-3) + ')';
+            row.insertCell().textContent = record.teacherName;
+            row.insertCell().textContent = record.category;
+            row.insertCell().textContent = `${record.monthYear} / ${record.dayOfWeek.slice(0, 3)}`;
+
+            const dates = record.dates || [];
+
+            // Llenar celdas de asistencia
+            for (let i = 0; i < maxDates; i++) {
+                const cell = row.insertCell();
+                const dateData = dates[i];
+
+                if (dateData) {
+                    let statusText = 'P'; // Pendiente
+                    let statusClass = 'attended-none';
+                    
+                    if (dateData.attended === true) {
+                        statusText = 'SI';
+                        statusClass = 'attended-yes';
+                    } else if (dateData.attended === false) {
+                        statusText = 'NO';
+                        statusClass = 'attended-no';
+                    }
+                    
+                    // Mostrar la fecha en el encabezado y el estado en el cuerpo
+                    cell.innerHTML = `
+                        <div class="attendance-cell ${statusClass}" style="height: auto;">
+                            <span style="font-size: 0.8em; opacity: 0.8;">${dateData.date.slice(5)}</span><br>
+                            ${statusText}
+                        </div>
+                    `;
+                    // Nota: Si se requiere edición, se necesitaría un mecanismo de UPDATE aquí, similar al de profesores.html
+                } else {
+                    // Celdas vacías si la sesión tuvo menos clases que el máximo
+                    cell.textContent = '-';
+                    cell.style.backgroundColor = '#f8f8f8';
+                }
+            }
+        });
+    }
+
+    // Función de Cierre de Sesión (logout)
+    function logout() {
+        if(confirm("¿Estás seguro de que quieres cerrar la sesión?")) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userRole');
+            window.location.href = 'index.html'; 
+        }
+    }
+</script>
+
+</body>
+</html>
