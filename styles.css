@@ -1,197 +1,157 @@
 /* ======================================= */
-/* PALETA DE COLORES */
-/* Azul Ultra Oscuro: #001f3f */
-/* Dorado: #FFD700 */
-/* Blanco: #FFFFFF */
+/* PALETA DE COLORES PARA ESTILO MINIMALISTA */
+/* Fondo Base: #051937 (Azul Oscuro Profundo) */
+/* Contenedores: #082348 (Azul Oscuro Suave) */
+/* Acento Minimalista (Dorado Suave): #DAA520 (Goldenrod, menos brillante que el oro puro) */
 /* ======================================= */
 
 /* 1. ESTILOS GENERALES Y RESETEO */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Inter', sans-serif; /* Fuente minimalista y legible */
     margin: 0;
     padding: 0;
-    background-color: #001f3f; /* FONDO: Azul Ultra Oscuro */
-    color: #FFFFFF; /* TEXTO GENERAL: Blanco */
+    background-color: #051937; 
+    color: #E0E0E0; /* Blanco suave para elegancia */
     line-height: 1.6;
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
 }
 
 h1, h2, h3 {
-    color: #FFFFFF; /* Títulos en Blanco */
+    color: #FFFFFF;
+    font-weight: 300; /* Fuente ligera para minimalismo */
+    letter-spacing: 2px; /* Espaciado sutil para elegancia */
+    margin: 0;
 }
 
 /* ======================================= */
-/* 2. ENCABEZADO Y PIE DE PÁGINA */
+/* 2. ENCABEZADO MINIMALISTA */
 /* ======================================= */
 header {
-    background-color: #001f3f; /* Encabezado: Mismo Azul Oscuro */
-    color: #FFFFFF;
-    padding: 1.5em 0;
-    text-align: center;
-    border-bottom: 2px solid #FFD700; /* Línea separadora Dorada */
+    background-color: #051937; 
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.3); /* Línea de separación muy fina */
+}
+
+.header-contenido {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-header {
+    height: 45px; /* Logo más pequeño y discreto */
+    width: auto;
+    margin-right: 20px; 
+    opacity: 0.9;
+    transition: opacity 0.5s;
 }
 
 header h1 {
-    margin: 0;
-    font-size: 2.5em;
-    /* Animación: Deslizamiento sutil al cargar */
-    animation: fadeInDown 1s ease-out; 
-}
-
-footer {
-    background-color: #00142b; /* Un tono de azul ligeramente más oscuro */
-    color: #CCCCCC;
-    text-align: center;
-    padding: 1em 0;
-    margin-top: 40px;
-    font-size: 0.9em;
+    font-size: 1.8em;
+    font-weight: 400;
 }
 
 /* ======================================= */
-/* 3. ESTILOS DEL CONTENIDO PRINCIPAL (MAIN) */
+/* 3. CONTENIDO PRINCIPAL Y CUADRO DE INICIO (Minimal Card) */
 /* ======================================= */
 main {
+    flex-grow: 1; 
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 40px 20px;
-    min-height: 80vh; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 60px 20px; /* Más padding para más espacio en blanco/oscuro */
 }
 
-/* ======================================= */
-/* 4. ESTILOS ESPECÍFICOS: CUADRO DE INICIO */
-/* ======================================= */
-
 .contenedor-inicio {
-    background-color: #002e5c; /* Un azul ligeramente más claro para el cuadro */
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Sombra intensa para contraste */
+    background-color: #082348; /* Contenedor sutilmente diferente al fondo */
+    padding: 40px;
+    border-radius: 5px; /* Bordes menos redondeados para líneas limpias */
+    box-shadow: none; /* Elimina la mayoría de las sombras */
+    border: 1px solid rgba(218, 165, 32, 0.2); /* Borde minimalista y elegante */
     text-align: center;
     width: 100%;
-    max-width: 400px; 
-    margin-top: 50px;
-    border: 1px solid #FFD700; /* Borde delgado Dorado */
-    
-    /* Animación: Aparecer con zoom sutil */
-    animation: zoomIn 1s ease-out;
+    max-width: 380px; /* Más estrecho para elegancia */
 }
 
 .contenedor-inicio h2 {
-    margin-bottom: 25px;
-    font-size: 2em;
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.4); /* Sombra de texto Dorada */
+    margin-bottom: 35px;
+    font-size: 1.6em;
+    color: #DAA520; /* Dorado Suave */
+    font-weight: 600;
+    letter-spacing: 1px;
 }
 
 /* ======================================= */
-/* 5. ESTILOS ESPECÍFICOS: BOTONES DE ROL */
+/* 4. ESTILOS DE BOTONES MINIMALISTAS */
 /* ======================================= */
 
 .boton-rol {
     display: block;
-    background-color: #FFD700; /* FONDO DEL BOTÓN: Dorado */
-    color: #001f3f; /* TEXTO DEL BOTÓN: Azul Ultra Oscuro para contraste */
-    padding: 15px 25px;
-    margin: 25px 0;
+    background-color: #DAA520; 
+    color: #051937; /* Contraste fuerte */
+    padding: 15px 20px;
+    margin: 15px 0;
     text-decoration: none; 
-    font-size: 1.3em;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; 
+    font-size: 1.1em;
+    font-weight: 700;
+    border-radius: 3px; 
+    transition: background-color 0.2s ease, transform 0.2s ease;
     border: none;
     cursor: pointer;
+    letter-spacing: 1px;
 }
 
-/* Animación: Efecto Hover (al pasar el ratón) */
+/* Efecto Hover (Minimalista: solo cambio de color sutil) */
 .boton-rol:hover {
-    background-color: #e0b400; /* Dorado un poco más oscuro */
-    transform: translateY(-3px); /* Se eleva ligeramente */
-    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.5); /* Sombra dorada */
-}
-
-/* Animación: Efecto Active (al hacer click) */
-.boton-rol:active {
-    transform: translateY(0); /* Vuelve a su posición */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #ffd740; /* Dorado ligeramente más brillante al pasar el ratón */
+    transform: translateY(-2px); /* Elevación sutil */
+    box-shadow: none;
 }
 
 /* ======================================= */
-/* 6. DEFINICIÓN DE ANIMACIONES CSS */
+/* 5. ESTILOS DE FORMULARIO (Minimalista) */
 /* ======================================= */
-
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translate3d(0, -20px, 0);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-@keyframes zoomIn {
-    from {
-        opacity: 0;
-        transform: scale3d(0.9, 0.9, 0.9);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-/* ======================================= */
-/* 7. ESTILOS DE FORMULARIO (LOGIN) */
-/* (Para la página estudiantes.html) */
-/* ======================================= */
-
-.formulario-login {
-    text-align: left; /* Alineamos los campos a la izquierda */
-    padding: 10px 0;
-}
-
-.campo {
-    margin-bottom: 20px;
-}
-
 .campo label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #FFD700; /* Etiquetas en Dorado */
-    font-size: 1.1em;
+    color: #E0E0E0; /* Texto de etiqueta suave */
+    font-weight: 400;
 }
 
 .campo input[type="text"],
 .campo input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    box-sizing: border-box; /* Incluye padding en el ancho */
-    border: 1px solid #0056b3; /* Borde sutil de un azul intermedio */
-    border-radius: 4px;
-    background-color: #00142b; /* Fondo del input un azul muy oscuro */
-    color: #FFFFFF; /* Texto escrito en blanco */
+    padding: 10px; /* Menos padding */
+    border: 1px solid rgba(218, 165, 32, 0.4); 
+    border-radius: 3px;
+    background-color: #051937; /* Misma base del fondo para integrarse */
+    color: #FFFFFF;
     font-size: 1em;
-    transition: border-color 0.3s ease;
 }
 
 .campo input:focus {
-    border-color: #FFD700; /* Borde Dorado al enfocarse */
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); /* Resplandor dorado */
-}
-
-.ayuda-link {
-    margin-top: 15px;
+    border-color: #DAA520; 
+    box-shadow: none; /* Eliminamos el resplandor excesivo */
 }
 
 .ayuda-link a {
-    color: #FFD700; /* Enlaces secundarios en Dorado */
-    text-decoration: none;
-    transition: color 0.3s;
+    color: #DAA520; 
+    font-weight: 400;
+    font-size: 0.9em;
 }
 
-.ayuda-link a:hover {
-    color: #e0b400; /* Cambio de color al pasar el ratón */
-    text-decoration: underline;
+/* ======================================= */
+/* 6. PIE DE PÁGINA */
+/* ======================================= */
+footer {
+    background-color: #051937; 
+    border-top: 1px solid rgba(218, 165, 32, 0.1); 
+    padding: 15px 0;
+    color: #666666; /* Texto gris suave */
+}
+
+.enlace-footer {
+    color: #AAAAAA; /* Enlaces sutiles */
 }
