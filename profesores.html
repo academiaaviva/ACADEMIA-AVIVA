@@ -3,459 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profesores - Gestión de Calificaciones</title>
+    <title>Panel de Calificaciones | Academia Aviva</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
+    
     <style>
-        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        :root {
+            --azul-oscuro: #00004d;
+            --dorado: #ffc107;
+            --blanco: #ffffff;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding-top: 70px; 
+            padding-top: 80px;
             background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
         }
 
-        /* --- Estilos Generales --- */
+        /* --- Navbar --- */
         .navbar {
-            background-color: #00004d; color: white; padding: 5px 20px; width: 100%; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); display: flex; justify-content: space-between; align-items: center;
-        }
-        .header-contenido { display: flex; align-items: center; }
-        .logo-header { height: 50px; margin-right: 15px; }
-        .header-contenido h1 { font-size: 24px; font-weight: bold; color: white; margin: 0; }
-        
-        /* Contenedor principal para la estructura de dos columnas */
-        .container {
-            display: flex;
-            width: 95%;
-            max-width: 1400px;
-            margin-top: 30px;
-        }
-
-        /* --- Barra Lateral de Categorías --- */
-        .sidebar {
-            width: 200px;
-            background-color: #00004d;
+            background-color: var(--azul-oscuro);
             color: white;
-            padding: 20px 0;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            height: fit-content;
-            margin-right: 20px;
-        }
-        .sidebar h3 {
-            text-align: center;
-            margin-top: 0;
-            padding: 0 10px 10px;
-            border-bottom: 1px solid #ffc107;
-        }
-        .category-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-            font-weight: 500;
-        }
-        .category-item:hover, .category-item.active {
-            background-color: #ffc107;
-            color: #00004d;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-sizing: border-box;
         }
 
-        /* --- Área de Contenido Principal (Tabla) --- */
-        .main-content {
-            flex-grow: 1;
+        .main-container {
+            max-width: 1300px;
+            margin: 20px auto;
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
-        
-        h2 { color: #00004d; margin-top: 0; margin-bottom: 20px; }
-        
-        /* Tabla estilo Excel */
-        #gradesTable {
+
+        h2 { color: var(--azul-oscuro); border-bottom: 3px solid var(--dorado); padding-bottom: 10px; }
+
+        /* --- Buscador --- */
+        .search-area {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid var(--azul-oscuro);
+            border-radius: 8px;
+            outline: none;
+        }
+
+        /* --- Tabla --- */
+        table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
         }
-        #gradesTable th, #gradesTable td {
-            border: 1px solid #ddd;
-            padding: 8px 5px;
+
+        table th {
+            background-color: var(--azul-oscuro);
+            color: var(--dorado);
+            padding: 12px;
             text-align: center;
-            min-width: 60px;
-        }
-        #gradesTable th {
-            background-color: #00004d;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-        /* Celdas editables */
-        #gradesTable td[contenteditable="true"] {
-            background-color: #fffacd; /* Amarillo claro para indicar edición */
-            outline: 2px solid #ffc107;
         }
 
-        /* Botones */
-        .btn-action {
-            padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; margin: 0 5px;
-        }
-        .btn-delete { background-color: #dc3545; color: white; }
-        .btn-delete:hover { background-color: #c82333; }
-        .btn-add { background-color: #28a745; color: white; margin-bottom: 20px; }
-        .btn-add:hover { background-color: #218838; }
-
-        /* --- Modal (Formulario de Agregar Nota) --- */
-        .modal {
-            display: none; /* Oculto por defecto */
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6); 
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto; 
-            padding: 30px;
-            border: 1px solid #888;
-            width: 80%; 
-            max-width: 500px;
-            border-radius: 10px;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            color: #00004d;
-        }
-
-        .modal-close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .modal-close:hover, .modal-close:focus {
-            color: #ffc107;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .form-input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .form-input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #00004d;
-        }
-        .form-input-group input, .form-input-group select {
-            width: 100%;
+        table td {
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
         }
 
-        .btn-guardar-modal {
-            background-color: #ffc107;
-            color: #00004d;
-            padding: 12px 20px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
+        .grade-input {
+            width: 50px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
             font-weight: bold;
         }
+
+        .final-grade-cell {
+            background-color: #fff9e6;
+            font-size: 1.1rem;
+            color: var(--azul-oscuro);
+            font-weight: 800;
+            border-radius: 5px;
+        }
+
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-save:hover { background-color: #218838; transform: scale(1.05); }
+
+        tr:hover { background-color: #f1f1f1; }
     </style>
-    
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="header-contenido">
-        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-        <h1>Gestión de Calificaciones (PROFESORES)</h1>
+    <div style="display:flex; align-items:center;">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50" style="margin-right:15px;">
+        <h1>Control de Notas - Profesores</h1>
     </div>
-    <button class="btn-action" style="background-color: #ffc107; color:#00004d;" onclick="logout()">Cerrar Sesión</button>
+    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px;">MENU PRINCIPAL</button>
 </nav>
 
-<div class="container">
-    
-    <div class="sidebar">
-        <h3>Categorías</h3>
-        <div class="category-item active" data-category="TODAS" onclick="filterByCategory('TODAS', this)">TODAS</div>
-        <div class="category-item" data-category="SOLFEO" onclick="filterByCategory('SOLFEO', this)">NOTAS SOLFEO</div>
-        <div class="category-item" data-category="CANTO" onclick="filterByCategory('CANTO', this)">NOTAS CANTO</div>
-        <div class="category-item" data-category="BATERIA" onclick="filterByCategory('BATERIA', this)">NOTAS BATERIA</div>
-        <div class="category-item" data-category="PIANO" onclick="filterByCategory('PIANO', this)">NOTAS PIANO</div>
-        <div class="category-item" data-category="IMUSICAL" onclick="filterByCategory('IMUSICAL', this)">NOTAS INICIACIÓN MUSICAL</div>
-        <div class="category-item" data-category="BAJO" onclick="filterByCategory('BAJO', this)">NOTAS BAJO</div>
-        <div class="category-item" data-category="GUITARRA" onclick="filterByCategory('GUITARRA', this)">NOTAS GUITARRA</div>
-        <div class="category-item" data-category="VIOLIN" onclick="filterByCategory('VIOLIN', this)">NOTAS VIOLÍN</div>
+<div class="main-container">
+    <h2>Registro de Calificaciones Anuales</h2>
+
+    <div class="search-area">
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Buscar estudiante por nombre...">
     </div>
 
-    <div class="main-content">
-        <h2 id="currentCategoryTitle">Calificaciones: TODAS las Categorías</h2>
-        
-        <button class="btn-add" onclick="openModal()">➕ Agregar Nueva Calificación</button>
-
-        <div style="overflow-x: auto;">
-            <table id="gradesTable">
-                <thead>
-                    <tr>
-                        <th>ID Estudiantil</th>
-                        <th>Estudiante</th>
-                        <th>Maestro</th>
-                        <th>Materia/Categoría</th>
-                        <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th>
-                        <th>SE2</th><th>NF</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="15">Cargando calificaciones desde Firebase...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div id="addGradeModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <h2>Registrar Nueva Calificación</h2>
-        
-        <form id="addGradeForm">
-            <div class="form-input-group">
-                <label for="new_id">ID Estudiantil:</label>
-                <input type="text" id="new_id" required>
-            </div>
-            <div class="form-input-group">
-                <label for="new_student">Nombre del Estudiante:</label>
-                <input type="text" id="new_student" required>
-            </div>
-            <div class="form-input-group">
-                <label for="new_teacher">Maestro Asignado:</label>
-                <input type="text" id="new_teacher" required>
-            </div>
-            <div class="form-input-group">
-                <label for="new_category">Materia/Categoría:</label>
-                <select id="new_category" required>
-                    <option value="">Seleccione...</option>
-                    <option value="SOLFEO">SOLFEO</option>
-                    <option value="CANTO">CANTO</option>
-                    <option value="BATERIA">BATERIA</option>
-                    <option value="PIANO">PIANO</option>
-                    <option value="IMUSICAL">INICIACIÓN MUSICAL</option>
-                    <option value="BAJO">BAJO</option>
-                    <option value="GUITARRA">GUITARRA</option>
-                    <option value="VIOLIN">VIOLÍN</option>
-                </select>
-            </div>
-
-            <p style="font-weight: bold; margin-top: 20px;">Notas (0-100):</p>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
-                <input type="number" name="N1" placeholder="N1" min="0" max="100" value="0">
-                <input type="number" name="N2" placeholder="N2" min="0" max="100" value="0">
-                <input type="number" name="N3" placeholder="N3" min="0" max="100" value="0">
-                <input type="number" name="N4" placeholder="N4" min="0" max="100" value="0">
-                <input type="number" name="N5" placeholder="N5" min="0" max="100" value="0">
-                <input type="number" name="N6" placeholder="N6" min="0" max="100" value="0">
-                <input type="number" name="N7" placeholder="N7" min="0" max="100" value="0">
-                <input type="number" name="N8" placeholder="N8" min="0" max="100" value="0">
-                <input type="number" name="N9" placeholder="N9" min="0" max="100" value="0">
-                <input type="number" name="N10" placeholder="N10" min="0" max="100" value="0">
-            </div>
-
-            <button type="submit" class="btn-guardar-modal">Guardar y Registrar en Firebase</button>
-        </form>
-    </div>
+    <table id="gradesTable">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Materia</th>
+                <th>M1</th>
+                <th>M2</th>
+                <th>SE1</th>
+                <th>M3</th>
+                <th>M4</th>
+                <th>SE2</th>
+                <th style="background: var(--dorado); color: var(--azul-oscuro);">NF (FINAL)</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr id="row-1">
+                <td style="font-weight:bold;">PRUEBA WEB</td>
+                <td>PIANO</td>
+                <td><input type="number" class="grade-input m1" value="0" oninput="calculateNF('row-1')"></td>
+                <td><input type="number" class="grade-input m2" value="0" oninput="calculateNF('row-1')"></td>
+                <td><input type="number" class="grade-input se1" value="0" oninput="calculateNF('row-1')"></td>
+                <td><input type="number" class="grade-input m3" value="0" oninput="calculateNF('row-1')"></td>
+                <td><input type="number" class="grade-input m4" value="0" oninput="calculateNF('row-1')"></td>
+                <td><input type="number" class="grade-input se2" value="0" oninput="calculateNF('row-1')"></td>
+                <td class="final-grade-cell nf-val">0</td>
+                <td><button class="btn-save" onclick="saveToFirebase('row-1')">Guardar</button></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <script>
-    // 🔑 TU CONFIGURACIÓN DE FIREBASE 🔑
-    const firebaseConfig = {
-        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
-        authDomain: "academia-aviva.firebaseapp.com",
-        projectId: "academia-aviva",
-        storageBucket: "academia-aviva.firebasestorage.app",
-        messagingSenderId: "1083662705160",
-        appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
-        measurementId: "G-GNBRN8CF2T"
-    };
+    // --- LÓGICA DE CÁLCULO ---
+    function calculateNF(rowId) {
+        const row = document.getElementById(rowId);
+        const m1 = parseFloat(row.querySelector('.m1').value) || 0;
+        const m2 = parseFloat(row.querySelector('.m2').value) || 0;
+        const se1 = parseFloat(row.querySelector('.se1').value) || 0;
+        const m3 = parseFloat(row.querySelector('.m3').value) || 0;
+        const m4 = parseFloat(row.querySelector('.m4').value) || 0;
+        const se2 = parseFloat(row.querySelector('.se2').value) || 0;
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const gradesCollection = db.collection('student_grades'); 
-
-    let currentGrades = [];
-    let activeCategory = 'TODAS';
-
-    // 1. OYENTE EN TIEMPO REAL (LECTURA DE DATOS)
-    gradesCollection.onSnapshot(snapshot => {
-        currentGrades = snapshot.docs.map(doc => ({
-            id: doc.id, 
-            ...doc.data(),
-            // Asegura que las notas sean un array de 10 elementos, incluso si faltan
-            notes: doc.data().notes || Array(10).fill(0) 
-        }));
-        renderTable();
-    }, error => {
-        console.error("Error al escuchar cambios en Firestore:", error);
-        document.querySelector('#gradesTable tbody').innerHTML = '<tr><td colspan="15" style="color:red; text-align: center;">Error al cargar datos.</td></tr>';
-    });
-
-
-    // 2. FILTRADO POR CATEGORÍA
-    window.filterByCategory = function(category, element) {
-        activeCategory = category;
-        document.getElementById('currentCategoryTitle').textContent = `Calificaciones: ${category}`;
+        // Suma total
+        const total = m1 + m2 + se1 + m3 + m4 + se2;
         
-        // Actualiza la clase activa en la barra lateral
-        document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
-        element.classList.add('active');
+        // Mostrar en la celda NF
+        row.querySelector('.nf-val').textContent = total.toFixed(0);
+    }
 
-        renderTable();
-    };
+    // --- BUSCADOR ---
+    function filterTable() {
+        const input = document.getElementById("searchInput").value.toUpperCase();
+        const tr = document.getElementById("tableBody").getElementsByTagName("tr");
 
-    // 3. RENDERIZADO DE LA TABLA DINÁMICA
-    function renderTable() {
-        const tbody = document.querySelector('#gradesTable tbody');
-        tbody.innerHTML = '';
-
-        const filteredGrades = activeCategory === 'TODAS'
-            ? currentGrades
-            : currentGrades.filter(g => g.category.toUpperCase() === activeCategory);
-        
-        if (filteredGrades.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="15" style="text-align: center;">No hay calificaciones registradas para la categoría: ${activeCategory}.</td></tr>`;
-            return;
-        }
-
-        filteredGrades.forEach(item => {
-            const row = tbody.insertRow();
-            
-            // Columnas de información
-            row.insertCell().textContent = item.studentId;
-            row.insertCell().textContent = item.studentName;
-            row.insertCell().textContent = item.teacherName;
-            row.insertCell().textContent = item.category;
-
-            // Columnas de Notas (Editables)
-            for (let i = 0; i < 10; i++) {
-                const noteCell = row.insertCell();
-                noteCell.id = `note-${item.id}-${i}`; // ID único para edición
-                noteCell.textContent = item.notes[i] !== undefined ? item.notes[i] : 0;
-                noteCell.setAttribute('contenteditable', 'true');
-                
-                // Oyente para guardar la nota al perder el foco (estilo Excel)
-                noteCell.onblur = () => updateSingleNote(item.id, i, noteCell.textContent);
+        for (let i = 0; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                let textValue = td.textContent || td.innerText;
+                tr[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
             }
-            
-            // Columna de Acciones
-            const actionsCell = row.insertCell();
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn-action btn-delete';
-            deleteBtn.textContent = 'X Borrar Fila';
-            deleteBtn.onclick = () => deleteGrade(item.id);
-            actionsCell.appendChild(deleteBtn);
-        });
-    }
-
-    // 4. MANEJO DE EDICIÓN EN CELDAS (UPDATE)
-    function updateSingleNote(docId, noteIndex, newValue) {
-        const gradeValue = parseFloat(newValue);
-        
-        if (isNaN(gradeValue) || gradeValue < 0 || gradeValue > 100) {
-            alert(`La nota debe ser un número entre 0 y 100. Valor ingresado: ${newValue}`);
-            // Recargar la tabla para revertir el valor no válido
-            renderTable(); 
-            return;
-        }
-
-        // Crear el path de actualización: `notes.1`, `notes.2`, etc.
-        const updatePath = `notes.${noteIndex}`;
-        
-        gradesCollection.doc(docId).update({
-            [updatePath]: gradeValue
-        })
-        .then(() => console.log(`Nota ${noteIndex + 1} de ${docId} actualizada.`))
-        .catch(error => console.error("Error al actualizar la nota: ", error));
-    }
-
-
-    // 5. MANEJO DEL MODAL Y AÑADIR (CREATE)
-    function openModal() {
-        document.getElementById('addGradeModal').style.display = 'block';
-        document.getElementById('addGradeForm').reset();
-    }
-
-    function closeModal() {
-        document.getElementById('addGradeModal').style.display = 'none';
-    }
-
-    document.getElementById('addGradeForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const data = {
-            studentId: document.getElementById('new_id').value.trim(),
-            studentName: document.getElementById('new_student').value.trim(),
-            teacherName: document.getElementById('new_teacher').value.trim(),
-            category: document.getElementById('new_category').value.trim().toUpperCase(),
-            notes: []
-        };
-        
-        // Recopilar las 10 notas del formulario
-        const noteInputs = this.querySelectorAll('input[type="number"]');
-        noteInputs.forEach(input => {
-            const val = parseFloat(input.value);
-            // Asegurar que todas las notas son números válidos (0-100) o 0 por defecto
-            data.notes.push(isNaN(val) || val < 0 || val > 100 ? 0 : val);
-        });
-
-        // Guardar en Firestore
-        gradesCollection.add(data)
-            .then(() => {
-                alert("¡Calificación registrada con éxito!");
-                closeModal();
-            })
-            .catch(error => {
-                console.error("Error al añadir la calificación: ", error);
-                alert("Error al guardar la calificación. Revise la consola.");
-            });
-    });
-
-
-    // 6. BORRAR REGISTRO (DELETE)
-    function deleteGrade(id) {
-        if (confirm("¿Estás seguro de que deseas eliminar PERMANENTEMENTE este registro de calificaciones?")) {
-            gradesCollection.doc(id).delete()
-                .then(() => console.log(`Registro ${id} borrado con éxito.`))
-                .catch(error => console.error("Error al borrar: ", error));
-        }
-    }
-    
-    // Función de Cierre de Sesión (logout)
-    function logout() {
-        if(confirm("¿Estás seguro de que quieres cerrar la sesión?")) {
-            // Aquí puedes añadir Firebase Auth sign out si lo usas, o solo la simulación
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userRole');
-            window.location.href = 'index.html'; 
         }
     }
 
+    // --- FIREBASE (SIMULACIÓN DE GUARDADO) ---
+    function saveToFirebase(rowId) {
+        const row = document.getElementById(rowId);
+        const student = row.getElementsByTagName("td")[0].innerText;
+        const finalGrade = row.querySelector('.nf-val').innerText;
+
+        // Aquí iría el código db.collection('student_grades').doc(...).set({...})
+        alert("¡Guardado! Estudiante: " + student + " | Nota Final: " + finalGrade);
+    }
 </script>
 
 </body>
