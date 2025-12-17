@@ -6,20 +6,17 @@
     <title>Panel Maestro | Academia Aviva</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
         :root {
             --azul-aviva: #00004d;
             --dorado: #ffc107;
             --blanco: #ffffff;
-            --bg-body: #f8f9fa;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            margin: 0; background: var(--bg-body); color: var(--azul-aviva);
-            padding-top: 90px;
+            margin: 0; background: #f4f7f6; padding-top: 90px;
         }
 
         /* --- Navbar --- */
@@ -28,55 +25,37 @@
             top: 0; display: flex; justify-content: space-between; align-items: center;
             z-index: 1000; border-bottom: 3px solid var(--dorado); box-sizing: border-box;
         }
-        .logo-header { height: 50px; }
 
-        /* --- Centro de Filtros --- */
         .filter-section {
-            background: white;
-            margin: 20px auto;
-            max-width: 1300px;
-            padding: 20px 30px;
-            border-radius: 15px;
-            display: flex;
-            gap: 20px;
-            align-items: center;
+            background: white; margin: 20px auto; max-width: 1300px; padding: 25px;
+            border-radius: 15px; display: flex; gap: 20px; align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            flex-wrap: wrap;
         }
 
-        .filter-group { display: flex; flex-direction: column; flex: 1; min-width: 200px; }
+        .filter-group { display: flex; flex-direction: column; flex: 1; }
         .filter-group label { font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; color: #777; }
-        
-        .filter-group input, .filter-group select {
-            padding: 12px; border: 2px solid #eee; border-radius: 10px; outline: none; transition: 0.3s;
-        }
-
-        .filter-group input:focus, .filter-group select:focus { border-color: var(--dorado); }
+        .filter-group input, .filter-group select { padding: 12px; border: 2px solid #eee; border-radius: 10px; outline: none; }
 
         .btn-add {
-            background: var(--azul-aviva); color: var(--dorado); border: none;
-            padding: 15px 25px; border-radius: 12px; font-weight: bold; cursor: pointer;
-            transition: 0.3s; margin-top: 15px;
+            background: var(--dorado); color: var(--azul-aviva); border: none;
+            padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
         }
-        .btn-add:hover { transform: scale(1.05); background: #000033; }
 
         /* --- Tabla --- */
-        .table-card {
-            background: white; border-radius: 15px; padding: 20px; 
-            max-width: 1300px; margin: 0 auto 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
+        .table-card { background: white; border-radius: 15px; padding: 20px; max-width: 1300px; margin: 0 auto; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f0f2f5; color: var(--azul-aviva); padding: 15px; font-size: 0.7rem; text-transform: uppercase; }
+        th { background: #f0f2f5; padding: 15px; font-size: 0.75rem; text-transform: uppercase; color: var(--azul-aviva); }
         td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; font-weight: 600; }
-        
-        .nf-badge { background: var(--azul-aviva); color: var(--dorado); padding: 5px 10px; border-radius: 6px; font-weight: 800; }
 
-        /* Estilos del Modal (Idénticos a la versión anterior) */
+        .auto-calc { background: #f9f9f9; color: #555; font-style: italic; }
+        .nf-badge { background: var(--azul-aviva); color: var(--dorado); padding: 5px 12px; border-radius: 8px; font-weight: 900; }
+
+        /* --- Modal --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-content { background: white; width: 500px; padding: 35px; border-radius: 20px; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-content { background: white; width: 550px; padding: 40px; border-radius: 25px; }
+        .grades-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .result-box { background: #fff9e6; padding: 15px; border-radius: 10px; text-align: center; border: 1px dashed var(--dorado); }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -85,77 +64,78 @@
 <body>
 
 <nav class="navbar">
-    <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" class="logo-header">
-    <h1 style="color: white; font-size: 1rem; letter-spacing: 2px;">GESTIÓN DE NOTAS</h1>
-    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:8px 15px; border-radius:10px; font-weight:bold; cursor:pointer;">CERRAR</button>
+    <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50">
+    <h1 style="color: white; font-size: 1rem; letter-spacing: 2px;">SISTEMA DE CALIFICACIONES INTELIGENTE</h1>
+    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">SALIR</button>
 </nav>
 
-<div class="filter-section" data-aos="fade-down">
+<div class="filter-section">
     <div class="filter-group">
         <label>🔍 BUSCAR ESTUDIANTE</label>
-        <input type="text" id="nameSearch" onkeyup="applyFilters()" placeholder="Escribe un nombre...">
+        <input type="text" id="nameSearch" onkeyup="applyFilters()" placeholder="Nombre del alumno...">
     </div>
     <div class="filter-group">
-        <label>🎹 FILTRAR POR CLASE</label>
+        <label>🎹 CLASE</label>
         <select id="categoryFilter" onchange="applyFilters()">
-            <option value="TODAS">Mostrar todas las clases</option>
+            <option value="TODAS">Todas las clases</option>
             <option value="PIANO">PIANO</option>
             <option value="GUITARRA">GUITARRA</option>
             <option value="CANTO">CANTO</option>
-            <option value="BATERÍA">BATERÍA</option>
-            <option value="VIOLÍN">VIOLÍN</option>
-            <option value="TEORÍA MUSICAL">TEORÍA MUSICAL</option>
         </select>
     </div>
-    <button class="btn-add" onclick="openModal()">+ NUEVA NOTA</button>
+    <button class="btn-add" onclick="openModal()">+ AGREGAR NOTA</button>
 </div>
 
-<div class="table-card" data-aos="fade-up">
-    <table>
+<div class="table-card">
+    <table id="mainTable">
         <thead>
             <tr>
                 <th>Estudiante</th>
                 <th>Clase</th>
                 <th>Año</th>
-                <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th><th>SE2</th>
-                <th style="background:var(--dorado)">NF (PROM)</th>
+                <th>M1</th><th>M2</th><th style="color:blue">SE1 (P)</th>
+                <th>M3</th><th>M4</th><th style="color:blue">SE2 (P)</th>
+                <th style="background:var(--dorado)">NF (FINAL)</th>
                 <th>Acción</th>
             </tr>
         </thead>
-        <tbody id="professorsTableBody">
-            </tbody>
+        <tbody id="professorsTableBody"></tbody>
     </table>
 </div>
 
 <div class="modal" id="gradeModal">
     <div class="modal-content">
-        <h3>Nuevo Registro Académico</h3>
-        <div class="filter-group"><label>NOMBRE ALUMNO</label><input type="text" id="formName"></div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
+        <h2 style="text-align:center; color: var(--azul-aviva)">Nuevo Registro</h2>
+        <div class="filter-group"><label>NOMBRE DEL ALUMNO</label><input type="text" id="formName"></div>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
             <div class="filter-group"><label>CLASE</label><select id="formCategory">
                 <option value="PIANO">PIANO</option><option value="GUITARRA">GUITARRA</option><option value="CANTO">CANTO</option>
-                <option value="BATERÍA">BATERÍA</option><option value="VIOLÍN">VIOLÍN</option>
             </select></div>
             <div class="filter-group"><label>AÑO</label><select id="formYear"><option value="2025">2025</option><option value="2024">2024</option></select></div>
         </div>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:15px;">
-            <input type="number" id="m1" placeholder="M1" oninput="autoSum()">
-            <input type="number" id="m2" placeholder="M2" oninput="autoSum()">
-            <input type="number" id="se1" placeholder="SE1">
-            <input type="number" id="m3" placeholder="M3" oninput="autoSum()">
-            <input type="number" id="m4" placeholder="M4" oninput="autoSum()">
-            <input type="number" id="se2" placeholder="SE2">
+
+        <div class="grades-grid">
+            <div class="filter-group"><label>M1</label><input type="number" id="m1" value="0" oninput="autoMath()"></div>
+            <div class="filter-group"><label>M2</label><input type="number" id="m2" value="0" oninput="autoMath()"></div>
+            <div class="result-box"><label>SE1</label><div id="se1Label" style="font-weight:900; font-size:1.2rem;">0</div></div>
+            
+            <div class="filter-group"><label>M3</label><input type="number" id="m3" value="0" oninput="autoMath()"></div>
+            <div class="filter-group"><label>M4</label><input type="number" id="m4" value="0" oninput="autoMath()"></div>
+            <div class="result-box"><label>SE2</label><div id="se2Label" style="font-weight:900; font-size:1.2rem;">0</div></div>
         </div>
-        <p style="text-align:right; font-weight:bold; margin-top:15px;">NF: <span id="nfLabel">0</span></p>
-        <button class="btn-add" style="width:100%;" onclick="saveGrade()">GUARDAR</button>
-        <button onclick="closeModal()" style="width:100%; border:none; background:none; color:gray; cursor:pointer;">Cancelar</button>
+
+        <div style="background:var(--azul-aviva); color:var(--dorado); padding:20px; border-radius:15px; text-align:center;">
+            <span style="font-size:0.8rem; display:block;">PROMEDIO FINAL (M1+M2+M3+M4)/4</span>
+            <span id="nfLabel" style="font-size:2rem; font-weight:900;">0</span>
+        </div>
+
+        <button class="btn-add" style="width:100%; margin-top:20px;" onclick="saveGrade()">GUARDAR CALIFICACIÓN</button>
+        <button onclick="closeModal()" style="width:100%; border:none; background:none; color:gray; cursor:pointer; margin-top:10px;">Cancelar</button>
     </div>
 </div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init();
-
     // Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
@@ -168,56 +148,52 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // LÓGICA DE FILTRADO COMBINADO
-    function applyFilters() {
-        const searchName = document.getElementById('nameSearch').value.toLowerCase();
-        const selectedCat = document.getElementById('categoryFilter').value;
-        const rows = document.querySelectorAll('#professorsTableBody tr');
-
-        rows.forEach(row => {
-            const studentName = row.cells[0].innerText.toLowerCase();
-            const studentCat = row.cells[1].innerText; // Columna de Categoría
-
-            const matchesName = studentName.includes(searchName);
-            const matchesCat = (selectedCat === "TODAS") || (studentCat === selectedCat);
-
-            if (matchesName && matchesCat) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
-
-    // Funciones del Modal
     function openModal() { document.getElementById('gradeModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('gradeModal').style.display = 'none'; }
-    function autoSum() {
+
+    // --- LÓGICA MATEMÁTICA SOLICITADA ---
+    function autoMath() {
         const val = id => parseFloat(document.getElementById(id).value) || 0;
-        const prom = (val('m1') + val('m2') + val('m3') + val('m4')) / 4;
-        document.getElementById('nfLabel').innerText = prom.toFixed(1);
+        
+        const m1 = val('m1');
+        const m2 = val('m2');
+        const m3 = val('m3');
+        const m4 = val('m4');
+
+        // Calcular SE1 (M1 + M2 / 2)
+        const se1 = (m1 + m2) / 2;
+        document.getElementById('se1Label').innerText = se1.toFixed(1);
+
+        // Calcular SE2 (M3 + M4 / 2)
+        const se2 = (m3 + m4) / 2;
+        document.getElementById('se2Label').innerText = se2.toFixed(1);
+
+        // Calcular NF (M1 + M2 + M3 + M4 / 4)
+        const nf = (m1 + m2 + m3 + m4) / 4;
+        document.getElementById('nfLabel').innerText = nf.toFixed(1);
     }
 
     async function saveGrade() {
         const name = document.getElementById('formName').value;
-        if(!name) return alert("Escribe el nombre");
+        if(!name) return alert("Escribe el nombre del alumno");
+
         await db.collection('student_grades').add({
             studentName: name,
             category: document.getElementById('formCategory').value,
             year: document.getElementById('formYear').value,
             m1: parseFloat(document.getElementById('m1').value) || 0,
             m2: parseFloat(document.getElementById('m2').value) || 0,
-            se1: parseFloat(document.getElementById('se1').value) || 0,
+            se1: parseFloat(document.getElementById('se1Label').innerText),
             m3: parseFloat(document.getElementById('m3').value) || 0,
             m4: parseFloat(document.getElementById('m4').value) || 0,
-            se2: parseFloat(document.getElementById('se2').value) || 0,
+            se2: parseFloat(document.getElementById('se2Label').innerText),
             nf: parseFloat(document.getElementById('nfLabel').innerText),
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         closeModal();
     }
 
-    // Carga en tiempo real
+    // Listener de datos
     db.collection('student_grades').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         const tbody = document.getElementById('professorsTableBody');
         tbody.innerHTML = '';
@@ -228,18 +204,25 @@
                     <td style="text-align:left;">${d.studentName}</td>
                     <td>${d.category}</td>
                     <td>${d.year}</td>
-                    <td>${d.m1}</td><td>${d.m2}</td><td>${d.se1}</td>
-                    <td>${d.m3}</td><td>${d.m4}</td><td>${d.se2}</td>
+                    <td>${d.m1}</td><td>${d.m2}</td><td class="auto-calc">${d.se1}</td>
+                    <td>${d.m3}</td><td>${d.m4}</td><td class="auto-calc">${d.se2}</td>
                     <td><span class="nf-badge">${d.nf}</span></td>
                     <td><button onclick="deleteGrade('${doc.id}')" style="border:none; background:none; cursor:pointer;">🗑️</button></td>
-                </tr>
-            `;
+                </tr>`;
         });
-        applyFilters(); // Re-aplicar filtros al actualizar datos
     });
 
-    async function deleteGrade(id) {
-        if(confirm("¿Borrar registro?")) await db.collection('student_grades').doc(id).delete();
+    async function deleteGrade(id) { if(confirm("¿Eliminar?")) await db.collection('student_grades').doc(id).delete(); }
+
+    function applyFilters() {
+        const q = document.getElementById('nameSearch').value.toLowerCase();
+        const cat = document.getElementById('categoryFilter').value;
+        const rows = document.querySelectorAll('#professorsTableBody tr');
+        rows.forEach(r => {
+            const matchesName = r.cells[0].innerText.toLowerCase().includes(q);
+            const matchesCat = (cat === "TODAS") || (r.cells[1].innerText === cat);
+            r.style.display = (matchesName && matchesCat) ? '' : 'none';
+        });
     }
 </script>
 </body>
