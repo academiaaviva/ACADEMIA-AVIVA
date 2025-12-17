@@ -44,47 +44,48 @@
         }
         .btn-add:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255,193,7,0.6); }
 
-        /* --- Tabla Estilizada --- */
+        /* --- Tabla --- */
         .table-card {
             background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow-x: auto;
         }
 
         table { width: 100%; border-collapse: collapse; }
-        th { background: var(--azul-aviva); color: var(--dorado); padding: 15px; text-transform: uppercase; font-size: 0.8rem; }
+        th { background: var(--azul-aviva); color: var(--dorado); padding: 15px; text-transform: uppercase; font-size: 0.75rem; }
         td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; font-weight: 600; }
         
-        .nf-badge { background: #fff9e6; color: var(--azul-aviva); font-weight: 800; font-size: 1.1rem; padding: 5px 10px; border-radius: 5px; }
+        .nf-badge { background: #00004d; color: #ffc107; font-weight: 800; font-size: 1.1rem; padding: 5px 12px; border-radius: 8px; }
 
-        /* --- Modal (Formulario Emergente) --- */
+        /* --- Modal --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center;
+            backdrop-filter: blur(8px);
         }
 
         .modal-content {
-            background: white; width: 500px; padding: 40px; border-radius: 25px;
+            background: white; width: 550px; padding: 40px; border-radius: 30px;
             position: relative; animation: slideDown 0.4s ease;
         }
 
         @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .modal-content h3 { margin-top: 0; border-bottom: 2px solid var(--dorado); padding-bottom: 10px; }
-
         .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
-        .form-group label { font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; }
-        .form-group input, .form-group select { padding: 10px; border: 2px solid #ddd; border-radius: 10px; outline: none; }
-        .form-group input:focus { border-color: var(--azul-aviva); }
+        .form-group label { font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .form-group input, .form-group select { padding: 12px; border: 2px solid #eee; border-radius: 12px; outline: none; font-family: inherit; }
+        .form-group input:focus { border-color: var(--dorado); }
 
-        .grades-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .grades-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; background: #f9f9f9; padding: 20px; border-radius: 15px; }
         
         .btn-save-record {
             width: 100%; background: var(--azul-aviva); color: var(--dorado); border: none;
-            padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; cursor: pointer;
+            padding: 16px; border-radius: 15px; font-weight: bold; margin-top: 25px; cursor: pointer; font-size: 1rem;
         }
 
-        .btn-delete { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem; }
+        .nf-display {
+            background: var(--dorado); color: var(--azul-aviva); padding: 15px; border-radius: 12px;
+            text-align: center; margin-top: 15px; font-weight: 900;
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -94,13 +95,13 @@
 
 <nav class="navbar">
     <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" class="logo-header">
-    <h1 style="color: white; font-size: 1.2rem; letter-spacing: 2px;">PANEL DE PROFESORES</h1>
-    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">INICIO</button>
+    <h1 style="color: white; font-size: 1rem; letter-spacing: 3px; font-weight: 300;">GESTIÓN ACADÉMICA</h1>
+    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:8px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">SALIR</button>
 </nav>
 
 <div class="container">
     <div class="header-actions">
-        <input type="text" id="mainSearch" onkeyup="filterTable()" placeholder="🔍 Buscar estudiante..." style="padding:12px; border-radius:20px; border:1px solid #ddd; width:300px;">
+        <input type="text" id="mainSearch" onkeyup="filterTable()" placeholder="🔍 Buscar por nombre, año o clase..." style="padding:12px 25px; border-radius:30px; border:none; width:350px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); outline:none;">
         <button class="btn-add" onclick="openModal()">+ AGREGAR CALIFICACIÓN</button>
     </div>
 
@@ -109,11 +110,11 @@
             <thead>
                 <tr>
                     <th>Estudiante</th>
-                    <th>Clase / Categoría</th>
+                    <th>Categoría</th>
                     <th>Año</th>
                     <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th><th>SE2</th>
-                    <th style="background:var(--dorado); color:var(--azul-aviva)">NF</th>
-                    <th>Eliminar</th>
+                    <th style="background:var(--dorado); color:var(--azul-aviva)">NF (PROM)</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody id="professorsTableBody">
@@ -124,21 +125,22 @@
 
 <div class="modal" id="gradeModal">
     <div class="modal-content">
-        <h3>Nuevo Registro Académico</h3>
+        <h3 style="margin-bottom:20px; text-align:center; letter-spacing:1px;">NUEVO REGISTRO</h3>
+        
         <div class="form-group">
-            <label>NOMBRE DEL ESTUDIANTE</label>
-            <input type="text" id="formName" placeholder="Nombre completo">
+            <label>NOMBRE COMPLETO DEL ALUMNO</label>
+            <input type="text" id="formName" placeholder="Ej. Juan Pérez">
         </div>
-        <div style="display:flex; gap:10px;">
+
+        <div style="display:flex; gap:15px;">
             <div class="form-group" style="flex:1;">
-                <label>CATEGORÍA / CLASE</label>
+                <label>CLASE / CATEGORÍA</label>
                 <select id="formCategory">
-                    <option value="PIANO">PIANO</option>
-                    <option value="GUITARRA">GUITARRA</option>
-                    <option value="CANTO">CANTO</option>
-                    <option value="BATERÍA">BATERÍA</option>
-                    <option value="VIOLÍN">VIOLÍN</option>
-                    <option value="TEORÍA MUSICAL">TEORÍA MUSICAL</option>
+                    <option value="PIANO">🎹 PIANO</option>
+                    <option value="GUITARRA">🎸 GUITARRA</option>
+                    <option value="CANTO">🎤 CANTO</option>
+                    <option value="BATERÍA">🥁 BATERÍA</option>
+                    <option value="VIOLÍN">🎻 VIOLÍN</option>
                 </select>
             </div>
             <div class="form-group" style="flex:1;">
@@ -146,28 +148,26 @@
                 <select id="formYear">
                     <option value="2025">2025</option>
                     <option value="2024">2024</option>
-                    <option value="2023">2023</option>
                 </select>
             </div>
         </div>
 
-        <label style="font-size:0.7rem; font-weight:bold;">CALIFICACIONES (SUMA AUTOMÁTICA)</label>
+        <label style="font-size:0.7rem; font-weight:bold; margin-bottom:10px; display:block; color:#777;">NOTAS MENSUALES Y ESPECIALES</label>
         <div class="grades-grid">
-            <input type="number" id="m1" placeholder="M1" oninput="autoSum()">
-            <input type="number" id="m2" placeholder="M2" oninput="autoSum()">
-            <input type="number" id="se1" placeholder="SE1" oninput="autoSum()">
-            <input type="number" id="m3" placeholder="M3" oninput="autoSum()">
-            <input type="number" id="m4" placeholder="M4" oninput="autoSum()">
-            <input type="number" id="se2" placeholder="SE2" oninput="autoSum()">
+            <div class="form-group"><label>M1</label><input type="number" id="m1" value="0" oninput="calculateAverage()"></div>
+            <div class="form-group"><label>M2</label><input type="number" id="m2" value="0" oninput="calculateAverage()"></div>
+            <div class="form-group"><label>SE1</label><input type="number" id="se1" value="0"></div>
+            <div class="form-group"><label>M3</label><input type="number" id="m3" value="0" oninput="calculateAverage()"></div>
+            <div class="form-group"><label>M4</label><input type="number" id="m4" value="0" oninput="calculateAverage()"></div>
+            <div class="form-group"><label>SE2</label><input type="number" id="se2" value="0"></div>
         </div>
 
-        <div style="margin-top:15px; text-align:right;">
-            <span style="font-weight:bold;">NOTA FINAL (NF): </span>
-            <span id="nfLabel" style="font-size:1.5rem; color:var(--azul-aviva); font-weight:900;">0</span>
+        <div class="nf-display">
+            PROMEDIO FINAL (NF): <span id="nfLabel">0</span>
         </div>
 
-        <button class="btn-save-record" onclick="saveGrade()">GUARDAR EN SISTEMA</button>
-        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Cancelar</button>
+        <button class="btn-save-record" onclick="saveGrade()">REGISTRAR CALIFICACIÓN</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:#bbb; margin-top:15px; cursor:pointer; font-size:0.8rem;">Cerrar sin guardar</button>
     </div>
 </div>
 
@@ -175,7 +175,7 @@
 <script>
     AOS.init();
 
-    // Firebase Config
+    // Firebase Init
     const firebaseConfig = {
         apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
         authDomain: "academia-aviva.firebaseapp.com",
@@ -187,30 +187,31 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Funciones Modal
     function openModal() { document.getElementById('gradeModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('gradeModal').style.display = 'none'; }
 
-    // Suma automática
-    function autoSum() {
-        const val = id => parseFloat(document.getElementById(id).value) || 0;
-        const total = val('m1') + val('m2') + val('se1') + val('m3') + val('m4') + val('se2');
-        document.getElementById('nfLabel').innerText = total;
+    // --- LÓGICA DE PROMEDIO (M1+M2+M3+M4 / 4) ---
+    function calculateAverage() {
+        const m1 = parseFloat(document.getElementById('m1').value) || 0;
+        const m2 = parseFloat(document.getElementById('m2').value) || 0;
+        const m3 = parseFloat(document.getElementById('m3').value) || 0;
+        const m4 = parseFloat(document.getElementById('m4').value) || 0;
+        
+        const promedio = (m1 + m2 + m3 + m4) / 4;
+        // Mostramos el promedio redondeado a 1 decimal
+        document.getElementById('nfLabel').innerText = promedio.toFixed(1);
     }
 
-    // Guardar en Firebase
     async function saveGrade() {
         const name = document.getElementById('formName').value;
-        const category = document.getElementById('formCategory').value;
-        const year = document.getElementById('formYear').value;
-        const nf = parseFloat(document.getElementById('nfLabel').innerText);
+        if(!name) return alert("Por favor, ingresa el nombre del alumno");
 
-        if(!name) return alert("Escribe el nombre del estudiante");
+        const nf = parseFloat(document.getElementById('nfLabel').innerText);
 
         await db.collection('student_grades').add({
             studentName: name,
-            category: category,
-            year: year,
+            category: document.getElementById('formCategory').value,
+            year: document.getElementById('formYear').value,
             m1: parseFloat(document.getElementById('m1').value) || 0,
             m2: parseFloat(document.getElementById('m2').value) || 0,
             se1: parseFloat(document.getElementById('se1').value) || 0,
@@ -222,10 +223,10 @@
         });
 
         closeModal();
-        alert("Nota guardada correctamente");
+        alert("¡Registro guardado con éxito!");
     }
 
-    // Cargar Datos en Tiempo Real
+    // Listener de datos
     db.collection('student_grades').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         const tbody = document.getElementById('professorsTableBody');
         tbody.innerHTML = '';
@@ -234,28 +235,27 @@
             tbody.innerHTML += `
                 <tr>
                     <td style="text-align:left;">${d.studentName}</td>
-                    <td><span style="background:#eee; padding:5px 10px; border-radius:15px; font-size:0.7rem;">${d.category}</span></td>
+                    <td><small>${d.category}</small></td>
                     <td>${d.year}</td>
-                    <td>${d.m1}</td><td>${d.m2}</td><td>${d.se1}</td><td>${d.m3}</td><td>${d.m4}</td><td>${d.se2}</td>
+                    <td>${d.m1}</td><td>${d.m2}</td><td>${d.se1}</td>
+                    <td>${d.m3}</td><td>${d.m4}</td><td>${d.se2}</td>
                     <td><span class="nf-badge">${d.nf}</span></td>
-                    <td><button class="btn-delete" onclick="deleteGrade('${doc.id}')">🗑️</button></td>
+                    <td><button onclick="deleteGrade('${doc.id}')" style="border:none; background:none; cursor:pointer;">🗑️</button></td>
                 </tr>
             `;
         });
     });
 
     async function deleteGrade(id) {
-        if(confirm("¿Seguro que quieres eliminar este registro?")) {
+        if(confirm("¿Eliminar este registro permanentemente?")) {
             await db.collection('student_grades').doc(id).delete();
         }
     }
 
     function filterTable() {
-        const query = document.getElementById('mainSearch').value.toLowerCase();
+        const q = document.getElementById('mainSearch').value.toLowerCase();
         const rows = document.querySelectorAll('#professorsTableBody tr');
-        rows.forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
-        });
+        rows.forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none');
     }
 </script>
 </body>
