@@ -3,178 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Aviva - Acceso</title>
+    <title>Plataforma Académica | Academia Aviva</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <style>
-        /* Paleta de Colores
-        -- Azul Ultra Oscuro (Fondo/Base): #00004d
-        -- Dorado (Acento/Botón): #ffc107
-        -- Blanco (Texto): #ffffff
-        */
+        :root {
+            --azul-profundo: #000022;
+            --azul-aviva: #00004d;
+            --dorado: #ffc107;
+            --dorado-glow: rgba(255, 193, 7, 0.3);
+            --blanco: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding-top: 70px;
-            /* CAMBIO: Fondo principal Azul Ultra Oscuro */
-            background-color: #00004d; 
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, var(--azul-aviva) 0%, var(--azul-profundo) 100%);
+            color: var(--blanco);
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* --- Estilos de la Barra de Navegación (Navbar) --- */
-        .navbar {
-            background-color: #00004d; 
-            padding: 5px 20px;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
+        /* --- Fondo Animado --- */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            z-index: -1;
         }
 
-        .header-contenido {
-            display: flex;
-            align-items: center;
+        /* --- Logo Principal --- */
+        .main-logo {
+            width: 180px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px var(--dorado-glow));
+            animation: float 4s ease-in-out infinite;
         }
 
-        .logo-header {
-            height: 50px;
-            margin-right: 15px;
-            /* Mantener la animación de pulso del logo */
-            animation: pulse 2s infinite ease-in-out; 
-        }
-
-        /* CAMBIO: Título de la barra en Blanco */
-        .header-contenido h1 {
-            font-size: 24px;
-            font-weight: bold;
-            color: white; 
-            margin: 0;
-        }
-
-        /* --- Estilos del Contenedor Central --- */
-        .role-selection-container {
-            margin-top: 50px;
-            /* CAMBIO: Fondo del contenedor Blanco para contraste */
-            background: white; 
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        header {
             text-align: center;
-            width: 90%;
-            max-width: 450px;
+            margin-bottom: 50px;
         }
 
-        /* CAMBIO: Títulos del contenedor principal en Azul Ultra Oscuro */
-        .role-selection-container h1 {
-            color: #00004d; 
-            margin-bottom: 5px;
+        header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .role-selection-container p {
-            color: #666;
-            margin-bottom: 30px;
+        header p {
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: var(--dorado);
+            opacity: 0.8;
         }
 
-        /* --- Estilos de los Botones de Rol (Dorado) --- */
-        .role-button {
+        /* --- Grid de Opciones --- */
+        .portal-grid {
+            display: flex;
+            gap: 30px;
+            perspective: 1000px;
+        }
+
+        .portal-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 280px;
+            padding: 40px 20px;
+            border-radius: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--blanco);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .portal-card:hover::before {
+            left: 100%;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-15px) rotateX(5deg);
+            border-color: var(--dorado);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px var(--dorado-glow);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--azul-aviva);
+            border: 2px solid var(--dorado);
+            border-radius: 50%;
+            margin: 0 auto 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            padding: 18px;
-            margin: 20px 0;
-            font-size: 18px;
-            font-weight: bold;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 30px;
+            transition: 0.5s;
+        }
+
+        .portal-card:hover .icon-circle {
+            background: var(--dorado);
+            color: var(--azul-aviva);
+            transform: scale(1.1);
+        }
+
+        .portal-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .portal-card p {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            line-height: 1.5;
+        }
+
+        /* --- Footer --- */
+        footer {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            opacity: 0.4;
             text-transform: uppercase;
         }
 
-        /* Estilo Base: Fondo Dorado, Texto Azul Ultra Oscuro */
-        .role-button-base {
-            background-color: #ffc107; /* Dorado */
-            color: #00004d; /* Azul Ultra Oscuro */
-            border-color: #ffc107;
+        /* --- Keyframes --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
-        /* Efecto Hover: Fondo Azul, Texto Blanco (Inversión del logo) */
-        .role-button-base:hover {
-            background-color: #00004d; 
-            color: white; 
-            border-color: #ffc107;
-            transform: scale(1.05); /* Animación: Crecimiento */
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); /* Animación: Sombra Dorada */
+        /* Responsive */
+        @media (max-width: 900px) {
+            .portal-grid { flex-direction: column; }
+            body { height: auto; padding: 50px 0; overflow-y: auto; }
         }
-
-        /* Iconos dentro de los botones */
-        .button-icon {
-            font-size: 22px;
-            margin-right: 15px;
-        }
-
-        /* --- Definición de Animaciones (Keyframes) --- */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
     </style>
-        <link rel="icon" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="header-contenido">
-        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-        <h1>Plataforma Aviva</h1>
+    <div class="bg-overlay"></div>
+
+    <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="AVIVA Logo" class="main-logo" data-aos="fade-down">
+
+    <header data-aos="fade-up" data-aos-delay="200">
+        <h1>Academia Aviva</h1>
+        <p>Excelencia en Formación Musical</p>
+    </header>
+
+    <div class="portal-grid">
+        <a href="administracion.html" class="portal-card" data-aos="fade-right" data-aos-delay="400">
+            <div class="icon-circle">🏢</div>
+            <h3>ADMINISTRACIÓN</h3>
+            <p>Gestión institucional, control de pagos y administración de usuarios.</p>
+        </a>
+
+        <a href="maestrosindex.html" class="portal-card" data-aos="fade-up" data-aos-delay="600">
+            <div class="icon-circle">👨‍🏫</div>
+            <h3>PROFESORES</h3>
+            <p>Registro de calificaciones, control de asistencia y seguimiento académico.</p>
+        </a>
+
+        <a href="estudiantes.html" class="portal-card" data-aos="fade-left" data-aos-delay="800">
+            <div class="icon-circle">🎓</div>
+            <h3>ESTUDIANTES</h3>
+            <p>Consulta de notas, materiales de estudio y estado de mensualidades.</p>
+        </a>
     </div>
-</nav>
 
-<div class="role-selection-container">
-    <h1>Seleccione su Modo de Acceso</h1>
-    <p>Por favor, elija su rol para ingresar a la plataforma.</p>
+    <footer data-aos="fade-up" data-aos-delay="1000">
+        © 2025 Academia de Música Aviva | Sistema de Gestión Integral
+    </footer>
 
-    <button class="role-button role-button-base" id="admin-btn" onclick="goToPage('administracion')">
-        <span class="button-icon">⚙️</span> Acceso Administración
-    </button>
-    
-    <button class="role-button role-button-base" id="profesor-btn" onclick="goToPage('profesor')">
-        <span class="button-icon">🎓</span> Acceso Profesor
-    </button>
-
-    <button class="role-button role-button-base" id="estudiante-btn" onclick="goToPage('estudiante')">
-        <span class="button-icon">📚</span> Acceso Estudiante
-    </button>
-</div>
-
-<script>
-    /**
-     * Función que redirige al usuario a la página de acceso correspondiente.
-     * @param {string} role - 'administracion', 'profesor', o 'estudiante'.
-     */
-    function goToPage(role) {
-        if (role === 'administracion') {
-            // Nueva redirección solicitada
-            window.location.href = 'admonlogin.html'; 
-        } else if (role === 'profesor') {
-            // Redirección anterior (maestros.html)
-            window.location.href = 'maestros.html';
-        } else if (role === 'estudiante') {
-            // Redirección anterior (estudiantes.html)
-            window.location.href = 'estudiantes.html';
-        }
-    }
-</script>
-
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
 </body>
 </html>
