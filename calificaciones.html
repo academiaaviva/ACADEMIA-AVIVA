@@ -3,193 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Calificaciones | Plataforma Aviva</title>
+    <title>Mis Calificaciones | Academia Aviva</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <style>
-        /* Estilos Base (Azul Ultra Oscuro y Dorado) */
+        :root {
+            --azul-oscuro: #00004d;
+            --dorado: #ffc107;
+            --blanco: #ffffff;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
-            padding-top: 80px;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #00004d 0%, #000022 100%);
+            color: var(--blanco);
+            min-height: 100vh;
+            padding-top: 100px;
+            overflow-x: hidden;
         }
 
+        /* --- Navbar Futurista --- */
         .navbar {
-            background-color: #00004d;
-            color: white;
-            padding: 10px 20px;
+            background: rgba(0, 0, 77, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 10px 40px;
+            width: 100%;
             position: fixed;
-            top: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .main-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
-        }
-
-        h2 { color: #00004d; border-bottom: 3px solid #ffc107; padding-bottom: 10px; }
-
-        /* --- BARRA DE BÚSQUEDA --- */
-        .search-container {
-            margin-bottom: 25px;
+            top: 0; left: 0;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
+            z-index: 2000;
+            border-bottom: 2px solid var(--dorado);
+            box-sizing: border-box;
         }
 
-        .search-container label {
-            font-weight: bold;
-            color: #00004d;
-            margin-right: 15px;
+        .logo-container { display: flex; align-items: center; gap: 15px; }
+        .logo-header { height: 55px; filter: drop-shadow(0 0 5px var(--dorado)); }
+        
+        /* --- Contenedor Principal (Glassmorphism) --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 1s ease-in-out;
         }
 
-        #searchInput {
-            flex-grow: 1;
-            padding: 12px 20px;
-            border: 2px solid #00004d;
-            border-radius: 25px;
+        .glass-card {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 40px;
+            color: var(--azul-oscuro);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--azul-oscuro);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            width: 100px; height: 4px;
+            background: var(--dorado);
+            display: block; margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        /* --- Barra de Búsqueda Avanzada --- */
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .search-box input, .search-box select {
+            padding: 15px 25px;
+            border-radius: 30px;
+            border: 2px solid var(--azul-oscuro);
+            font-size: 1rem;
             outline: none;
-            font-size: 16px;
-            transition: all 0.3s;
+            transition: 0.3s;
         }
 
-        #searchInput:focus {
-            border-color: #ffc107;
-            box-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+        .search-box input:focus {
+            border-color: var(--dorado);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+            transform: scale(1.02);
         }
 
-        /* --- TABLA --- */
+        /* --- Tabla con Estilo Premium --- */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+        }
+
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
         }
 
-        table th {
-            background-color: #00004d;
-            color: white;
-            padding: 12px;
-            text-align: left;
+        th {
+            background: var(--azul-oscuro);
+            color: var(--dorado);
+            padding: 20px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
         }
 
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+        tr {
+            transition: all 0.3s ease;
         }
 
-        tr:hover { background-color: #fff9e6; }
-
-        .grade-input {
-            width: 50px;
-            padding: 5px;
+        td {
+            background: white;
+            padding: 20px;
             text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            font-weight: 600;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
         }
 
-        .btn-save {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
+        td:first-child { border-radius: 15px 0 0 15px; border-left: 1px solid #eee; }
+        td:last-child { border-radius: 0 15px 15px 0; border-right: 1px solid #eee; }
+
+        tr:hover td {
+            background: #fff9e6;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--dorado);
         }
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nota-badge {
+            background: var(--azul-oscuro);
+            color: var(--dorado);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        .btn-back {
+            background: var(--dorado);
+            color: var(--azul-oscuro);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--dorado);
+        }
+
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
 
 <nav class="navbar">
-    <div style="display:flex; align-items:center;">
-        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50" style="margin-right:15px;">
-        <h1>Control de Notas</h1>
+    <div class="logo-container">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" class="logo-header">
+        <h1 style="font-size: 1.5rem; color: white;">Portal Estudiantil</h1>
     </div>
-    <button onclick="location.href='maestrosindex.html'" style="background:#ffc107; border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px;">Volver al Menú</button>
+    <button class="btn-back" onclick="location.href='inicioestudiantil.html'">VOLVER AL INICIO</button>
 </nav>
 
-<div class="main-container">
-    <h2>Registro de Calificaciones</h2>
+<div class="main-content">
+    <div class="glass-card" data-aos="zoom-in">
+        <h2>Mis Notas Académicas</h2>
 
-    <div class="search-container">
-        <label for="searchInput">🔍 BUSCAR ESTUDIANTE:</label>
-        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Escribe el nombre del alumno para filtrar...">
+        <div class="search-box">
+            <input type="text" id="studentSearch" onkeyup="renderFilteredTable()" placeholder="🔍 Escribe tu nombre para buscar..." style="width: 60%;">
+            <select id="yearFilter" onchange="renderFilteredTable()" style="width: 30%;">
+                <option value="2025">Año 2025</option>
+                <option value="2024">Año 2024</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table id="gradesTable">
+                <thead>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Maestro</th>
+                        <th>Año</th>
+                        <th>N1</th><th>N2</th><th>N3</th><th>N4</th><th>N5</th>
+                        <th>N6</th><th>N7</th><th>N8</th><th>N9</th><th>N10</th>
+                    </tr>
+                </thead>
+                <tbody id="gradesBody">
+                    </tbody>
+            </table>
+        </div>
     </div>
-
-    <table id="gradesTable">
-        <thead>
-            <tr>
-                <th>Estudiante</th>
-                <th>Curso / Materia</th>
-                <th>Maestro</th>
-                <th>I Bloque</th>
-                <th>II Bloque</th>
-                <th>III Bloque</th>
-                <th>IV Bloque</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <tr>
-                <td>Prueba Web</td>
-                <td>Piano</td>
-                <td>Maestro Juan</td>
-                <td><input type="number" class="grade-input" value="90"></td>
-                <td><input type="number" class="grade-input" value="85"></td>
-                <td><input type="number" class="grade-input" value="0"></td>
-                <td><input type="number" class="grade-input" value="0"></td>
-                <td><button class="btn-save">Guardar</button></td>
-            </tr>
-            <tr>
-                <td>Carlos Martínez</td>
-                <td>Guitarra</td>
-                <td>Maestra Elena</td>
-                <td><input type="number" class="grade-input" value="100"></td>
-                <td><input type="number" class="grade-input" value="95"></td>
-                <td><input type="number" class="grade-input" value="0"></td>
-                <td><input type="number" class="grade-input" value="0"></td>
-                <td><button class="btn-save">Guardar</button></td>
-            </tr>
-            </tbody>
-    </table>
 </div>
 
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    // FUNCIÓN DE BÚSQUEDA
-    function filterTable() {
-        // Declarar variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("searchInput");
-        filter = input.value.toUpperCase(); // Convertir a mayúsculas para búsqueda insensible
-        table = document.getElementById("gradesTable");
-        tr = table.getElementsByTagName("tr");
+    AOS.init();
 
-        // Recorrer todas las filas de la tabla (excepto el encabezado)
-        for (i = 1; i < tr.length; i++) {
-            // Buscamos en la primera columna (índice 0), que es la de "Estudiante"
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                // Si el texto coincide con la búsqueda
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = ""; // Mostrar fila
-                } else {
-                    tr[i].style.display = "none"; // Ocultar fila
-                }
-            }
+    // CONFIGURACIÓN FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
+        authDomain: "academia-aviva.firebaseapp.com",
+        projectId: "academia-aviva",
+        storageBucket: "academia-aviva.firebasestorage.app",
+        messagingSenderId: "1083662705160",
+        appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
+        measurementId: "G-GNBRN8CF2T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    let allGrades = [];
+
+    // ESCUCHAR DATOS EN TIEMPO REAL
+    db.collection('student_grades').onSnapshot(snapshot => {
+        allGrades = snapshot.docs.map(doc => doc.data());
+        renderFilteredTable();
+    });
+
+    function renderFilteredTable() {
+        const searchText = document.getElementById('studentSearch').value.toLowerCase();
+        const yearValue = document.getElementById('yearFilter').value;
+        const tbody = document.getElementById('gradesBody');
+        tbody.innerHTML = '';
+
+        const filtered = allGrades.filter(g => {
+            const matchesSearch = g.studentName.toLowerCase().includes(searchText);
+            const matchesYear = g.year == yearValue;
+            return matchesSearch && matchesYear;
+        });
+
+        if(filtered.length === 0 && searchText !== "") {
+            tbody.innerHTML = `<tr><td colspan="13" style="color: #666; padding: 40px;">No se encontraron registros para tu búsqueda en el año seleccionado.</td></tr>`;
+            return;
         }
-    }
 
-    // Nota: Aquí integrarías tu código de Firebase para que los datos 
-    // reales se carguen dinámicamente en el 'tableBody'.
+        filtered.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-aos', 'fade-up');
+            row.setAttribute('data-aos-delay', index * 50);
+
+            let notesHtml = '';
+            item.notes.forEach(n => {
+                notesHtml += `<td><span class="nota-badge">${n}</span></td>`;
+            });
+
+            row.innerHTML = `
+                <td style="color: var(--azul-oscuro); font-weight: 800;">${item.category}</td>
+                <td>${item.teacherName}</td>
+                <td><span style="background: #eee; padding: 5px 10px; border-radius: 5px;">${item.year}</span></td>
+                ${notesHtml}
+            `;
+            tbody.appendChild(row);
+        });
+    }
 </script>
 
 </body>
