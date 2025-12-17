@@ -5,178 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Calificaciones | Academia Aviva</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
         :root {
-            --azul-oscuro: #00004d;
+            --azul-aviva: #00004d;
             --dorado: #ffc107;
             --blanco: #ffffff;
-            --glass: rgba(255, 255, 255, 0.9);
+            --glass: rgba(255, 255, 255, 0.95);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             margin: 0;
-            background: linear-gradient(135deg, #00004d 0%, #000022 100%);
+            padding-top: 100px;
+            background: radial-gradient(circle at center, var(--azul-aviva) 0%, #000022 100%);
             color: var(--blanco);
             min-height: 100vh;
-            padding-top: 100px;
-            overflow-x: hidden;
         }
 
         /* --- Navbar Futurista --- */
         .navbar {
-            background: rgba(0, 0, 77, 0.8);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 77, 0.9);
+            backdrop-filter: blur(10px);
             padding: 10px 40px;
             width: 100%;
             position: fixed;
             top: 0; left: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 2000;
-            border-bottom: 2px solid var(--dorado);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 2000; border-bottom: 2px solid var(--dorado);
             box-sizing: border-box;
         }
 
-        .logo-container { display: flex; align-items: center; gap: 15px; }
-        .logo-header { height: 55px; filter: drop-shadow(0 0 5px var(--dorado)); }
-        
-        /* --- Contenedor Principal (Glassmorphism) --- */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            animation: fadeIn 1s ease-in-out;
-        }
+        .logo-header { height: 50px; }
 
-        .glass-card {
+        /* --- Contenedor de Cristal --- */
+        .main-container {
+            max-width: 1300px;
+            margin: 0 auto 40px;
             background: var(--glass);
-            border-radius: 20px;
             padding: 40px;
-            color: var(--azul-oscuro);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            color: var(--azul-aviva);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         h2 {
-            font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--azul-oscuro);
-            position: relative;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--dorado);
+            display: inline-block;
+            width: 100%;
+            padding-bottom: 10px;
         }
 
-        h2::after {
-            content: '';
-            width: 100px; height: 4px;
-            background: var(--dorado);
-            display: block; margin: 10px auto;
-            border-radius: 2px;
-        }
-
-        /* --- Barra de Búsqueda Avanzada --- */
-        .search-box {
+        /* --- Buscador Estilizado --- */
+        .search-area {
+            margin-bottom: 30px;
             display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
             justify-content: center;
         }
 
-        .search-box input, .search-box select {
+        #studentSearch {
+            width: 70%;
             padding: 15px 25px;
+            border: 2px solid var(--azul-aviva);
             border-radius: 30px;
-            border: 2px solid var(--azul-oscuro);
             font-size: 1rem;
             outline: none;
             transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        .search-box input:focus {
+        #studentSearch:focus {
             border-color: var(--dorado);
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
             transform: scale(1.02);
         }
 
-        /* --- Tabla con Estilo Premium --- */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 15px;
-        }
+        /* --- Tabla Idéntica a Profesores (Solo Lectura) --- */
+        .table-wrapper { overflow-x: auto; border-radius: 15px; }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
-
-        th {
-            background: var(--azul-oscuro);
-            color: var(--dorado);
-            padding: 20px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        tr {
-            transition: all 0.3s ease;
-        }
-
-        td {
+            border-collapse: collapse;
             background: white;
-            padding: 20px;
+        }
+
+        table th {
+            background-color: var(--azul-aviva);
+            color: var(--dorado);
+            padding: 18px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
             text-align: center;
             font-weight: 600;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
         }
 
-        td:first-child { border-radius: 15px 0 0 15px; border-left: 1px solid #eee; }
-        td:last-child { border-radius: 0 15px 15px 0; border-right: 1px solid #eee; }
+        /* Columna NF resaltada */
+        .nf-column {
+            background-color: #fff9e6;
+            color: var(--azul-aviva);
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
 
         tr:hover td {
-            background: #fff9e6;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-color: var(--dorado);
-        }
-
-        /* Animación de entrada */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .nota-badge {
-            background: var(--azul-oscuro);
-            color: var(--dorado);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 1.1rem;
+            background-color: #fcfcfc;
         }
 
         .btn-back {
             background: var(--dorado);
-            color: var(--azul-oscuro);
+            color: var(--azul-aviva);
             border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 10px 20px;
+            border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        .btn-back:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--dorado);
-        }
-
+        .btn-back:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--dorado); }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -185,48 +152,46 @@
 <body>
 
 <nav class="navbar">
-    <div class="logo-container">
+    <div style="display:flex; align-items:center; gap:15px;">
         <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" class="logo-header">
-        <h1 style="font-size: 1.5rem; color: white;">Portal Estudiantil</h1>
+        <h1 style="font-size: 1.2rem; color: white; letter-spacing: 2px;">CONSULTA DE NOTAS</h1>
     </div>
-    <button class="btn-back" onclick="location.href='inicioestudiantil.html'">VOLVER AL INICIO</button>
+    <button class="btn-back" onclick="location.href='inicioestudiantil.html'">VOLVER AL PANEL</button>
 </nav>
 
-<div class="main-content">
-    <div class="glass-card" data-aos="zoom-in">
-        <h2>Mis Notas Académicas</h2>
+<div class="main-container" data-aos="zoom-in">
+    <h2>Mi Rendimiento Académico</h2>
 
-        <div class="search-box">
-            <input type="text" id="studentSearch" onkeyup="renderFilteredTable()" placeholder="🔍 Escribe tu nombre para buscar..." style="width: 60%;">
-            <select id="yearFilter" onchange="renderFilteredTable()" style="width: 30%;">
-                <option value="2025">Año 2025</option>
-                <option value="2024">Año 2024</option>
-            </select>
-        </div>
+    <div class="search-area">
+        <input type="text" id="studentSearch" onkeyup="filterGrades()" placeholder="🔍 Ingresa tu nombre completo para ver tus notas...">
+    </div>
 
-        <div class="table-container">
-            <table id="gradesTable">
-                <thead>
-                    <tr>
-                        <th>Materia</th>
-                        <th>Maestro</th>
-                        <th>Año</th>
-                        <th>N1</th><th>N2</th><th>N3</th><th>N4</th><th>N5</th>
-                        <th>N6</th><th>N7</th><th>N8</th><th>N9</th><th>N10</th>
-                    </tr>
-                </thead>
-                <tbody id="gradesBody">
-                    </tbody>
-            </table>
-        </div>
+    <div class="table-wrapper">
+        <table id="gradesTable">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Materia</th>
+                    <th>M1</th>
+                    <th>M2</th>
+                    <th>SE1</th>
+                    <th>M3</th>
+                    <th>M4</th>
+                    <th>SE2</th>
+                    <th style="background: var(--dorado); color: var(--azul-aviva);">NF (FINAL)</th>
+                </tr>
+            </thead>
+            <tbody id="gradesBody">
+                </tbody>
+        </table>
     </div>
 </div>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init();
+    AOS.init({ duration: 800 });
 
-    // CONFIGURACIÓN FIREBASE
+    // CONFIGURACIÓN FIREBASE (Idéntica a profesores.html)
     const firebaseConfig = {
         apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
         authDomain: "academia-aviva.firebaseapp.com",
@@ -239,49 +204,43 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    let allGrades = [];
 
-    // ESCUCHAR DATOS EN TIEMPO REAL
+    // ESCUCHAR CAMBIOS EN TIEMPO REAL
     db.collection('student_grades').onSnapshot(snapshot => {
-        allGrades = snapshot.docs.map(doc => doc.data());
-        renderFilteredTable();
-    });
-
-    function renderFilteredTable() {
-        const searchText = document.getElementById('studentSearch').value.toLowerCase();
-        const yearValue = document.getElementById('yearFilter').value;
         const tbody = document.getElementById('gradesBody');
         tbody.innerHTML = '';
 
-        const filtered = allGrades.filter(g => {
-            const matchesSearch = g.studentName.toLowerCase().includes(searchText);
-            const matchesYear = g.year == yearValue;
-            return matchesSearch && matchesYear;
-        });
-
-        if(filtered.length === 0 && searchText !== "") {
-            tbody.innerHTML = `<tr><td colspan="13" style="color: #666; padding: 40px;">No se encontraron registros para tu búsqueda en el año seleccionado.</td></tr>`;
-            return;
-        }
-
-        filtered.forEach((item, index) => {
+        snapshot.forEach(doc => {
+            const data = doc.data();
             const row = document.createElement('tr');
-            row.setAttribute('data-aos', 'fade-up');
-            row.setAttribute('data-aos-delay', index * 50);
-
-            let notesHtml = '';
-            item.notes.forEach(n => {
-                notesHtml += `<td><span class="nota-badge">${n}</span></td>`;
-            });
 
             row.innerHTML = `
-                <td style="color: var(--azul-oscuro); font-weight: 800;">${item.category}</td>
-                <td>${item.teacherName}</td>
-                <td><span style="background: #eee; padding: 5px 10px; border-radius: 5px;">${item.year}</span></td>
-                ${notesHtml}
+                <td style="text-align: left; padding-left: 25px;">${data.studentName}</td>
+                <td style="color: var(--azul-aviva); font-weight: 700;">${data.category}</td>
+                <td><span class="grade-badge">${data.m1 || 0}</span></td>
+                <td><span class="grade-badge">${data.m2 || 0}</span></td>
+                <td><span class="grade-badge">${data.se1 || 0}</span></td>
+                <td><span class="grade-badge">${data.m3 || 0}</span></td>
+                <td><span class="grade-badge">${data.m4 || 0}</span></td>
+                <td><span class="grade-badge">${data.se2 || 0}</span></td>
+                <td class="nf-column">${data.nf || 0}</td>
             `;
             tbody.appendChild(row);
         });
+    });
+
+    // FUNCIÓN DE FILTRADO (BUSCADOR)
+    function filterGrades() {
+        const input = document.getElementById("studentSearch").value.toUpperCase();
+        const tr = document.getElementById("gradesBody").getElementsByTagName("tr");
+
+        for (let i = 0; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                let textValue = td.textContent || td.innerText;
+                tr[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
     }
 </script>
 
