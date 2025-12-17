@@ -3,112 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Calificaciones | Academia Aviva</title>
+    <title>Panel Maestro | Academia Aviva</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
         :root {
-            --azul-oscuro: #00004d;
+            --azul-aviva: #00004d;
             --dorado: #ffc107;
             --blanco: #ffffff;
+            --danger: #ff4d4d;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding-top: 80px;
-            background-color: #f0f2f5;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0; background: #f4f7f6; color: var(--azul-aviva);
+            padding-top: 90px;
         }
 
         /* --- Navbar --- */
         .navbar {
-            background-color: var(--azul-oscuro);
-            color: white;
-            padding: 10px 20px;
-            position: fixed;
-            top: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            box-sizing: border-box;
+            background: var(--azul-aviva); padding: 10px 40px; width: 100%; position: fixed;
+            top: 0; display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; border-bottom: 3px solid var(--dorado); box-sizing: border-box;
+        }
+        .logo-header { height: 50px; }
+
+        /* --- Main Container --- */
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        .header-actions {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
         }
 
-        .main-container {
-            max-width: 1300px;
-            margin: 20px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        .btn-add {
+            background: var(--dorado); color: var(--azul-aviva); border: none;
+            padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer;
+            transition: 0.3s; font-size: 1rem; box-shadow: 0 4px 15px rgba(255,193,7,0.4);
+        }
+        .btn-add:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255,193,7,0.6); }
+
+        /* --- Tabla Estilizada --- */
+        .table-card {
+            background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
 
-        h2 { color: var(--azul-oscuro); border-bottom: 3px solid var(--dorado); padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--azul-aviva); color: var(--dorado); padding: 15px; text-transform: uppercase; font-size: 0.8rem; }
+        td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; font-weight: 600; }
+        
+        .nf-badge { background: #fff9e6; color: var(--azul-aviva); font-weight: 800; font-size: 1.1rem; padding: 5px 10px; border-radius: 5px; }
 
-        /* --- Buscador --- */
-        .search-area {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
+        /* --- Modal (Formulario Emergente) --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
         }
 
-        #searchInput {
-            flex-grow: 1;
-            padding: 12px;
-            border: 2px solid var(--azul-oscuro);
-            border-radius: 8px;
-            outline: none;
+        .modal-content {
+            background: white; width: 500px; padding: 40px; border-radius: 25px;
+            position: relative; animation: slideDown 0.4s ease;
         }
 
-        /* --- Tabla --- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-content h3 { margin-top: 0; border-bottom: 2px solid var(--dorado); padding-bottom: 10px; }
+
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; }
+        .form-group input, .form-group select { padding: 10px; border: 2px solid #ddd; border-radius: 10px; outline: none; }
+        .form-group input:focus { border-color: var(--azul-aviva); }
+
+        .grades-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        
+        .btn-save-record {
+            width: 100%; background: var(--azul-aviva); color: var(--dorado); border: none;
+            padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; cursor: pointer;
         }
 
-        table th {
-            background-color: var(--azul-oscuro);
-            color: var(--dorado);
-            padding: 12px;
-            text-align: center;
-        }
-
-        table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .grade-input {
-            width: 50px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .final-grade-cell {
-            background-color: #fff9e6;
-            font-size: 1.1rem;
-            color: var(--azul-oscuro);
-            font-weight: 800;
-            border-radius: 5px;
-        }
-
-        .btn-save {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-save:hover { background-color: #218838; transform: scale(1.05); }
-
-        tr:hover { background-color: #f1f1f1; }
+        .btn-delete { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -117,94 +93,170 @@
 <body>
 
 <nav class="navbar">
-    <div style="display:flex; align-items:center;">
-        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50" style="margin-right:15px;">
-        <h1>Control de Notas - Profesores</h1>
-    </div>
-    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px;">MENU PRINCIPAL</button>
+    <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" class="logo-header">
+    <h1 style="color: white; font-size: 1.2rem; letter-spacing: 2px;">PANEL DE PROFESORES</h1>
+    <button onclick="location.href='maestrosindex.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">INICIO</button>
 </nav>
 
-<div class="main-container">
-    <h2>Registro de Calificaciones Anuales</h2>
-
-    <div class="search-area">
-        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Buscar estudiante por nombre...">
+<div class="container">
+    <div class="header-actions">
+        <input type="text" id="mainSearch" onkeyup="filterTable()" placeholder="🔍 Buscar estudiante..." style="padding:12px; border-radius:20px; border:1px solid #ddd; width:300px;">
+        <button class="btn-add" onclick="openModal()">+ AGREGAR CALIFICACIÓN</button>
     </div>
 
-    <table id="gradesTable">
-        <thead>
-            <tr>
-                <th>Estudiante</th>
-                <th>Materia</th>
-                <th>M1</th>
-                <th>M2</th>
-                <th>SE1</th>
-                <th>M3</th>
-                <th>M4</th>
-                <th>SE2</th>
-                <th style="background: var(--dorado); color: var(--azul-oscuro);">NF (FINAL)</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <tr id="row-1">
-                <td style="font-weight:bold;">PRUEBA WEB</td>
-                <td>PIANO</td>
-                <td><input type="number" class="grade-input m1" value="0" oninput="calculateNF('row-1')"></td>
-                <td><input type="number" class="grade-input m2" value="0" oninput="calculateNF('row-1')"></td>
-                <td><input type="number" class="grade-input se1" value="0" oninput="calculateNF('row-1')"></td>
-                <td><input type="number" class="grade-input m3" value="0" oninput="calculateNF('row-1')"></td>
-                <td><input type="number" class="grade-input m4" value="0" oninput="calculateNF('row-1')"></td>
-                <td><input type="number" class="grade-input se2" value="0" oninput="calculateNF('row-1')"></td>
-                <td class="final-grade-cell nf-val">0</td>
-                <td><button class="btn-save" onclick="saveToFirebase('row-1')">Guardar</button></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-card" data-aos="fade-up">
+        <table>
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Clase / Categoría</th>
+                    <th>Año</th>
+                    <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th><th>SE2</th>
+                    <th style="background:var(--dorado); color:var(--azul-aviva)">NF</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="professorsTableBody">
+                </tbody>
+        </table>
+    </div>
 </div>
 
-<script>
-    // --- LÓGICA DE CÁLCULO ---
-    function calculateNF(rowId) {
-        const row = document.getElementById(rowId);
-        const m1 = parseFloat(row.querySelector('.m1').value) || 0;
-        const m2 = parseFloat(row.querySelector('.m2').value) || 0;
-        const se1 = parseFloat(row.querySelector('.se1').value) || 0;
-        const m3 = parseFloat(row.querySelector('.m3').value) || 0;
-        const m4 = parseFloat(row.querySelector('.m4').value) || 0;
-        const se2 = parseFloat(row.querySelector('.se2').value) || 0;
+<div class="modal" id="gradeModal">
+    <div class="modal-content">
+        <h3>Nuevo Registro Académico</h3>
+        <div class="form-group">
+            <label>NOMBRE DEL ESTUDIANTE</label>
+            <input type="text" id="formName" placeholder="Nombre completo">
+        </div>
+        <div style="display:flex; gap:10px;">
+            <div class="form-group" style="flex:1;">
+                <label>CATEGORÍA / CLASE</label>
+                <select id="formCategory">
+                    <option value="PIANO">PIANO</option>
+                    <option value="GUITARRA">GUITARRA</option>
+                    <option value="CANTO">CANTO</option>
+                    <option value="BATERÍA">BATERÍA</option>
+                    <option value="VIOLÍN">VIOLÍN</option>
+                    <option value="TEORÍA MUSICAL">TEORÍA MUSICAL</option>
+                </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>AÑO LECTIVO</label>
+                <select id="formYear">
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+        </div>
 
-        // Suma total
-        const total = m1 + m2 + se1 + m3 + m4 + se2;
-        
-        // Mostrar en la celda NF
-        row.querySelector('.nf-val').textContent = total.toFixed(0);
+        <label style="font-size:0.7rem; font-weight:bold;">CALIFICACIONES (SUMA AUTOMÁTICA)</label>
+        <div class="grades-grid">
+            <input type="number" id="m1" placeholder="M1" oninput="autoSum()">
+            <input type="number" id="m2" placeholder="M2" oninput="autoSum()">
+            <input type="number" id="se1" placeholder="SE1" oninput="autoSum()">
+            <input type="number" id="m3" placeholder="M3" oninput="autoSum()">
+            <input type="number" id="m4" placeholder="M4" oninput="autoSum()">
+            <input type="number" id="se2" placeholder="SE2" oninput="autoSum()">
+        </div>
+
+        <div style="margin-top:15px; text-align:right;">
+            <span style="font-weight:bold;">NOTA FINAL (NF): </span>
+            <span id="nfLabel" style="font-size:1.5rem; color:var(--azul-aviva); font-weight:900;">0</span>
+        </div>
+
+        <button class="btn-save-record" onclick="saveGrade()">GUARDAR EN SISTEMA</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Cancelar</button>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
+        authDomain: "academia-aviva.firebaseapp.com",
+        projectId: "academia-aviva",
+        storageBucket: "academia-aviva.firebasestorage.app",
+        messagingSenderId: "1083662705160",
+        appId: "1:1083662705160:web:31252ae5d15e994823a7bd"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Funciones Modal
+    function openModal() { document.getElementById('gradeModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('gradeModal').style.display = 'none'; }
+
+    // Suma automática
+    function autoSum() {
+        const val = id => parseFloat(document.getElementById(id).value) || 0;
+        const total = val('m1') + val('m2') + val('se1') + val('m3') + val('m4') + val('se2');
+        document.getElementById('nfLabel').innerText = total;
     }
 
-    // --- BUSCADOR ---
-    function filterTable() {
-        const input = document.getElementById("searchInput").value.toUpperCase();
-        const tr = document.getElementById("tableBody").getElementsByTagName("tr");
+    // Guardar en Firebase
+    async function saveGrade() {
+        const name = document.getElementById('formName').value;
+        const category = document.getElementById('formCategory').value;
+        const year = document.getElementById('formYear').value;
+        const nf = parseFloat(document.getElementById('nfLabel').innerText);
 
-        for (let i = 0; i < tr.length; i++) {
-            let td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                let textValue = td.textContent || td.innerText;
-                tr[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
-            }
+        if(!name) return alert("Escribe el nombre del estudiante");
+
+        await db.collection('student_grades').add({
+            studentName: name,
+            category: category,
+            year: year,
+            m1: parseFloat(document.getElementById('m1').value) || 0,
+            m2: parseFloat(document.getElementById('m2').value) || 0,
+            se1: parseFloat(document.getElementById('se1').value) || 0,
+            m3: parseFloat(document.getElementById('m3').value) || 0,
+            m4: parseFloat(document.getElementById('m4').value) || 0,
+            se2: parseFloat(document.getElementById('se2').value) || 0,
+            nf: nf,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        closeModal();
+        alert("Nota guardada correctamente");
+    }
+
+    // Cargar Datos en Tiempo Real
+    db.collection('student_grades').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        const tbody = document.getElementById('professorsTableBody');
+        tbody.innerHTML = '';
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align:left;">${d.studentName}</td>
+                    <td><span style="background:#eee; padding:5px 10px; border-radius:15px; font-size:0.7rem;">${d.category}</span></td>
+                    <td>${d.year}</td>
+                    <td>${d.m1}</td><td>${d.m2}</td><td>${d.se1}</td><td>${d.m3}</td><td>${d.m4}</td><td>${d.se2}</td>
+                    <td><span class="nf-badge">${d.nf}</span></td>
+                    <td><button class="btn-delete" onclick="deleteGrade('${doc.id}')">🗑️</button></td>
+                </tr>
+            `;
+        });
+    });
+
+    async function deleteGrade(id) {
+        if(confirm("¿Seguro que quieres eliminar este registro?")) {
+            await db.collection('student_grades').doc(id).delete();
         }
     }
 
-    // --- FIREBASE (SIMULACIÓN DE GUARDADO) ---
-    function saveToFirebase(rowId) {
-        const row = document.getElementById(rowId);
-        const student = row.getElementsByTagName("td")[0].innerText;
-        const finalGrade = row.querySelector('.nf-val').innerText;
-
-        // Aquí iría el código db.collection('student_grades').doc(...).set({...})
-        alert("¡Guardado! Estudiante: " + student + " | Nota Final: " + finalGrade);
+    function filterTable() {
+        const query = document.getElementById('mainSearch').value.toLowerCase();
+        const rows = document.querySelectorAll('#professorsTableBody tr');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+        });
     }
 </script>
-
 </body>
 </html>
