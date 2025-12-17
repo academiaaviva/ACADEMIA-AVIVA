@@ -3,221 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Calificaciones - Filtrado</title>
+    <title>Gestión de Calificaciones | Plataforma Aviva</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
     <style>
-        /* Paleta: Azul Ultra Oscuro (#00004d), Dorado (#ffc107), Blanco (#ffffff) */
+        /* Estilos Base (Azul Ultra Oscuro y Dorado) */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            padding-top: 70px; 
+            padding-top: 80px;
             background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
         }
 
-        /* --- Navbar --- */
         .navbar {
-            background-color: #00004d; color: white; padding: 5px 20px; width: 100%; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); display: flex; justify-content: space-between; align-items: center;
+            background-color: #00004d;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-        .header-contenido { display: flex; align-items: center; }
-        .logo-header { height: 50px; margin-right: 15px; }
-        .header-contenido h1 { font-size: 24px; font-weight: bold; color: white; margin: 0; }
-        
-        /* --- Contenido Principal y Tabla --- */
-        .main-content {
-            margin-top: 30px; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); width: 90%; max-width: 1200px;
+
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
         }
-        
-        h2 { color: #00004d; margin-top: 0; margin-bottom: 20px; }
-        
-        /* Contenedor de Filtros (Barra de Búsqueda y Selector) */
-        .filters-container {
-            display: flex;
-            gap: 20px;
+
+        h2 { color: #00004d; border-bottom: 3px solid #ffc107; padding-bottom: 10px; }
+
+        /* --- BARRA DE BÚSQUEDA --- */
+        .search-container {
             margin-bottom: 25px;
+            display: flex;
             align-items: center;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
         }
 
-        .filter-group {
-            flex-grow: 1;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 5px;
+        .search-container label {
             font-weight: bold;
             color: #00004d;
+            margin-right: 15px;
         }
 
-        .filter-group input, .filter-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
+        #searchInput {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: 2px solid #00004d;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+            transition: all 0.3s;
         }
 
-        /* Tabla */
-        #gradesTable {
+        #searchInput:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+        }
+
+        /* --- TABLA --- */
+        table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            margin-top: 10px;
         }
-        #gradesTable th, #gradesTable td {
-            border: 1px solid #ddd;
-            padding: 8px 5px;
+
+        table th {
+            background-color: #00004d;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover { background-color: #fff9e6; }
+
+        .grade-input {
+            width: 50px;
+            padding: 5px;
             text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-        #gradesTable th {
-            background-color: #ffc107; /* Dorado */
-            color: #00004d;
+
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
-        <link rel="icon" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="header-contenido">
-        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" alt="Logo AVIVA" class="logo-header">
-        <h1>Historial de Calificaciones</h1>
+    <div style="display:flex; align-items:center;">
+        <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50" style="margin-right:15px;">
+        <h1>Control de Notas</h1>
     </div>
+    <button onclick="location.href='maestrosindex.html'" style="background:#ffc107; border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px;">Volver al Menú</button>
 </nav>
 
-<div class="main-content">
-    <h2>Mi Registro Académico</h2>
+<div class="main-container">
+    <h2>Registro de Calificaciones</h2>
 
-    <div class="filters-container">
-        <div class="filter-group" style="flex-basis: 70%;">
-            <label for="searchBar">Buscar Estudiante o ID:</label>
-            <input type="text" id="searchBar" onkeyup="applyFilters()" placeholder="Escribe nombre o ID estudiantil...">
-        </div>
-        
-        <div class="filter-group" style="flex-basis: 30%;">
-            <label for="yearSelector">Seleccionar Año Académico:</label>
-            <select id="yearSelector" onchange="applyFilters()">
-                <option value="TODOS">TODOS</option>
-                <option value="2025" selected>2025 (Actual)</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-            </select>
-        </div>
+    <div class="search-container">
+        <label for="searchInput">🔍 BUSCAR ESTUDIANTE:</label>
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Escribe el nombre del alumno para filtrar...">
     </div>
 
-    <div style="overflow-x: auto;">
-        <table id="gradesTable">
-            <thead>
-                <tr>
-                    <th>ID Estudiantil</th>
-                    <th>Estudiante</th>
-                    <th>Maestro</th>
-                    <th>Materia/Categoría</th>
-                    <th>M1</th><th>2</th><th>SE1</th><th>M3</th><th>M4</th>
-                    <th>SE2</th><th>NF</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td colspan="14">Cargando calificaciones desde Firebase...</td></tr>
+    <table id="gradesTable">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Curso / Materia</th>
+                <th>Maestro</th>
+                <th>I Bloque</th>
+                <th>II Bloque</th>
+                <th>III Bloque</th>
+                <th>IV Bloque</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr>
+                <td>Prueba Web</td>
+                <td>Piano</td>
+                <td>Maestro Juan</td>
+                <td><input type="number" class="grade-input" value="90"></td>
+                <td><input type="number" class="grade-input" value="85"></td>
+                <td><input type="number" class="grade-input" value="0"></td>
+                <td><input type="number" class="grade-input" value="0"></td>
+                <td><button class="btn-save">Guardar</button></td>
+            </tr>
+            <tr>
+                <td>Carlos Martínez</td>
+                <td>Guitarra</td>
+                <td>Maestra Elena</td>
+                <td><input type="number" class="grade-input" value="100"></td>
+                <td><input type="number" class="grade-input" value="95"></td>
+                <td><input type="number" class="grade-input" value="0"></td>
+                <td><input type="number" class="grade-input" value="0"></td>
+                <td><button class="btn-save">Guardar</button></td>
+            </tr>
             </tbody>
-        </table>
-    </div>
+    </table>
 </div>
 
 <script>
-    // 🔑 TU CONFIGURACIÓN DE FIREBASE 🔑
-    const firebaseConfig = {
-        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
-        authDomain: "academia-aviva.firebaseapp.com",
-        projectId: "academia-aviva",
-        storageBucket: "academia-aviva.firebasestorage.app",
-        messagingSenderId: "1083662705160",
-        appId: "1:1083662705160:web:31252ae5d15e994823a7bd",
-        measurementId: "G-GNBRN8CF2T"
-    };
+    // FUNCIÓN DE BÚSQUEDA
+    function filterTable() {
+        // Declarar variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase(); // Convertir a mayúsculas para búsqueda insensible
+        table = document.getElementById("gradesTable");
+        tr = table.getElementsByTagName("tr");
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const gradesCollection = db.collection('student_grades'); 
-    
-    let allGradesData = []; // Almacena todos los datos de Firebase
-    
-    // OYENTE EN TIEMPO REAL (LECTURA DE DATOS)
-    gradesCollection.onSnapshot(snapshot => {
-        allGradesData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            notes: doc.data().notes || Array(10).fill(0),
-            // Simulamos el año académico para que el filtro funcione
-            // En un sistema real, este dato vendría de Firebase
-            year: doc.data().year || '2025' 
-        }));
-        applyFilters(); // Aplicar filtros al cargar o actualizar los datos
-    }, error => {
-        console.error("Error al escuchar cambios en Firestore:", error);
-        document.querySelector('#gradesTable tbody').innerHTML = '<tr><td colspan="14" style="color:red; text-align: center;">Error de conexión con la base de datos.</td></tr>';
-    });
-
-    /**
-     * Aplica el filtro de búsqueda y el filtro de año a los datos.
-     */
-    window.applyFilters = function() {
-        const searchTerm = document.getElementById('searchBar').value.toLowerCase().trim();
-        const selectedYear = document.getElementById('yearSelector').value;
-
-        let filteredGrades = allGradesData.filter(item => {
-            // 1. Filtro de Búsqueda por Nombre o ID
-            const matchesSearch = item.studentName.toLowerCase().includes(searchTerm) || 
-                                  item.studentId.toLowerCase().includes(searchTerm);
-
-            // 2. Filtro de Año Académico
-            const matchesYear = (selectedYear === 'TODOS' || item.year === selectedYear);
-
-            return matchesSearch && matchesYear;
-        });
-
-        renderTable(filteredGrades);
-    };
-
-
-    // RENDERIZADO DE LA TABLA (SOLO LECTURA)
-    function renderTable(grades) {
-        const tbody = document.querySelector('#gradesTable tbody');
-        tbody.innerHTML = '';
-
-        if (grades.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="14" style="text-align: center;">No se encontraron calificaciones que coincidan con los filtros.</td></tr>';
-            return;
-        }
-
-        grades.forEach(item => {
-            const row = tbody.insertRow();
-            
-            // Columnas de información
-            row.insertCell().textContent = item.studentId;
-            row.insertCell().textContent = item.studentName;
-            row.insertCell().textContent = item.teacherName;
-            row.insertCell().textContent = item.category;
-
-            // Columnas de Notas (Solo Lectura)
-            for (let i = 0; i < 10; i++) {
-                const noteCell = row.insertCell();
-                const noteValue = item.notes[i] !== undefined ? item.notes[i] : 0;
-                noteCell.textContent = noteValue;
-                
-                // Resaltar notas bajas (ej. Rojo si es < 70)
-                if (noteValue < 70) {
-                    noteCell.style.backgroundColor = '#f8d7da';
-                    noteCell.style.color = '#721c24';
+        // Recorrer todas las filas de la tabla (excepto el encabezado)
+        for (i = 1; i < tr.length; i++) {
+            // Buscamos en la primera columna (índice 0), que es la de "Estudiante"
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                // Si el texto coincide con la búsqueda
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = ""; // Mostrar fila
+                } else {
+                    tr[i].style.display = "none"; // Ocultar fila
                 }
             }
-        });
+        }
     }
 
+    // Nota: Aquí integrarías tu código de Firebase para que los datos 
+    // reales se carguen dinámicamente en el 'tableBody'.
 </script>
 
 </body>
