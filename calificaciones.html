@@ -5,69 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de Calificaciones | Academia Aviva</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
     <style>
-        :root {
-            --azul-aviva: #00004d;
-            --dorado: #ffc107;
-            --blanco: #ffffff;
-            --oscuro: #000022;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0; background: var(--oscuro); color: var(--blanco);
-            padding-top: 80px; min-height: 100vh;
-        }
-
-        /* --- Navbar --- */
-        .navbar {
-            background: var(--azul-aviva); padding: 10px 40px; width: 100%; position: fixed;
-            top: 0; display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; border-bottom: 2px solid var(--dorado); box-sizing: border-box;
-        }
-
-        .container { max-width: 1250px; margin: 0 auto; padding: 20px; }
-
-        /* --- Buscador Superior --- */
-        .search-section {
-            text-align: center; padding: 40px 20px;
-            background: linear-gradient(45deg, rgba(0,0,77,0.9), rgba(0,0,34,1));
-            border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(255,193,7,0.2);
-        }
-        #studentSearch {
-            width: 90%; max-width: 600px; padding: 20px 30px; border-radius: 50px;
-            border: 3px solid transparent; font-size: 1.2rem; outline: none; transition: 0.3s;
-            text-align: center; font-weight: bold;
-        }
-        #studentSearch:focus { border-color: var(--dorado); box-shadow: 0 0 25px rgba(255,193,7,0.4); }
-
-        /* --- Tabla de Resultado --- */
-        .result-wrapper {
-            display: none; background: white; border-radius: 20px; padding: 25px;
-            margin-bottom: 50px; color: var(--azul-aviva); overflow-x: auto;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
-        }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th { padding: 15px; background: #f0f0f0; font-size: 0.7rem; text-transform: uppercase; color: var(--azul-aviva); }
-        td { padding: 15px; border-bottom: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 0.9rem; }
+        :root { --azul: #00004d; --dorado: #ffc107; --oscuro: #000022; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: var(--oscuro); color: white; padding-top: 80px; }
         
-        .profesor-tag { color: #555; font-style: italic; font-weight: 400; }
-        .nf-final { background: var(--azul-aviva); color: var(--dorado); padding: 8px 15px; border-radius: 10px; font-size: 1.3rem; display: inline-block; }
+        .navbar { background: var(--azul); padding: 10px 40px; width: 100%; position: fixed; top: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--dorado); box-sizing: border-box; z-index: 1000; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        .search-box { text-align: center; background: rgba(0,0,77,0.8); padding: 40px; border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(255,193,7,0.2); }
+        input { width: 80%; padding: 15px 25px; border-radius: 30px; border: none; font-size: 1.1rem; text-align: center; outline: none; }
 
-        /* --- Cuadro de Honor (Abajo) --- */
-        .honor-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .hall-of-fame {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px; margin-top: 30px;
-        }
-        .student-card {
-            background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px;
-            text-align: center; border: 1px solid rgba(255,193,7,0.3); transition: 0.3s;
-        }
-        .student-card h4 { color: var(--dorado); margin: 10px 0; text-transform: uppercase; }
+        .result-wrapper { display: none; background: white; color: var(--azul); padding: 25px; border-radius: 20px; overflow-x: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { background: #f4f4f4; padding: 12px; font-size: 0.75rem; color: #666; }
+        td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; font-weight: bold; }
+
+        .btn-ver { background: var(--azul); color: var(--dorado); border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-ver:hover { transform: scale(1.05); background: #000080; }
+
+        .nf-box { background: var(--azul); color: var(--dorado); padding: 10px; border-radius: 12px; font-size: 1.2rem; display: inline-block; position: relative; }
+        
+        .felicidades-text { color: #28a745; font-size: 0.7rem; display: block; margin-bottom: 5px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-3px);} }
+
+        .mensaje-error { padding: 40px; color: #d9534f; font-weight: bold; text-align: center; line-height: 1.6; }
+
+        .hall-fame { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
+        .star-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,193,7,0.3); }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -77,112 +45,128 @@
 
 <nav class="navbar">
     <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50">
-    <button onclick="location.href='index.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">INICIO</button>
+    <button onclick="location.href='index.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">VOLVER</button>
 </nav>
 
 <div class="container">
-    
-    <div class="search-section" data-aos="zoom-in">
-        <h1 style="color: var(--dorado); margin-bottom: 10px;">CONSULTA TUS NOTAS</h1>
-        <p style="opacity: 0.8; margin-bottom: 25px;">Ingresa tu nombre completo para ver tus resultados individuales.</p>
-        <input type="text" id="studentSearch" onkeyup="searchPrivate()" placeholder="Escribir nombre del alumno...">
+    <div class="search-box">
+        <h2 style="color:var(--dorado); letter-spacing: 2px;">SISTEMA DE CALIFICACIONES</h2>
+        <input type="text" id="searchInput" onkeyup="checkSearch()" placeholder="Escribe tu nombre completo para buscar...">
     </div>
 
-    <div id="resultWrapper" class="result-wrapper" data-aos="fade-up">
-        <table>
-            <thead>
-                <tr>
-                    <th>Estudiante</th>
-                    <th>Profesor</th> <th>Clase</th>
-                    <th>Horario</th>
-                    <th>Año</th>
-                    <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th><th>SE2</th>
-                    <th style="background: var(--dorado); color: var(--azul-aviva);">NF</th>
-                </tr>
-            </thead>
-            <tbody id="calificacionesBody"></tbody>
-        </table>
+    <div id="resultArea" class="result-wrapper">
+        <div id="dynamicContent">
+            </div>
     </div>
 
-    <div class="honor-section">
-        <h2 style="text-align: center; letter-spacing: 3px; color: var(--dorado);">🌟 CUADRO DE HONOR DEL MES</h2>
-        <div class="hall-of-fame" id="honorCardsContainer"></div>
-    </div>
+    <h2 style="text-align:center; margin-top:60px; color:var(--dorado); letter-spacing: 3px;">🌟 CUADRO DE HONOR</h2>
+    <div class="hall-fame" id="honorDiv"></div>
 </div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init();
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
-        authDomain: "academia-aviva.firebaseapp.com",
-        projectId: "academia-aviva",
-        storageBucket: "academia-aviva.firebasestorage.app",
-        messagingSenderId: "1083662705160",
-        appId: "1:1083662705160:web:31252ae5d15e994823a7bd"
-    };
+    const firebaseConfig = { apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI", authDomain: "academia-aviva.firebaseapp.com", projectId: "academia-aviva", storageBucket: "academia-aviva.firebasestorage.app", messagingSenderId: "1083662705160", appId: "1:1083662705160:web:31252ae5d15e994823a7bd" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Cargar Honor
-    db.collection('cuadro_honor').orderBy('timestamp', 'desc').onSnapshot(snap => {
-        const container = document.getElementById('honorCardsContainer');
-        container.innerHTML = '';
-        snap.forEach(doc => {
-            const d = doc.data();
-            container.innerHTML += `
-                <div class="student-card" data-aos="flip-up">
-                    <span style="font-size:2rem">${d.rank}</span>
-                    <h4>${d.name}</h4>
-                    <p>${d.clase}</p>
-                    <div style="color:var(--dorado); font-weight:bold">${d.pts}</div>
+    let notasData = [];
+    db.collection('student_grades').onSnapshot(s => { notasData = s.docs.map(d => d.data()); });
+
+    function checkSearch() {
+        const q = document.getElementById('searchInput').value.trim().toLowerCase();
+        const area = document.getElementById('resultArea');
+        const content = document.getElementById('dynamicContent');
+
+        if(q.length < 3) { area.style.display = "none"; return; }
+
+        const found = notasData.find(n => n.studentName.toLowerCase().includes(q));
+
+        if(found) {
+            area.style.display = "block";
+            content.innerHTML = `
+                <div style="text-align:center; padding: 20px;">
+                    <h3 style="margin-bottom:20px">Alumno: ${found.studentName}</h3>
+                    <button class="btn-ver" onclick="mostrarNota('${found.studentName}')">VER MIS CALIFICACIONES</button>
+                </div>
+            `;
+        } else { area.style.display = "none"; }
+    }
+
+    function mostrarNota(nombre) {
+        const d = notasData.find(n => n.studentName === nombre);
+        const content = document.getElementById('dynamicContent');
+
+        // 1. VALIDAR PERMISO DE PROFESORES.HTML
+        if(d.autorizado === 'no') {
+            content.innerHTML = `
+                <div class="mensaje-error">
+                    <img src="https://cdn-icons-png.flaticon.com/512/564/564619.png" width="50" style="margin-bottom:15px"><br>
+                    POR FAVOR PONTE EN CONTACTO CON ADMINISTRACIÓN.<br>
+                    EN ESTOS MOMENTOS NO PODEMOS MOSTRARTE TUS NOTAS.
                 </div>`;
-        });
-    });
-
-    // Lógica de Búsqueda
-    let allGrades = [];
-    db.collection('student_grades').onSnapshot(snap => {
-        allGrades = snap.docs.map(doc => doc.data());
-    });
-
-    function searchPrivate() {
-        const query = document.getElementById('studentSearch').value.trim().toLowerCase();
-        const wrapper = document.getElementById('resultWrapper');
-        const body = document.getElementById('calificacionesBody');
-
-        if (query.length < 3) {
-            wrapper.style.display = "none";
             return;
         }
 
-        const match = allGrades.filter(item => item.studentName.toLowerCase().includes(query));
-
-        if (match.length > 0) {
-            wrapper.style.display = "block";
-            body.innerHTML = '';
-            match.forEach(d => {
-                const esSi = d.showFull === 'si';
-                body.innerHTML += `
-                    <tr>
-                        <td style="text-align:left; color:var(--azul-aviva)">${d.studentName}</td>
-                        <td class="profesor-tag">${d.maestro || 'No asignado'}</td> <td>${d.className}</td>
-                        <td>${d.schedule}</td>
-                        <td>Año ${d.year}</td>
-                        <td>${esSi ? d.m1 : '-'}</td>
-                        <td>${esSi ? d.m2 : '-'}</td>
-                        <td>${esSi ? d.se1 : '-'}</td>
-                        <td>${esSi ? d.m3 : '-'}</td>
-                        <td>${d.m4}</td>
-                        <td>${esSi ? d.se2 : '-'}</td>
-                        <td><div class="nf-final">${d.nf}</div></td>
-                    </tr>`;
-            });
-        } else {
-            wrapper.style.display = "none";
+        // 2. SI TIENE PERMISO, MOSTRAR TABLA
+        const full = d.showFull === 'si';
+        const nfVal = parseFloat(d.nf);
+        
+        // Lógica de Felicidades y Confetti
+        let felicidadesHTML = "";
+        if(nfVal >= 95) {
+            felicidadesHTML = `<span class="felicidades-text">🎉 ¡FELICIDADES!</span>`;
+            dispararConfetti();
         }
+
+        content.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>MAESTRO</th><th>CLASE</th><th>AÑO</th><th>HORARIO</th>
+                        <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th><th>SE2</th>
+                        <th style="background:var(--dorado); color:var(--azul)">FINAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#555; font-style:italic">${d.maestro}</td>
+                        <td>${d.className}</td>
+                        <td>Añ ${d.year}</td>
+                        <td>${d.schedule}</td>
+                        <td>${full ? d.m1 : '-'}</td>
+                        <td>${full ? d.m2 : '-'}</td>
+                        <td>${full ? d.se1 : '-'}</td>
+                        <td>${full ? d.m3 : '-'}</td>
+                        <td>${d.m4}</td>
+                        <td>${full ? d.se2 : '-'}</td>
+                        <td>
+                            <div class="nf-box">
+                                ${felicidadesHTML}
+                                ${d.nf}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button onclick="checkSearch()" style="margin-top:20px; background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">Cerrar vista</button>
+        `;
     }
+
+    function dispararConfetti() {
+        var duration = 3 * 1000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+          confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffc107', '#00004d', '#ffffff'] });
+          confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffc107', '#00004d', '#ffffff'] });
+          if (Date.now() < end) { requestAnimationFrame(frame); }
+        }());
+    }
+
+    // Cuadro de Honor
+    db.collection('cuadro_honor').orderBy('timestamp','desc').onSnapshot(s => {
+        const h = document.getElementById('honorDiv'); h.innerHTML = '';
+        s.forEach(doc => { const d = doc.data(); h.innerHTML += `<div class="star-card"><h3>${d.rank} ${d.name}</h3><p>${d.clase}</p><b>${d.pts}</b></div>`; });
+    });
 </script>
 </body>
 </html>
