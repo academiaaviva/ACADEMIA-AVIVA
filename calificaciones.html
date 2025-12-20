@@ -29,7 +29,7 @@
             z-index: 1000; border-bottom: 2px solid var(--dorado); box-sizing: border-box;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1250px; margin: 0 auto; padding: 20px; }
 
         /* --- Buscador Superior --- */
         .search-section {
@@ -44,16 +44,18 @@
         }
         #studentSearch:focus { border-color: var(--dorado); box-shadow: 0 0 25px rgba(255,193,7,0.4); }
 
-        /* --- Tabla de Resultado (Oculta por defecto) --- */
+        /* --- Tabla de Resultado --- */
         .result-wrapper {
             display: none; background: white; border-radius: 20px; padding: 25px;
             margin-bottom: 50px; color: var(--azul-aviva); overflow-x: auto;
             box-shadow: 0 15px 50px rgba(0,0,0,0.6);
         }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th { padding: 15px; background: #eee; font-size: 0.7rem; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid #ddd; text-align: center; font-weight: bold; }
-        .nf-final { background: var(--azul-aviva); color: var(--dorado); padding: 8px; border-radius: 10px; font-size: 1.4rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { padding: 15px; background: #f0f0f0; font-size: 0.7rem; text-transform: uppercase; color: var(--azul-aviva); }
+        td { padding: 15px; border-bottom: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 0.9rem; }
+        
+        .profesor-tag { color: #555; font-style: italic; font-weight: 400; }
+        .nf-final { background: var(--azul-aviva); color: var(--dorado); padding: 8px 15px; border-radius: 10px; font-size: 1.3rem; display: inline-block; }
 
         /* --- Cuadro de Honor (Abajo) --- */
         .honor-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); }
@@ -65,8 +67,6 @@
             background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px;
             text-align: center; border: 1px solid rgba(255,193,7,0.3); transition: 0.3s;
         }
-        .student-card:hover { transform: translateY(-10px); background: rgba(255,193,7,0.05); }
-        .rank-medal { font-size: 2.5rem; display: block; margin-bottom: 10px; }
         .student-card h4 { color: var(--dorado); margin: 10px 0; text-transform: uppercase; }
     </style>
 
@@ -77,15 +77,15 @@
 
 <nav class="navbar">
     <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50">
-    <button onclick="location.href='index.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">CERRAR SESIÓN</button>
+    <button onclick="location.href='index.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">INICIO</button>
 </nav>
 
 <div class="container">
     
     <div class="search-section" data-aos="zoom-in">
-        <h1 style="color: var(--dorado); margin-bottom: 10px;">CONSULTA PRIVADA</h1>
-        <p style="opacity: 0.8; margin-bottom: 25px;">Ingresa tu nombre completo para visualizar tus calificaciones.</p>
-        <input type="text" id="studentSearch" onkeyup="searchPrivate()" placeholder="Escribe tu nombre aquí...">
+        <h1 style="color: var(--dorado); margin-bottom: 10px;">CONSULTA TUS NOTAS</h1>
+        <p style="opacity: 0.8; margin-bottom: 25px;">Ingresa tu nombre completo para ver tus resultados individuales.</p>
+        <input type="text" id="studentSearch" onkeyup="searchPrivate()" placeholder="Escribir nombre del alumno...">
     </div>
 
     <div id="resultWrapper" class="result-wrapper" data-aos="fade-up">
@@ -93,10 +93,11 @@
             <thead>
                 <tr>
                     <th>Estudiante</th>
-                    <th>Clase</th>
+                    <th>Profesor</th> <th>Clase</th>
+                    <th>Horario</th>
                     <th>Año</th>
-                    <th>M1</th><th>M2</th><th>M3</th><th>M4</th>
-                    <th style="background: var(--dorado); color: var(--azul-aviva);">NOTA FINAL</th>
+                    <th>M1</th><th>M2</th><th>SE1</th><th>M3</th><th>M4</th><th>SE2</th>
+                    <th style="background: var(--dorado); color: var(--azul-aviva);">NF</th>
                 </tr>
             </thead>
             <tbody id="calificacionesBody"></tbody>
@@ -105,8 +106,7 @@
 
     <div class="honor-section">
         <h2 style="text-align: center; letter-spacing: 3px; color: var(--dorado);">🌟 CUADRO DE HONOR DEL MES</h2>
-        <div class="hall-of-fame" id="honorCardsContainer">
-            </div>
+        <div class="hall-of-fame" id="honorCardsContainer"></div>
     </div>
 </div>
 
@@ -114,7 +114,6 @@
 <script>
     AOS.init();
 
-    // Firebase Init
     const firebaseConfig = {
         apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
         authDomain: "academia-aviva.firebaseapp.com",
@@ -126,7 +125,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // --- CARGAR HONOR (VINCULADO A PROFESORES) ---
+    // Cargar Honor
     db.collection('cuadro_honor').orderBy('timestamp', 'desc').onSnapshot(snap => {
         const container = document.getElementById('honorCardsContainer');
         container.innerHTML = '';
@@ -134,16 +133,15 @@
             const d = doc.data();
             container.innerHTML += `
                 <div class="student-card" data-aos="flip-up">
-                    <span class="rank-medal">${d.rank}</span>
+                    <span style="font-size:2rem">${d.rank}</span>
                     <h4>${d.name}</h4>
                     <p>${d.clase}</p>
-                    <div style="color: var(--dorado); font-weight: bold; margin-top: 10px;">${d.pts}</div>
-                </div>
-            `;
+                    <div style="color:var(--dorado); font-weight:bold">${d.pts}</div>
+                </div>`;
         });
     });
 
-    // --- BÚSQUEDA PRIVADA (VINCULADO A PROFESORES) ---
+    // Lógica de Búsqueda
     let allGrades = [];
     db.collection('student_grades').onSnapshot(snap => {
         allGrades = snap.docs.map(doc => doc.data());
@@ -154,7 +152,6 @@
         const wrapper = document.getElementById('resultWrapper');
         const body = document.getElementById('calificacionesBody');
 
-        // Solo buscar si hay más de 2 letras para evitar mostrar datos masivos por accidente
         if (query.length < 3) {
             wrapper.style.display = "none";
             return;
@@ -166,15 +163,21 @@
             wrapper.style.display = "block";
             body.innerHTML = '';
             match.forEach(d => {
+                const esSi = d.showFull === 'si';
                 body.innerHTML += `
                     <tr>
-                        <td style="text-align:left; color: var(--azul-aviva);">${d.studentName}</td>
-                        <td>${d.className}</td>
-                        <td>Año ${d.academicYear}</td>
-                        <td>${d.m1}</td><td>${d.m2}</td><td>${d.m3}</td><td>${d.m4}</td>
-                        <td class="nf-final">${d.nf}</td>
-                    </tr>
-                `;
+                        <td style="text-align:left; color:var(--azul-aviva)">${d.studentName}</td>
+                        <td class="profesor-tag">${d.maestro || 'No asignado'}</td> <td>${d.className}</td>
+                        <td>${d.schedule}</td>
+                        <td>Año ${d.year}</td>
+                        <td>${esSi ? d.m1 : '-'}</td>
+                        <td>${esSi ? d.m2 : '-'}</td>
+                        <td>${esSi ? d.se1 : '-'}</td>
+                        <td>${esSi ? d.m3 : '-'}</td>
+                        <td>${d.m4}</td>
+                        <td>${esSi ? d.se2 : '-'}</td>
+                        <td><div class="nf-final">${d.nf}</div></td>
+                    </tr>`;
             });
         } else {
             wrapper.style.display = "none";
