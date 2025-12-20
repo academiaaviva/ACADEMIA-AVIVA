@@ -24,7 +24,7 @@
         .content-section.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Estilo de Tarjetas y Tablas */
+        /* Tablas */
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
         th { background: #f8f9fa; padding: 12px; color: var(--azul); text-transform: uppercase; border-bottom: 2px solid #eee; }
@@ -39,9 +39,13 @@
         .form-group label { font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; color: var(--azul); }
         .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat'; }
 
+        /* Grid de Notas con Módulos y promedios */
         .grid-notas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #f0f4f8; padding: 15px; border-radius: 15px; margin-top: 10px; }
         .hidden { display: none; }
         .btn-save { background: var(--azul); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        
+        /* Resaltado para promedios que ahora son editables */
+        .editable-avg { background: #e3f2fd !important; border: 1.5px solid #2196f3 !important; font-weight: bold; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -96,20 +100,21 @@
 
 <div class="modal" id="modalHonor">
     <div class="modal-content">
-        <h3 style="text-align:center; color: var(--azul)">Destacar en Cuadro de Honor</h3>
+        <h3 style="text-align:center; color: var(--azul)">Destacar en Honor</h3>
         <div class="form-group"><label>NOMBRE ALUMNO</label><input type="text" id="hName"></div>
         <div class="form-group"><label>INSTRUMENTO / CLASE</label><input type="text" id="hClass"></div>
         <div class="form-group"><label>PUNTAJE / NOTA</label><input type="text" id="hPts"></div>
         <div class="form-group"><label>RANGO</label><select id="hRank"><option>🥇</option><option>🥈</option><option>🥉</option></select></div>
-        <button class="btn-save" onclick="saveHonor()">PUBLICAR EN HONOR</button>
+        <button class="btn-save" onclick="saveHonor()">PUBLICAR</button>
         <button class="btn-save" style="background:#ccc" onclick="closeModal('modalHonor')">CANCELAR</button>
     </div>
 </div>
 
 <div class="modal" id="modalExcel">
     <div class="modal-content">
-        <h3 style="text-align:center; color: var(--azul)">Formulario de Registro</h3>
-        <div class="form-group"><label>NOMBRE ALUMNO</label><input type="text" id="eName"></div>
+        <h3 style="text-align:center; color: var(--azul)">Formulario de Calificaciones</h3>
+        
+        <div class="form-group"><label>NOMBRE DEL ALUMNO</label><input type="text" id="eName"></div>
         <div class="form-group"><label>MAESTRO</label><input type="text" id="eMaestro"></div>
         
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -134,31 +139,30 @@
         <div class="form-group">
             <label>¿MOSTRAR TODAS LAS CALIFICACIONES?</label>
             <select id="showAll" onchange="toggleForm()">
-                <option value="si">SÍ (M1, M2, SE1, M3, M4, SE2, NF)</option>
-                <option value="no">NO (Solo M4 y NF)</option>
+                <option value="si">SÍ (Módulos + Promedios)</option>
+                <option value="no">NO (Solo Finales)</option>
             </select>
         </div>
 
         <div id="fullGrades" class="grid-notas">
             <div class="form-group"><label>M1</label><input type="number" id="m1" value="0" oninput="calc()"></div>
             <div class="form-group"><label>M2</label><input type="number" id="m2" value="0" oninput="calc()"></div>
-            <div class="form-group"><label>SE1</label><input type="number" id="se1" value="0" readonly style="background:#eee"></div>
+            <div class="form-group"><label>SE1 (Promedio)</label><input type="number" id="se1" value="0" step="0.1" class="editable-avg"></div>
             <div class="form-group"><label>M3</label><input type="number" id="m3" value="0" oninput="calc()"></div>
         </div>
 
         <div class="grid-notas" style="background:#fff3cd;">
             <div class="form-group"><label>M4</label><input type="number" id="m4" value="0" oninput="calc()"></div>
-            <div id="se2Container" class="form-group"><label>SE2</label><input type="number" id="se2" value="0" readonly style="background:#eee"></div>
-            <div class="form-group"><label>NF</label><input type="number" id="nf" value="0"></div>
+            <div id="se2Container" class="form-group"><label>SE2 (Promedio)</label><input type="number" id="se2" value="0" step="0.1" class="editable-avg"></div>
+            <div class="form-group"><label>NF (FINAL)</label><input type="number" id="nf" value="0" step="0.1" style="font-weight:bold; border:2px solid var(--azul); background:#fff"></div>
         </div>
 
-        <button class="btn-save" onclick="saveExcel()">GUARDAR EN EXCEL</button>
+        <button class="btn-save" onclick="saveExcel()">GUARDAR EN REGISTRO</button>
         <button class="btn-save" style="background:#ccc" onclick="closeModal('modalExcel')">CANCELAR</button>
     </div>
 </div>
 
 <script>
-    // Configuración Firebase (Usar la misma de siempre)
     const firebaseConfig = {
         apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI",
         authDomain: "academia-aviva.firebaseapp.com",
@@ -170,7 +174,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Navegación entre pestañas
     function switchTab(tabId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -181,28 +184,31 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; toggleForm(); }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Lógica dinámica del formulario Excel
     function toggleForm() {
         const mode = document.getElementById('showAll').value;
         document.getElementById('fullGrades').className = mode === 'si' ? 'grid-notas' : 'hidden';
         document.getElementById('se2Container').className = mode === 'si' ? 'form-group' : 'hidden';
     }
 
+    // LÓGICA DE CÁLCULO (AHORA PERMITE SOBREESCRIBIR)
     function calc() {
         const mode = document.getElementById('showAll').value;
         const g = id => parseFloat(document.getElementById(id).value) || 0;
+        
         if(mode === 'si') {
             const s1 = (g('m1') + g('m2')) / 2;
             const s2 = (g('m3') + g('m4')) / 2;
+            
+            // Colocamos el cálculo automático, pero el usuario puede borrarlo y escribir
             document.getElementById('se1').value = s1.toFixed(1);
             document.getElementById('se2').value = s2.toFixed(1);
             document.getElementById('nf').value = ((s1 + s2) / 2).toFixed(1);
         } else {
+            // Si el modo es NO, el NF por defecto es M4, pero sigue siendo editable
             document.getElementById('nf').value = g('m4');
         }
     }
 
-    // Guardar Cuadro de Honor
     async function saveHonor() {
         await db.collection('cuadro_honor').add({
             name: document.getElementById('hName').value,
@@ -214,7 +220,6 @@
         closeModal('modalHonor');
     }
 
-    // Guardar Calificaciones Excel
     async function saveExcel() {
         const data = {
             studentName: document.getElementById('eName').value,
@@ -225,18 +230,19 @@
             showFull: document.getElementById('showAll').value,
             m1: document.getElementById('m1').value,
             m2: document.getElementById('m2').value,
-            se1: document.getElementById('se1').value,
+            se1: document.getElementById('se1').value, // Se guarda lo que esté en el input (calculado o manual)
             m3: document.getElementById('m3').value,
             m4: document.getElementById('m4').value,
-            se2: document.getElementById('se2').value,
-            nf: document.getElementById('nf').value,
+            se2: document.getElementById('se2').value, // Se guarda lo que esté en el input
+            nf: document.getElementById('nf').value,   // Se guarda lo que esté en el input
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
         await db.collection('student_grades').add(data);
         closeModal('modalExcel');
+        alert("¡Nota guardada correctamente!");
     }
 
-    // Lectura de Datos - Cuadro de Honor
+    // Lectura de Datos
     db.collection('cuadro_honor').orderBy('timestamp', 'desc').onSnapshot(snap => {
         const b = document.getElementById('honorBody'); b.innerHTML = '';
         snap.forEach(doc => {
@@ -246,7 +252,6 @@
         });
     });
 
-    // Lectura de Datos - Excel
     db.collection('student_grades').orderBy('timestamp', 'desc').onSnapshot(snap => {
         const b = document.getElementById('excelBody'); b.innerHTML = '';
         snap.forEach(doc => {
