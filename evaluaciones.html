@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Evaluaciones | Academia Aviva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --azul: #00004d; --dorado: #ffc107; --oscuro: #000022; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: var(--oscuro); color: white; padding-top: 80px; }
+        .navbar { background: var(--azul); padding: 10px 40px; width: 100%; position: fixed; top: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--dorado); box-sizing: border-box; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .search-box { text-align: center; background: rgba(0,0,77,0.8); padding: 40px; border-radius: 20px; margin-bottom: 30px; }
+        input { width: 85%; padding: 15px; border-radius: 30px; border: none; font-size: 1.1rem; text-align: center; }
+        .eval-card { background: white; color: var(--azul); padding: 25px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .btn-ver { background: var(--azul); color: var(--dorado); border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        .grid-notas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .nota-item { background: #f0f4f8; padding: 10px; border-radius: 10px; text-align: center; }
+        .nota-item small { display: block; font-size: 0.65rem; color: #666; font-weight: bold; }
+        .nota-final { background: var(--azul); color: var(--dorado); padding: 15px; border-radius: 15px; font-size: 2rem; display: inline-block; font-weight: bold; }
+        .mensaje-bloqueo { padding: 25px; color: #cc0000; font-weight: bold; text-align: center; border: 2px solid #ff4d4d; border-radius: 15px; background: #fff5f5; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
 
+<nav class="navbar">
+    <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50">
+    <button onclick="location.href='index.html'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">INICIO</button>
+</nav>
+
+<div class="container">
+    <div class="search-box">
+        <h2 style="color:var(--dorado)">RESULTADOS DE EVALUACIÓN</h2>
+        <input type="text" id="userInput" onkeyup="buscar()" placeholder="Ingresa tu nombre...">
+    </div>
+    <div id="resultsArea"></div>
+</div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI", authDomain: "academia-aviva.firebaseapp.com", projectId: "academia-aviva", storageBucket: "academia-aviva.firebasestorage.app", messagingSenderId: "1083662705160", appId: "1:1083662705160:web:31252ae5d15e994823a7bd" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let evals = [];
+    db.collection('evaluaciones_academicas').onSnapshot(s => { evals = s.docs.map(doc => ({ id: doc.id, ...doc.data() })); });
+
+    function buscar() {
+        const q = document.getElementById('userInput').value.trim().toLowerCase();
+        const area = document.getElementById('resultsArea');
+        if(q.length < 3) { area.innerHTML = ""; return; }
+        const matches = evals.filter(e => e.studentName.toLowerCase().includes(q));
+        if(matches.length > 0) {
+            area.innerHTML = "";
+            matches.forEach(d => {
+                area.innerHTML += `
+                    <div class="eval-card">
+                        <h3>${d.studentName}</h3>
+                        <p><strong>📖 MATERIA:</strong> ${d.materia} | <strong>⏰ FECHA:</strong> ${d.fecha}</p>
+                        <div id="box-${d.id}"><button class="btn-ver" onclick="revelar('${d.id}')">VER CALIFICACIÓN</button></div>
+                    </div>`;
+            });
+        } else { area.innerHTML = ""; }
+    }
+
+    function revelar(id) {
+        const d = evals.find(e => e.id === id);
+        const div = document.getElementById(`box-${id}`);
+
+        if(d.autorizado === 'no') {
+            div.innerHTML = `<div class="mensaje-bloqueo">⚠️ POR FAVOR PONTE EN CONTACTO CON ADMINISTRACIÓN. EN ESTOS MOMENTOS NO PODEMOS MOSTRARTE TUS NOTAS.</div>`;
+            return;
+        }
+
+        const n = parseFloat(d.notaFinal);
+        if(n >= 95) confetti({ particleCount: 150, spread: 60, origin: { y: 0.7 } });
+
+        div.innerHTML = `
+            <div style="text-align:center; margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
+                <div class="grid-notas">
+                    <div class="nota-item"><small>${d.label1}</small><b>${d.nota1}</b></div>
+                    <div class="nota-item"><small>${d.label2}</small><b>${d.nota2}</b></div>
+                    <div class="nota-item"><small>${d.label3}</small><b>${d.nota3}</b></div>
+                </div>
+                <p>EVALUADO POR: ${d.maestro}</p>
+                <div class="nota-final">${d.notaFinal}</div>
+            </div>`;
+    }
+</script>
+</body>
+</html>
