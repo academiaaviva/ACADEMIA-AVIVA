@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admon Evaluaciones | Academia Aviva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --azul: #00004d; --dorado: #ffc107; --fondo: #f4f7f6; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: var(--fondo); padding-top: 90px; }
+        .navbar { background: var(--azul); padding: 15px 40px; width: 100%; position: fixed; top: 0; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 3px solid var(--dorado); box-sizing: border-box; }
+        .container { max-width: 1350px; margin: 0 auto; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background: #f8f9fa; padding: 12px; font-size: 0.75rem; color: var(--azul); border-bottom: 2px solid #eee; }
+        td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.85rem; font-weight: bold; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 600px; padding: 30px; border-radius: 25px; max-height: 90vh; overflow-y: auto; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 10px; }
+        .form-group label { font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; color: var(--azul); }
+        .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        .eval-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; background: #f0f4f8; padding: 15px; border-radius: 15px; margin-top: 10px; }
+        .btn-save { background: var(--azul); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .select-auth { padding: 5px; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
 
+<nav class="navbar">
+    <img src="https://i.ibb.co/Qv2NxLbN/fbbf9ca0-b866-4ce4-a827-443177c32603-removebg-preview.png" height="50">
+    <h2 style="color:white; margin:0; font-size:1.2rem;">ADMINISTRACIÓN DE EVALUACIONES</h2>
+</nav>
+
+<div class="container">
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h3>Registros de Evaluaciones</h3>
+            <button onclick="document.getElementById('modalEval').style.display='flex'" style="background:var(--dorado); border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">+ NUEVA EVALUACIÓN</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Alumno</th><th>Evaluador</th><th>Materia</th><th>Fecha</th><th>E1</th><th>E2</th><th>E3</th><th>Nota Final</th><th style="color:blue">¿VER?</th><th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="evalBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" id="modalEval">
+    <div class="modal-content">
+        <h3 style="text-align:center">Nueva Evaluación Técnica</h3>
+        <div class="form-group"><label>NOMBRE DEL ALUMNO</label><input type="text" id="vName"></div>
+        <div class="form-group"><label>EVALUADOR / PROFESOR</label><input type="text" id="vProfe"></div>
+        <div class="form-group"><label>INSTRUMENTO / MATERIA</label><input type="text" id="vMateria"></div>
+        <div class="form-group"><label>FECHA / HORARIO</label><input type="text" id="vFecha" placeholder="Ej: 22 Dic - 10:00 AM"></div>
+        
+        <p style="font-size:0.7rem; font-weight:bold; color:var(--azul); margin-top:15px;">CONFIGURACIÓN DE NOTAS (Escribe el nombre y la nota):</p>
+        
+        <div class="eval-grid">
+            <input type="text" id="n1" placeholder="Nombre Eval 1 (Ej: Técnica)">
+            <input type="number" id="v1" placeholder="Nota">
+            <input type="text" id="n2" placeholder="Nombre Eval 2 (Ej: Lectura)">
+            <input type="number" id="v2" placeholder="Nota">
+            <input type="text" id="n3" placeholder="Nombre Eval 3 (Ej: Teoría)">
+            <input type="number" id="v3" placeholder="Nota">
+        </div>
+
+        <div class="form-group" style="margin-top:10px;"><label>PROMEDIO / NOTA FINAL</label><input type="number" id="vFinal" style="background:#fff3cd"></div>
+        
+        <div class="form-group">
+            <label>AUTORIZAR VISUALIZACIÓN</label>
+            <select id="vAuth" style="padding:8px;"><option value="si">SÍ</option><option value="no">NO</option></select>
+        </div>
+        
+        <button class="btn-save" onclick="saveEval()">GUARDAR EVALUACIÓN</button>
+        <button class="btn-save" style="background:#ccc" onclick="document.getElementById('modalEval').style.display='none'">CANCELAR</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyC1siR7mrHnOTXozBk6lZ22ZxU352ve4lI", authDomain: "academia-aviva.firebaseapp.com", projectId: "academia-aviva", storageBucket: "academia-aviva.firebasestorage.app", messagingSenderId: "1083662705160", appId: "1:1083662705160:web:31252ae5d15e994823a7bd" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function saveEval() {
+        const data = {
+            studentName: document.getElementById('vName').value, maestro: document.getElementById('vProfe').value,
+            materia: document.getElementById('vMateria').value, fecha: document.getElementById('vFecha').value,
+            label1: document.getElementById('n1').value || 'E1', nota1: document.getElementById('v1').value || '0',
+            label2: document.getElementById('n2').value || 'E2', nota2: document.getElementById('v2').value || '0',
+            label3: document.getElementById('n3').value || 'E3', nota3: document.getElementById('v3').value || '0',
+            notaFinal: document.getElementById('vFinal').value, autorizado: document.getElementById('vAuth').value,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await db.collection('evaluaciones_academicas').add(data);
+        document.getElementById('modalEval').style.display='none';
+    }
+
+    async function togglePermiso(id, valor) {
+        await db.collection('evaluaciones_academicas').doc(id).update({ autorizado: valor });
+    }
+
+    db.collection('evaluaciones_academicas').orderBy('timestamp', 'desc').onSnapshot(s => {
+        const b = document.getElementById('evalBody'); b.innerHTML = '';
+        s.forEach(doc => {
+            const d = doc.data(); const isAuth = d.autorizado === 'si';
+            b.innerHTML += `<tr>
+                <td>${d.studentName}</td><td>${d.maestro}</td><td>${d.materia}</td><td>${d.fecha}</td>
+                <td>${d.label1}: ${d.nota1}</td><td>${d.label2}: ${d.nota2}</td><td>${d.label3}: ${d.nota3}</td>
+                <td style="background:var(--dorado)">${d.notaFinal}</td>
+                <td>
+                    <select class="select-auth" onchange="togglePermiso('${doc.id}', this.value)" style="background:${isAuth ? '#d4edda' : '#f8d7da'}">
+                        <option value="si" ${isAuth ? 'selected' : ''}>SÍ</option>
+                        <option value="no" ${!isAuth ? 'selected' : ''}>NO</option>
+                    </select>
+                </td>
+                <td><button onclick="if(confirm('¿Eliminar?')) db.collection('evaluaciones_academicas').doc('${doc.id}').delete()">🗑️</button></td>
+            </tr>`;
+        });
+    });
+</script>
+</body>
+</html>
